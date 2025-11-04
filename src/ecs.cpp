@@ -1,4 +1,5 @@
 #include "ecs.h"
+#include <godot_cpp/core/class_db.hpp>
 
 namespace sly {
 
@@ -9,8 +10,13 @@ map<Ecs::System*> Ecs::system_map;
 // initialize static variables
 Ecs* Ecs::singleton = nullptr;
 
-void Ecs::_bind_methods() {
+void sly::Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
+}
+
+void Ecs::System::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("update"), &Ecs::System::update);
+	GDVIRTUAL_BIND(_update);
 }
 
 void Ecs::_notification(int p_what) {
@@ -24,7 +30,6 @@ void Ecs::_notification(int p_what) {
 			break;
 	}
 }
-
 
 Ecs *Ecs::get_singleton() {
 	if (!Ecs::singleton) {
@@ -54,6 +59,7 @@ void Ecs::process_ecs() {
 
 void Ecs::System::update() {
 	print("updating system : ", this->id);
+	GDVIRTUAL_CALL(_update);
 }
 
 } // namespace sly

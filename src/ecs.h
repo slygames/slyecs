@@ -11,6 +11,7 @@
 #include "util.h"
 #include <godot_cpp/classes/scene_tree.hpp> // for Ecs::connect()
 #include <godot_cpp/classes/window.hpp> // for Ecs::connect()
+#include <godot_cpp/core/gdvirtual.gen.inc>
 
 using namespace godot;
 
@@ -90,7 +91,7 @@ class Ecs::System : public Base {
 GDCLASS(System, Base);
 
 protected:
-	static void _bind_methods() {};
+	static void _bind_methods();
 
 public:
 	System() = default;
@@ -99,6 +100,7 @@ public:
 	array<int> components_required;
 
 	virtual void update();
+	GDVIRTUAL0(_update);
 };
 
 
