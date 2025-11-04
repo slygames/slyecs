@@ -8,16 +8,20 @@
 #include "ecs.h"
 
 using namespace godot;
+using namespace sly;
 
 void initialize_gdextension_types(ModuleInitializationLevel p_level)
 {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
-	GDREGISTER_RUNTIME_CLASS(sly::Ecs);
-	GDREGISTER_RUNTIME_CLASS(sly::Ecs::Entity);
-	GDREGISTER_RUNTIME_CLASS(sly::Ecs::Component);
-	GDREGISTER_RUNTIME_CLASS(sly::Ecs::System);
+
+	// register classes
+	GDREGISTER_RUNTIME_CLASS(Ecs);
+	GDREGISTER_RUNTIME_CLASS(Ecs::Base);
+	GDREGISTER_RUNTIME_CLASS(Ecs::Entity);
+	GDREGISTER_RUNTIME_CLASS(Ecs::Component);
+	GDREGISTER_RUNTIME_CLASS(Ecs::System);
 }
 
 void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
