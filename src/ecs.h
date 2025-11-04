@@ -1,10 +1,12 @@
 #pragma once
 
-#include "godot_cpp/classes/wrapped.hpp"
+#include <godot_cpp/classes/wrapped.hpp>
 //#include "godot_cpp/variant/variant.hpp"
-#include "godot_cpp/classes/node.hpp"
-#include "godot_cpp/classes/resource.hpp"
-#include "godot_cpp/variant/typed_array.hpp"
+#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/classes/array.hpp> // Includes the definition for TypedArray
+#include <godot_cpp/variant/variant.hpp>
+#include <godot_cpp/variant/typed_array.hpp>
 //#include "godot_cpp/classes/ref_counted.hpp"
 //#include <godot_cpp/classes/weak_ref.hpp>
 #include <functional> // for std::hash
@@ -52,7 +54,7 @@ public:
 
 	void process_ecs();
 
-	void create_entity(RefCounted* object, TypedArray<Component*> components);
+	void create_entity(RefCounted* object, TypedArray<Component*>& components);
 	void remove_entity(RefCounted* object);
 };
 
@@ -82,14 +84,12 @@ GDCLASS(Entity, Base);
 
 protected:
 	static void _bind_methods() {};
-
-	RefCounted* object; // actual godot game object
-
 public:
 	Entity() {};
 	~Entity() override = default;
 	Entity(RefCounted* new_object) : object(new_object) {}
 	array<int> components;
+	RefCounted* object; // actual godot game object
 };
 
 

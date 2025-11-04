@@ -12,6 +12,7 @@ Ecs* Ecs::singleton = nullptr;
 
 void sly::Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
+	ClassDB::bind_method(D_METHOD("create_entity", "object", "components"), &Ecs::create_entity);
 }
 
 void Ecs::System::_bind_methods() {
@@ -53,14 +54,13 @@ void Ecs::process_ecs() {
 	
 	print("processing.. ", get_process_delta_time());
 
-	for(System* system : system_map) {
+	for(Ref<System> system : system_map) {
 		system->update();
 	}
 }
 
-void Ecs::create_entity(RefCounted* object, TypedArray<Component*> components) {
-	Ref<Entity> new_entity = Ref<Entity>(memnew(Entity));
-	//Entity* new_entity = &Entity(object);
+void Ecs::create_entity(RefCounted* object, TypedArray<Component*>& components) {
+	Entity* new_entity = memnew(Entity(object));
 	int entity_id = entity_map.insert(new_entity);
 	new_entity->id = entity_id;
 	for(int i; i < components.size(); i++) {
@@ -73,6 +73,7 @@ void Ecs::remove_entity(RefCounted *object) {
 	Entity* entity;
 	int entity_id = entity_map.find[entity];
 	entity_map.remove(entity_id);
+	memdelete(entity);
 }
 
 void Ecs::System::update() {
