@@ -23,6 +23,7 @@ void Ecs::_notification(int p_what) {
 	switch(p_what) {
 		case NOTIFICATION_READY:
 			print("READY!!");
+			this->set_physics_process(true);
 			break;
 		case NOTIFICATION_PHYSICS_PROCESS:
 			print("PHYSICS_PROCESS!!");
@@ -55,6 +56,23 @@ void Ecs::process_ecs() {
 	for(System* system : system_map) {
 		system->update();
 	}
+}
+
+void Ecs::create_entity(RefCounted* object, TypedArray<Component*> components) {
+	Ref<Entity> new_entity = Ref<Entity>(memnew(Entity));
+	//Entity* new_entity = &Entity(object);
+	int entity_id = entity_map.insert(new_entity);
+	new_entity->id = entity_id;
+	for(int i; i < components.size(); i++) {
+		auto component = cast_to<Component>(components[i]);
+		new_entity->components.insert(component->id);
+	}
+}
+
+void Ecs::remove_entity(RefCounted *object) {
+	Entity* entity;
+	int entity_id = entity_map.find[entity];
+	entity_map.remove(entity_id);
 }
 
 void Ecs::System::update() {

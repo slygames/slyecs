@@ -25,7 +25,7 @@ public:
 			lookup[value[i]] = i;
 		}
 	}
-/*
+
 	const T& operator[](int key) const & {
 		return value[lookup[key]];
 	}
@@ -38,7 +38,7 @@ public:
 	T&& operator[](int key) && {
         return std::move(value[lookup[key]]);
     }
-*/
+
 	// get the value array
 	std::vector<T> get_data() {
 		return value;

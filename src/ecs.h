@@ -3,6 +3,8 @@
 #include "godot_cpp/classes/wrapped.hpp"
 //#include "godot_cpp/variant/variant.hpp"
 #include "godot_cpp/classes/node.hpp"
+#include "godot_cpp/classes/resource.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
 //#include "godot_cpp/classes/ref_counted.hpp"
 //#include <godot_cpp/classes/weak_ref.hpp>
 #include <functional> // for std::hash
@@ -45,14 +47,17 @@ public:
 	// static method to get the singleton instance
 	static Ecs* get_singleton();
 
+	// alternate way to connect from _ready in gdscript by calling Ecs.connect(get_tree()) instead of using autoload scene
 	void connect(SceneTree* scene_tree);
 
 	void process_ecs();
 
+	void create_entity(RefCounted* object, TypedArray<Component*> components);
+	void remove_entity(RefCounted* object);
 };
 
-class Ecs::Base : public RefCounted {
-GDCLASS(Base, RefCounted);
+class Ecs::Base : public Resource {
+GDCLASS(Base, Resource);
 
 protected:
 	static void _bind_methods() {};
@@ -78,12 +83,13 @@ GDCLASS(Entity, Base);
 protected:
 	static void _bind_methods() {};
 
+	RefCounted* object; // actual godot game object
+
 public:
 	Entity() {};
 	~Entity() override = default;
-	
+	Entity(RefCounted* new_object) : object(new_object) {}
 	array<int> components;
-
 };
 
 
