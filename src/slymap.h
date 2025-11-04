@@ -12,7 +12,7 @@ public:
     std::unordered_map<T, int> find;
 
     map& operator=(const map& new_val) {
-		for(uint32_t i=0; i<new_val; i++) {
+		for(int i=0; i<new_val; i++) {
             set(i, new_val);
             /*
 			value[i] = new_val[i];
@@ -22,18 +22,18 @@ public:
 		}
 	}
 
-    virtual uint32_t insert(T& val) override {
-        uint32_t key = array<T>::insert(val);
+    virtual int insert(T& val) override {
+        int key = array<T>::insert(val);
         find[val] = key;
         return key;
     }
 
-    virtual void set(uint32_t key, T& val) override {
+    virtual void set(int key, T& val) override {
         array<T>::set(key, val);
         find[val] = key;
 	}
 
-    virtual void remove(uint32_t key) override {
+    virtual void remove(int key) override {
         T val;
         array<T>::remove(key);
         find.erase(val);

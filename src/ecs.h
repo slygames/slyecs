@@ -1,19 +1,23 @@
 #pragma once
 
 #include "godot_cpp/classes/wrapped.hpp"
-#include "godot_cpp/variant/variant.hpp"
-#include "godot_cpp/classes/ref_counted.hpp"
+//#include "godot_cpp/variant/variant.hpp"
+#include "godot_cpp/classes/node.hpp"
+//#include "godot_cpp/classes/ref_counted.hpp"
 //#include <godot_cpp/classes/weak_ref.hpp>
 #include <functional> // for std::hash
 //#include <cstdint>
 #include "slymap.h"
+#include "util.h"
+#include <godot_cpp/classes/scene_tree.hpp> // for Ecs::connect()
+#include <godot_cpp/classes/window.hpp> // for Ecs::connect()
 
 using namespace godot;
 
 namespace sly {
 
-class Ecs : public RefCounted {
-	GDCLASS(Ecs, RefCounted)
+class Ecs : public Node {
+	GDCLASS(Ecs, Node)
 
 public:
 	// forward declare nested classes
@@ -26,16 +30,24 @@ public:
 	static map<Component*> component_map;
 	static map<System*> system_map;
 
+	static Ecs* singleton;
+
 protected:
 	static void _bind_methods();
+
+	void _notification(int p_what);
 
 public:
 	Ecs() = default;
 	~Ecs() override = default;
 
+	// static method to get the singleton instance
+	static Ecs* get_singleton();
+
+	void connect(SceneTree* scene_tree);
+
 	void process_ecs();
 
-	void print_type(const Variant &p_variant) const;
 };
 
 class Ecs::Base : public RefCounted {
@@ -48,7 +60,7 @@ public:
 	Base() = default;
 	~Base() override = default;
 	
-	uint32_t id;
+	int id;
 
 	Base(int new_id) : id(new_id) {}
 
@@ -66,10 +78,10 @@ protected:
 	static void _bind_methods() {};
 
 public:
-	Entity() = default;
+	Entity() {};
 	~Entity() override = default;
 	
-	array<uint32_t> components;
+	array<int> components;
 
 };
 
@@ -84,12 +96,14 @@ public:
 	System() = default;
 	~System() override = default;
 
-	array<uint32_t> components_required;
+	array<int> components_required;
+
+	virtual void update();
 };
 
 
-class Ecs::Component : public RefCounted {
-GDCLASS(Component, RefCounted);
+class Ecs::Component : public Base {
+GDCLASS(Component, Base);
 
 protected:
 	static void _bind_methods() {};
@@ -110,7 +124,7 @@ public:
 	struct hash<sly::Ecs::Base> {
 		size_t operator()(const sly::Ecs::Base* ptr) const {
 			// Hash the id member of the object pointed to by ptr
-			return hash<uint32_t>()(ptr->id); 
+			return hash<int>()(ptr->id); 
 		}
 	};
 } // namespace std

@@ -5,6 +5,8 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
+#include <godot_cpp/classes/engine.hpp> // for get_singleton()
+
 #include "ecs.h"
 
 using namespace godot;
@@ -22,12 +24,20 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	GDREGISTER_RUNTIME_CLASS(Ecs::Entity);
 	GDREGISTER_RUNTIME_CLASS(Ecs::Component);
 	GDREGISTER_RUNTIME_CLASS(Ecs::System);
+
+
+	// register singletons
+	godot::Engine::get_singleton()->register_singleton(StringName("Ecs"), Ecs::get_singleton());
 }
 
 void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
+
+	// unregister singletons
+	godot::Engine::get_singleton()->unregister_singleton(StringName("Ecs"));
+	if (Ecs::get_singleton()) memdelete(Ecs::get_singleton());
 }
 
 extern "C"
