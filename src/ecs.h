@@ -18,7 +18,48 @@ public:
 	Ecs() = default;
 	~Ecs() override = default;
 
+	// forward declare nested classes
+	class Entity;
+	class System;
+	class Component;
+
 	void print_type(const Variant &p_variant) const;
+};
+
+
+class Ecs::Entity : public RefCounted {
+GDCLASS(Entity, RefCounted);
+
+protected:
+	static void _bind_methods() {};
+
+public:
+	Entity() = default;
+	~Entity() override = default;
+};
+
+
+class Ecs::System : public RefCounted {
+GDCLASS(System, RefCounted);
+
+protected:
+	static void _bind_methods() {};
+
+public:
+	System() = default;
+	~System() override = default;
+};
+
+
+class Ecs::Component : public RefCounted {
+GDCLASS(Component, RefCounted);
+
+protected:
+	static void _bind_methods() {};
+
+public:
+	Component() = default;
+	~Component() override = default;
 };
 
 }

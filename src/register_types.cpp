@@ -15,6 +15,9 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 		return;
 	}
 	GDREGISTER_RUNTIME_CLASS(sly::Ecs);
+	GDREGISTER_RUNTIME_CLASS(sly::Ecs::Entity);
+	GDREGISTER_RUNTIME_CLASS(sly::Ecs::Component);
+	GDREGISTER_RUNTIME_CLASS(sly::Ecs::System);
 }
 
 void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
