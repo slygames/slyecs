@@ -25,11 +25,57 @@ using namespace godot;
 
 namespace sly {
 
+
 // forward declare classes
 class ResourceEcs;
 class Entity;
 class System;
 class Component;
+
+struct Tag {
+	StringName label;
+};
+
+class TagContainer {
+	map<Tag> container;
+};
+
+class EcsSpec {
+	bool is_enabled;
+
+	EcsSpec() : is_enabled(true) {};
+};
+
+class ComponentSpec {
+
+};
+
+class EntitySpec {
+
+};
+
+class SystemSpec {
+	map<Tag> tags_required;
+	map<Tag> tags_forbidden;
+	map<Tag> tags_add;
+	map<Tag> tags_remove;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Ecs runs as a singleton and calls update on each system in physics process.
@@ -91,7 +137,7 @@ public:
         return id == other.id;
     }
 };
-
+/*
 class Tag : public Object {
 	GDCLASS(Tag, Object);
 	
@@ -103,7 +149,7 @@ public:
 	~Tag() override = default;
 
 	map<StringName*> tags;
-};
+};*/
 
 class RefCountedEcs : public RefCounted {
 GDCLASS(RefCountedEcs, RefCounted);
@@ -160,7 +206,7 @@ public:
 };
 */
 
-class SystemUpdater : public Object {
+Class SystemUpdater : public Object {
 GDCLASS(SystemUpdater, Object);
 
 /*
@@ -209,11 +255,6 @@ public:
 	~System() override = default;
 
 	Callable system_callable; // callable called by update()
-
-	TypedArray<int> tags_required;
-	TypedArray<int> tags_forbidden;
-	TypedArray<int> tags_add;
-	TypedArray<int> tags_remove;
 
 	static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update components e.g., to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
 
