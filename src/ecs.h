@@ -21,16 +21,16 @@ using namespace godot;
 
 namespace sly {
 
+// forward declare classes
+class Base;
+class Entity;
+class System;
+class Component;
+
 class Ecs : public Node {
 	GDCLASS(Ecs, Node)
 
 public:
-	// forward declare nested classes
-	class Base;
-	class Entity;
-	class System;
-	class Component;
-
 	static map<Entity*> entity_map;
 	static map<Component*> component_map;
 	static map<System*> system_map;
@@ -58,7 +58,7 @@ public:
 	void remove_entity(Object* object);
 };
 
-class Ecs::Base : public Resource {
+class Base : public Resource {
 GDCLASS(Base, Resource);
 
 protected:
@@ -79,7 +79,7 @@ public:
 };
 
 
-class Ecs::Entity : public Base {
+class Entity : public Base {
 GDCLASS(Entity, Base);
 
 protected:
@@ -93,7 +93,7 @@ public:
 };
 
 
-class Ecs::System : public Base {
+class System : public Base {
 GDCLASS(System, Base);
 
 protected:
@@ -110,7 +110,7 @@ public:
 };
 
 
-class Ecs::Component : public Base {
+class Component : public Base {
 GDCLASS(Component, Base);
 
 	StringName name;
@@ -135,8 +135,8 @@ public:
  */
  namespace std {
 	template <>
-	struct hash<sly::Ecs::Base> {
-		size_t operator()(const sly::Ecs::Base* ptr) const {
+	struct hash<sly::Base> {
+		size_t operator()(const sly::Base* ptr) const {
 			// Hash the id member of the object pointed to by ptr
 			return hash<int>()(ptr->id); 
 		}

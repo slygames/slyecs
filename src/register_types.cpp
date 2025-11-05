@@ -20,10 +20,10 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 
 	// register classes
 	GDREGISTER_RUNTIME_CLASS(Ecs);
-	GDREGISTER_RUNTIME_CLASS(Ecs::Base);
-	GDREGISTER_RUNTIME_CLASS(Ecs::Entity);
-	GDREGISTER_RUNTIME_CLASS(Ecs::Component);
-	GDREGISTER_RUNTIME_CLASS(Ecs::System);
+	GDREGISTER_RUNTIME_CLASS(Base);
+	GDREGISTER_RUNTIME_CLASS(Entity);
+	GDREGISTER_RUNTIME_CLASS(Component);
+	GDREGISTER_RUNTIME_CLASS(System);
 
 
 	// register singletons

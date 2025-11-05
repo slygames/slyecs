@@ -3,9 +3,9 @@
 
 namespace sly {
 
-map<Ecs::Entity*> Ecs::entity_map;
-map<Ecs::Component*> Ecs::component_map;
-map<Ecs::System*> Ecs::system_map;
+map<Entity*> Ecs::entity_map;
+map<Component*> Ecs::component_map;
+map<System*> Ecs::system_map;
 
 // initialize static variables
 Ecs* Ecs::singleton = nullptr;
@@ -16,16 +16,17 @@ void sly::Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_entity", "object"), &Ecs::remove_entity);
 }
 
-void Ecs::Entity::_bind_methods() {
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name"), "set_name", "get_name");
+void Entity::_bind_methods() {
 }
 
-void Ecs::System::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("update"), &Ecs::System::update);
+void System::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("update"), &System::update);
 	GDVIRTUAL_BIND(_update);
 }
 
-void Ecs::Component::_bind_methods() {}
+void Component::_bind_methods() {
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name"), "set_name", "get_name");
+}
 
 void Ecs::_notification(int p_what) {
 	switch(p_what) {
@@ -86,7 +87,7 @@ void Ecs::remove_entity(Object *object) {
 	memdelete(entity);
 }
 
-void Ecs::System::update() {
+void System::update() {
 	print("updating system : ", this->id);
 	GDVIRTUAL_CALL(_update);
 }
