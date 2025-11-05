@@ -111,8 +111,9 @@ void System::load_callable() {
 	Callable movement_system = Callable(this, "update");
 	movement_system.call();
 }
-
+/*
 void SystemUpdaters::system_movement() {
-}
-	
+}*/
+
+	//for(SystemUpdater::ge)
 } // namespace sly

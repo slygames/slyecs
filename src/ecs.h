@@ -19,6 +19,7 @@
 #include <godot_cpp/classes/scene_tree.hpp> // for Ecs::connect()
 #include <godot_cpp/classes/window.hpp> // for Ecs::connect()
 #include <godot_cpp/core/gdvirtual.gen.inc>
+//#include <godot_cpp/classes/expression.hpp> // evaluate
 
 using namespace godot;
 
@@ -30,6 +31,9 @@ class Entity;
 class System;
 class Component;
 
+/**
+ * Ecs runs as a singleton and calls update on each system in physics process.
+ */
 class Ecs : public Node {
 	GDCLASS(Ecs, Node)
 
@@ -126,6 +130,22 @@ public:
 	Object* object; // actual godot game object
 };
 
+/*
+class Tags : public Object {
+GDCLASS(Tags, Object);
+
+	static const TypedArray<Callable>& callables;
+	static const TypedArray<int>& get_affected_entities();
+	
+protected:
+	static void _bind_methods() {};
+
+public:
+	static map<StringName> tag_label;
+	static TypedArray<int> tag_map;
+
+};
+*/
 
 class SystemUpdater : public Object {
 GDCLASS(SystemUpdater, Object);
@@ -144,21 +164,21 @@ enum : unsigned char {
 */
 
 	static const TypedArray<Callable>& callables;
-	static const TypedArray<int>& get_affected_entities();
+	static const void get_affected_entities(TypedArray<int>& entities) {};
 	
 protected:
 	static void _bind_methods() {};
 
 public:
-	static TypedArray<Callable> callables;
+	//static TypedArray<Callable> callables;
 
-	static void system_movement();
+	static void system_movement() {};
 	/*
 	static system_damage();
 	static system_render();
 	static system_combat();
 	*/
-}
+};
 
 
 class System : public RefCountedEcs {
@@ -177,6 +197,15 @@ public:
 
 	Callable system_callable; // callable called by update()
 
+	TypedArray<int> tags_required;
+	TypedArray<int> tags_forbidden;
+	TypedArray<int> tags_add;
+	TypedArray<int> tags_remove;
+
+	static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update components e.g., to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
+
+	//TypedArray<int> effects;
+
 	//array<int> components_required;
 
 	virtual void update();
@@ -184,6 +213,7 @@ public:
 };
 
 
+//template <typename T>
 class Component : public ResourceEcs {
 GDCLASS(Component, ResourceEcs);
 
@@ -194,11 +224,40 @@ public:
 	Component() = default;
 	~Component() override = default;
 
+	const Variant& get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
+	void set_var(int entity_id, Variant& value) {}; // sets value from variant (does conversion from_var())
+
+	template <typename T>
+	Variant to_var(T val) {}; // convert actual type to variant for editor
+
+	template <typename T>
+	T from_var(Variant var) {};	// convert variant from editor to actual type
+
+	template <typename T>
+	void set_value(int entity_id, T& value) {}; // sets value directly (no conversion)
+
+	template <typename T>
+	const T& get_value(int entity_id) { return 0; }; // get value directly (no conversion)
+
+
+	//todo:overload * operator and maybe = operator in sly::map so that two components can be multiplied together which will be useful to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
+	map<Variant*> raw_data;
+	
+	map<bool> data_float;
+	map<int> data_int;
+	map<float> data_float;
+	map<Vector2> data_float;
+	map<Vector3> data_float;
+	map<Transform2D> data_transform2d;
+	map<Transform3D> data_transform3d;
+	map<String> data_string;
+	map<StringName> data_string_name;
 /*
 	void set_name(StringName new_name) 
 	StringName get_name() {return name_var;}
 */
 };
+
 
 } // namespace sly
 
