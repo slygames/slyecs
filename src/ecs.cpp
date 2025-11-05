@@ -25,7 +25,9 @@ void System::_bind_methods() {
 }
 
 void Component::_bind_methods() {
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name"), "set_name", "get_name");
+	ClassDB::bind_method(D_METHOD("set_name_var", "new_name"), &Component::set_name_var);
+	ClassDB::bind_method(D_METHOD("get_name_var"), &Component::get_name_var);
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name_var"), "set_name_var", "get_name_var");
 }
 
 void Ecs::_notification(int p_what) {

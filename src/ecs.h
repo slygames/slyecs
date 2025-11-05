@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/resource.hpp>
 //#include <godot_cpp/classes/array.hpp> // Includes the definition for TypedArray
 #include <godot_cpp/variant/variant.hpp>
+#include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
 //#include "godot_cpp/classes/ref_counted.hpp"
 //#include <godot_cpp/classes/weak_ref.hpp>
@@ -113,8 +114,6 @@ public:
 class Component : public Base {
 GDCLASS(Component, Base);
 
-	StringName name;
-
 protected:
 	static void _bind_methods();
 
@@ -122,9 +121,15 @@ public:
 	Component() = default;
 	~Component() override = default;
 
-	void set_name(StringName& new_name) { name = new_name; }
-	StringName& get_name() {return name;}
+	StringName name_var;
 
+	// getters and setters
+    const StringName& get_name_var() const { return name_var; };
+    void set_name_var(const StringName& p_name_var) { name_var = p_name_var; };
+/*
+	void set_name(StringName new_name) 
+	StringName get_name() {return name_var;}
+*/
 };
 
 } // namespace sly
