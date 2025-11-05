@@ -92,6 +92,19 @@ public:
     }
 };
 
+class Tag : public Object {
+	GDCLASS(Tag, Object);
+	
+protected:
+	static void _bind_methods() {};
+
+public:
+	Tag() = default;
+	~Tag() override = default;
+
+	map<StringName*> tags;
+};
+
 class RefCountedEcs : public RefCounted {
 GDCLASS(RefCountedEcs, RefCounted);
 
