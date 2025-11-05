@@ -4,7 +4,7 @@
 //#include "godot_cpp/variant/variant.hpp"
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/resource.hpp>
-#include <godot_cpp/classes/array.hpp> // Includes the definition for TypedArray
+//#include <godot_cpp/classes/array.hpp> // Includes the definition for TypedArray
 #include <godot_cpp/variant/variant.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
 //#include "godot_cpp/classes/ref_counted.hpp"
@@ -54,7 +54,7 @@ public:
 
 	void process_ecs();
 
-	void create_entity(RefCounted* object, TypedArray<Component*>& components);
+	void create_entity(RefCounted* object, const TypedArray<Component>& components);
 	void remove_entity(RefCounted* object);
 };
 

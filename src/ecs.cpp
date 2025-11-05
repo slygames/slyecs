@@ -12,7 +12,7 @@ Ecs* Ecs::singleton = nullptr;
 
 void sly::Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
-	ClassDB::bind_method(D_METHOD("create_entity", "object", "components"), &Ecs::create_entity);
+	ClassDB::bind_method(D_METHOD("create_entity", "object", "components"), &Ecs::create_entity, DEFVAL(TypedArray<Component>()));
 }
 
 void Ecs::System::_bind_methods() {
@@ -59,7 +59,7 @@ void Ecs::process_ecs() {
 	}
 }
 
-void Ecs::create_entity(RefCounted* object, TypedArray<Component*>& components) {
+void Ecs::create_entity(RefCounted* object, const TypedArray<Component>& components = TypedArray<Component>()) {
 	Entity* new_entity = memnew(Entity(object));
 	int entity_id = entity_map.insert(new_entity);
 	new_entity->id = entity_id;
