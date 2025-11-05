@@ -54,8 +54,8 @@ public:
 
 	void process_ecs();
 
-	void create_entity(RefCounted* object, const TypedArray<Component>& components);
-	void remove_entity(RefCounted* object);
+	void create_entity(Object* object, const TypedArray<Component>& components);
+	void remove_entity(Object* object);
 };
 
 class Ecs::Base : public Resource {
@@ -83,13 +83,13 @@ class Ecs::Entity : public Base {
 GDCLASS(Entity, Base);
 
 protected:
-	static void _bind_methods() {};
+	static void _bind_methods();
 public:
 	Entity() {};
 	~Entity() override = default;
-	Entity(RefCounted* new_object) : object(new_object) {}
+	Entity(Object* new_object) : object(new_object) {}
 	array<int> components;
-	RefCounted* object; // actual godot game object
+	Object* object; // actual godot game object
 };
 
 
@@ -113,12 +113,18 @@ public:
 class Ecs::Component : public Base {
 GDCLASS(Component, Base);
 
+	StringName name;
+
 protected:
-	static void _bind_methods() {};
+	static void _bind_methods();
 
 public:
 	Component() = default;
 	~Component() override = default;
+
+	void set_name(StringName& new_name) { name = new_name; }
+	StringName& get_name() {return name;}
+
 };
 
 } // namespace sly

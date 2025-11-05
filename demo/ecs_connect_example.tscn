@@ -4,3 +4,5 @@
 
 [node name="example_scene" type="Node"]
 script = ExtResource("1_jvf1w")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]

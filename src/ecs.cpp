@@ -13,6 +13,11 @@ Ecs* Ecs::singleton = nullptr;
 void sly::Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
 	ClassDB::bind_method(D_METHOD("create_entity", "object", "components"), &Ecs::create_entity, DEFVAL(TypedArray<Component>()));
+	ClassDB::bind_method(D_METHOD("remove_entity", "object"), &Ecs::remove_entity);
+}
+
+void Ecs::Entity::_bind_methods() {
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name"), "set_name", "get_name");
 }
 
 void Ecs::System::_bind_methods() {
@@ -20,14 +25,16 @@ void Ecs::System::_bind_methods() {
 	GDVIRTUAL_BIND(_update);
 }
 
+void Ecs::Component::_bind_methods() {}
+
 void Ecs::_notification(int p_what) {
 	switch(p_what) {
 		case NOTIFICATION_READY:
-			print("READY!!");
+			//print("READY!!");
 			this->set_physics_process(true);
 			break;
 		case NOTIFICATION_PHYSICS_PROCESS:
-			print("PHYSICS_PROCESS!!");
+			//print("PHYSICS_PROCESS!!");
 			process_ecs();
 			break;
 	}
@@ -52,14 +59,17 @@ void Ecs::connect(SceneTree* scene_tree) {
 
 void Ecs::process_ecs() {
 	
-	print("processing.. ", get_process_delta_time());
+	//print("processing.. ", get_process_delta_time());
 
 	for(Ref<System> system : system_map) {
 		system->update();
 	}
 }
 
-void Ecs::create_entity(RefCounted* object, const TypedArray<Component>& components = TypedArray<Component>()) {
+void Ecs::create_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>()) {
+	print("creating..");
+	print("obj class", object->get_class());
+	print("components", components.size());
 	Entity* new_entity = memnew(Entity(object));
 	int entity_id = entity_map.insert(new_entity);
 	new_entity->id = entity_id;
@@ -69,7 +79,7 @@ void Ecs::create_entity(RefCounted* object, const TypedArray<Component>& compone
 	}
 }
 
-void Ecs::remove_entity(RefCounted *object) {
+void Ecs::remove_entity(Object *object) {
 	Entity* entity;
 	int entity_id = entity_map.find[entity];
 	entity_map.remove(entity_id);
