@@ -24,10 +24,13 @@ void System::_bind_methods() {
 	GDVIRTUAL_BIND(_update);
 }
 
-void Component::_bind_methods() {
+void ResourceEcs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_name_var", "new_name"), &Component::set_name_var);
 	ClassDB::bind_method(D_METHOD("get_name_var"), &Component::get_name_var);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name_var"), "set_name_var", "get_name_var");
+}
+
+void Component::_bind_methods() {
 }
 
 void Ecs::_notification(int p_what) {
@@ -94,4 +97,22 @@ void System::update() {
 	GDVIRTUAL_CALL(_update);
 }
 
+// loads callables from gdscript
+void System::load_callable_script() {
+	Ref<Script> script = ResourceLoader::get_singleton()->load("res://systems.gd");
+	if (script.is_valid()) {
+		//Variant result = script->call("your_static_function", arguments);
+		// Process the result
+	}
+}
+// loads callables from C++ system
+void System::load_callable() {
+	TypedArray<Callable> callables;
+	Callable movement_system = Callable(this, "update");
+	movement_system.call();
+}
+
+void SystemUpdaters::system_movement() {
+}
+	
 } // namespace sly
