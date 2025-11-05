@@ -241,17 +241,17 @@ public:
 
 
 	//todo:overload * operator and maybe = operator in sly::map so that two components can be multiplied together which will be useful to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
-	map<Variant*> raw_data;
-	
-	map<bool> data_float;
+	map<Variant*> data_var;
+	map<bool> data_bool;
 	map<int> data_int;
 	map<float> data_float;
-	map<Vector2> data_float;
-	map<Vector3> data_float;
-	map<Transform2D> data_transform2d;
-	map<Transform3D> data_transform3d;
-	map<String> data_string;
-	map<StringName> data_string_name;
+	map<Vector2*> data_vector2;
+	map<Vector3*> data_vector3;
+	map<Transform2D*> data_transform2d;
+	map<Transform3D*> data_transform3d;
+	map<String*> data_string;
+	map<StringName*> data_string_name;
+
 /*
 	void set_name(StringName new_name) 
 	StringName get_name() {return name_var;}
