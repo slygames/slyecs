@@ -5,10 +5,9 @@ compatibility_minimum = "4.5"
 reloadable = true
 
 [icons]
-;Actor = "res://addons/your_extension/icons/my_custom_icon.svg"
-;Actor = "res://icon.svg"
-Actor = "res://icons/cube.svg"
-;Actor = "res://addons/slyecs/icons/cube.svg"
+;NodeECS = "res://addons/slyecs/icons/cube.svg"
+NodeECS = "res://icons/cube.svg"
+
 
 [libraries]
 ; Relative paths ensure that our GDExtension can be placed anywhere in the project directory.

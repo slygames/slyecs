@@ -1,3 +1,4 @@
 [gd_resource type="Component" format=3 uid="uid://bw4kohoavqbtt"]
 
 [resource]
+name_var = &"transform3d"

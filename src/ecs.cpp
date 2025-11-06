@@ -18,6 +18,12 @@ void sly::Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_entity", "entity"), &Ecs::unregister_entity);
 }
 
+void NodeECS::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &NodeECS::set_components);
+	ClassDB::bind_method(D_METHOD("get_components"), &NodeECS::get_components);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
+}
+
 void Entity::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &Entity::set_components);
 	ClassDB::bind_method(D_METHOD("get_components"), &Entity::get_components);
@@ -49,16 +55,19 @@ void ResourceEcs::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name_var"), "set_name_var", "get_name_var");
 }
 
-void NodeEcs::_bind_methods() {
-}
-
-void Actor::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_entity", "p_entity"), &Actor::set_entity);
-	ClassDB::bind_method(D_METHOD("get_entity"), &Actor::get_entity);
+/*
+void NodeECS::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_entity", "p_entity"), &NodeECS::set_entity);
+	ClassDB::bind_method(D_METHOD("get_entity"), &NodeECS::get_entity);
 	ADD_PROPERTY(PropertyInfo(godot::Variant::OBJECT, "entity", godot::PROPERTY_HINT_RESOURCE_TYPE, "Entity"), "set_entity", "get_entity");
 	//ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "entity", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Entity"), "set_entity", "get_entity");
 }
+*/
 
+/*
+void Actor::_bind_methods() {
+}
+*/
 
 void Component::_bind_methods() {
 }

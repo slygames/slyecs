@@ -41,6 +41,7 @@ class TagContainer {
 	map<Tag*> container;
 };
 
+/*
 class EcsSpec {
 	bool is_enabled;
 
@@ -61,7 +62,7 @@ class EntitySpec {
 
 class SystemSpec {
 };
-
+*/
 
 
 
@@ -184,28 +185,74 @@ public:
     }
 };
 
-class NodeEcs : public godot::Node2D {
-GDCLASS(NodeEcs, Node2D);
+
+/*
+class NodeECS : public godot::Node2D {
+GDCLASS(NodeECS, Node2D);
 
 	int id;
+
+	Ref<Entity> entity;
 
 protected:
 	static void _bind_methods();
 
 public:
-	NodeEcs() = default;
-	~NodeEcs() override = default;
+	NodeECS() = default;
+	~NodeECS() override = default;
 	
-	NodeEcs(int p_id) : id(p_id) {}
+	NodeECS(int p_id) : id(p_id) {}
 
 	// to enable hashing in unordered map
-	bool operator==(const NodeEcs& other) const {
+	bool operator==(const NodeECS& other) const {
         return id == other.id;
     }
+
+	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
+	Ref<Entity> get_entity() const { return entity; };
+};
+*/
+
+class Entity : public Resource {
+GDCLASS(Entity, Resource);
+
+	int id;
+
+	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
+	TypedArray<Component> components;
+
+protected:
+	static void _bind_methods();
+
+public:
+	Entity() = default;
+	~Entity() override = default;
+
+	//Entity(int p_id) : id(p_id) {}
+
+	// to enable hashing in unordered map
+	bool operator==(const Entity& other) const {
+        return id == other.id;
+    }
+
+	//Entity(Object* p_object) : object(p_object) {}
+	//Object* object; // actual godot game object
+
+	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
+	
+	// setters and getters
+	void set_id(int p_id) { id = p_id; }
+	int get_id() const { return id; };
+
+	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
+	TypedArray<Component> get_components() const { return components; };
 };
 
-class Actor : public NodeEcs {
-GDCLASS(Actor, NodeEcs);
+
+/*
+// this should be Entity and should be a RefCounted, not in editor.
+class Actor : public NodeECS {
+GDCLASS(Actor, NodeECS);
 
 	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
 	TypedArray<Component> components;
@@ -224,19 +271,21 @@ public:
 
 	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
 	
-	/*
 	// setters and getters
-	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
-	TypedArray<Component> get_components() const { return components; };
-	*/
+	//void set_components(const TypedArray<Component>& p_components) { components = p_components; }
+	//TypedArray<Component> get_components() const { return components; };
+
 
 	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
 	Ref<Entity> get_entity() const { return entity; };
-
 };
+*/
 
-class Entity : public ResourceEcs {
-GDCLASS(Entity, ResourceEcs);
+//todo: this should be Entity
+class NodeECS : public Node {
+GDCLASS(NodeECS, Node);
+
+	int id;
 
 	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
 	TypedArray<Component> components;
@@ -245,15 +294,25 @@ protected:
 	static void _bind_methods();
 
 public:
-	Entity() {};
-	~Entity() override = default;
-	
+	NodeECS() = default;
+	~NodeECS() override = default;
+	//Entity(const Entity& other) = default; // default copy constructor (should be generated implicitly by the compiler)
+	NodeECS(int p_id) : id(p_id) {}
+
+	// to enable hashing in unordered map
+	bool operator==(const NodeECS& other) const {
+        return id == other.id;
+    }
+
 	//Entity(Object* p_object) : object(p_object) {}
 	//Object* object; // actual godot game object
 
 	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
 	
 	// setters and getters
+	void set_id(int p_id) { id = p_id; }
+	int get_id() const { return id; };
+
 	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
 	TypedArray<Component> get_components() const { return components; };
 };
