@@ -47,13 +47,16 @@ void ResourceEcs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_name_var", "p_name"), &ResourceEcs::set_name_var);
 	ClassDB::bind_method(D_METHOD("get_name_var"), &ResourceEcs::get_name_var);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name_var"), "set_name_var", "get_name_var");
-
 }
 
 void NodeEcs::_bind_methods() {
 }
 
 void Actor::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_entity", "p_entity"), &Actor::set_entity);
+	ClassDB::bind_method(D_METHOD("get_entity"), &Actor::get_entity);
+	ADD_PROPERTY(PropertyInfo(godot::Variant::OBJECT, "entity", godot::PROPERTY_HINT_RESOURCE_TYPE, "Entity"), "set_entity", "get_entity");
+	//ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "entity", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Entity"), "set_entity", "get_entity");
 }
 
 

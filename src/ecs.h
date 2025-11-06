@@ -210,6 +210,8 @@ GDCLASS(Actor, NodeEcs);
 	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
 	TypedArray<Component> components;
 
+	Ref<Entity> entity;
+
 protected:
 	static void _bind_methods();
 
@@ -227,6 +229,10 @@ public:
 	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
 	TypedArray<Component> get_components() const { return components; };
 	*/
+
+	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
+	Ref<Entity> get_entity() const { return entity; };
+
 };
 
 class Entity : public ResourceEcs {
