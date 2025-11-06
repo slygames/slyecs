@@ -32,12 +32,13 @@ class Entity;
 class System;
 class Component;
 
+
 struct Tag {
 	StringName label;
 };
 
 class TagContainer {
-	map<Tag> container;
+	map<Tag*> container;
 };
 
 class EcsSpec {
@@ -47,18 +48,18 @@ class EcsSpec {
 };
 
 class ComponentSpec {
-
+	map<Variant*> data_var;
 };
 
 class EntitySpec {
+	StringName name_var;
 
+	// getters and setters
+    const StringName& get_name_var() const { return name_var; };
+    void set_name_var(const StringName& p_name_var) { name_var = p_name_var; };
 };
 
 class SystemSpec {
-	map<Tag> tags_required;
-	map<Tag> tags_forbidden;
-	map<Tag> tags_add;
-	map<Tag> tags_remove;
 };
 
 
@@ -107,23 +108,32 @@ public:
 
 	void process_ecs();
 
-	void create_entity(Object* object, const TypedArray<Component>& components);
-	void remove_entity(Object* object);
+	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>()); // todo: add
+	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>());
+	
+	void register_entity(Entity* entity);
+	void unregister_entity(Entity* entity);
+
+	void register_system(System* system);
+	void unregister_system(System* system);
+
+	void register_component(Component* system);
+	void unregister_component(Component* system);
 };
 
 class ResourceEcs : public Resource {
 GDCLASS(ResourceEcs, Resource);
 
+	int id;
+
 protected:
 	static void _bind_methods();
-
+	
 public:
 	ResourceEcs() = default;
 	~ResourceEcs() override = default;
 	
-	int id;
-
-	ResourceEcs(int new_id) : id(new_id) {}
+	ResourceEcs(int p_id) : id(p_id) {}
 
 	StringName name_var;
 
@@ -131,11 +141,14 @@ public:
     const StringName& get_name_var() const { return name_var; };
     void set_name_var(const StringName& p_name_var) { name_var = p_name_var; };
 
-
 	// to enable hashing in unordered map
 	bool operator==(const ResourceEcs& other) const {
         return id == other.id;
     }
+
+	// setters and getters
+	void set_id(int p_id) { id = p_id; }
+	int get_id() const { return id; };
 };
 /*
 class Tag : public Object {
@@ -163,7 +176,7 @@ public:
 	
 	int id;
 
-	RefCountedEcs(int new_id) : id(new_id) {}
+	RefCountedEcs(int p_id) : id(p_id) {}
 
 	// to enable hashing in unordered map
 	bool operator==(const RefCountedEcs& other) const {
@@ -171,8 +184,56 @@ public:
     }
 };
 
+class NodeEcs : public Node {
+GDCLASS(NodeEcs, Node);
+
+	int id;
+
+protected:
+	static void _bind_methods();
+
+public:
+	NodeEcs() = default;
+	~NodeEcs() override = default;
+	
+	NodeEcs(int p_id) : id(p_id) {}
+
+	// to enable hashing in unordered map
+	bool operator==(const NodeEcs& other) const {
+        return id == other.id;
+    }
+};
+
+class Actor : public NodeEcs {
+GDCLASS(Actor, NodeEcs);
+
+	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
+	TypedArray<Component> components;
+
+protected:
+	static void _bind_methods();
+
+public:
+	Actor() {};
+	~Actor() override = default;
+	
+	//Entity(Object* p_object) : object(p_object) {}
+	//Object* object; // actual godot game object
+
+	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
+	
+	/*
+	// setters and getters
+	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
+	TypedArray<Component> get_components() const { return components; };
+	*/
+};
+
 class Entity : public ResourceEcs {
 GDCLASS(Entity, ResourceEcs);
+
+	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
+	TypedArray<Component> components;
 
 protected:
 	static void _bind_methods();
@@ -180,13 +241,15 @@ protected:
 public:
 	Entity() {};
 	~Entity() override = default;
-	Entity(Object* new_object) : object(new_object) {}
+	
+	//Entity(Object* p_object) : object(p_object) {}
+	//Object* object; // actual godot game object
 
-	//array<int> systems;
+	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
 	
-	array<int> components;
-	
-	Object* object; // actual godot game object
+	// setters and getters
+	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
+	TypedArray<Component> get_components() const { return components; };
 };
 
 /*
@@ -206,7 +269,7 @@ public:
 };
 */
 
-Class SystemUpdater : public Object {
+class SystemUpdater : public Object {
 GDCLASS(SystemUpdater, Object);
 
 /*
@@ -240,8 +303,8 @@ public:
 };
 
 
-class System : public RefCountedEcs {
-GDCLASS(System, RefCounted);
+class System : public ResourceEcs {
+GDCLASS(System, ResourceEcs);
 
 protected:
 	static void _bind_methods();
@@ -262,6 +325,19 @@ public:
 
 	//array<int> components_required;
 
+	TypedArray<StringName> tags_example;
+
+	map<Tag*> tags_required;
+	map<Tag*> tags_forbidden;
+	map<Tag*> tags_add;
+	map<Tag*> tags_remove;
+
+	void set_tags_example(TypedArray<StringName> p_tags_example) { tags_example = p_tags_example; }
+
+    TypedArray<StringName> get_tags_example() const {
+        return tags_example;
+    }
+
 	virtual void update();
 	GDVIRTUAL0(_update);
 };
@@ -278,24 +354,24 @@ public:
 	Component() = default;
 	~Component() override = default;
 
-	const Variant& get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
+	const Variant get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
 	void set_var(int entity_id, Variant& value) {}; // sets value from variant (does conversion from_var())
 
 	template <typename T>
-	Variant to_var(T val) {}; // convert actual type to variant for editor
+	Variant to_var(T val) { return Variant(val); }; // convert actual type to variant for editor
 
 	template <typename T>
-	T from_var(Variant var) {};	// convert variant from editor to actual type
+	T from_var(Variant var) { return cast_to<T>(var); };	// convert variant from editor to actual type
 
 	template <typename T>
 	void set_value(int entity_id, T& value) {}; // sets value directly (no conversion)
 
 	template <typename T>
-	const T& get_value(int entity_id) { return 0; }; // get value directly (no conversion)
-
+	const T get_value(int entity_id) { return T(); }; // get value directly (no conversion)
 
 	//todo:overload * operator and maybe = operator in sly::map so that two components can be multiplied together which will be useful to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
-	map<Variant*> data_var;
+
+	/*
 	map<bool> data_bool;
 	map<int> data_int;
 	map<float> data_float;
@@ -305,9 +381,10 @@ public:
 	map<Transform3D*> data_transform3d;
 	map<String*> data_string;
 	map<StringName*> data_string_name;
+*/
 
 /*
-	void set_name(StringName new_name) 
+	void set_name(StringName p_name) 
 	StringName get_name() {return name_var;}
 */
 };
@@ -324,7 +401,7 @@ public:
 	struct hash<sly::ResourceEcs> {
 		size_t operator()(const sly::ResourceEcs* ptr) const {
 			// Hash the id member of the object pointed to by ptr
-			return hash<int>()(ptr->id); 
+			return hash<int>()(ptr->get_id()); 
 		}
 	};
 } // namespace std

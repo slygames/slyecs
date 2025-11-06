@@ -12,29 +12,56 @@ Ecs* Ecs::singleton = nullptr;
 
 void sly::Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
-	ClassDB::bind_method(D_METHOD("create_entity", "object", "components"), &Ecs::create_entity, DEFVAL(TypedArray<Component>()));
-	ClassDB::bind_method(D_METHOD("remove_entity", "object"), &Ecs::remove_entity);
+	//todo:add
+	//ClassDB::bind_method(D_METHOD("create_entity", "object", "components"), &Ecs::register_entity, DEFVAL(TypedArray<Component>()));
+	ClassDB::bind_method(D_METHOD("create_entity", "entity"), &Ecs::register_entity);
+	ClassDB::bind_method(D_METHOD("remove_entity", "entity"), &Ecs::unregister_entity);
 }
 
 void Entity::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &Entity::set_components);
+	ClassDB::bind_method(D_METHOD("get_components"), &Entity::get_components);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
+
+	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_ARRAY_TYPE, "Variant::Component"), "set_components", "get_components" );
+	
+	//PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Image")
 }
 
 void System::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update"), &System::update);
 	GDVIRTUAL_BIND(_update);
+
+	ClassDB::bind_method(D_METHOD("set_tags_example", "tags_example"), &System::set_tags_example);
+	ClassDB::bind_method(D_METHOD("get_tags_example"), &System::get_tags_example);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_example", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_example", "get_tags_example" );
+	
+	//PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Image")
 }
 
 void ResourceEcs::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_name_var", "new_name"), &Component::set_name_var);
-	ClassDB::bind_method(D_METHOD("get_name_var"), &Component::get_name_var);
+	//ClassDB::bind_method(D_METHOD("set_id", "p_id"), &ResourceEcs::set_id);
+	ClassDB::bind_method(D_METHOD("get_id"), &ResourceEcs::get_id);
+	//ADD_PROPERTY(PropertyInfo(Variant::INT, "p_id"), "set_id", "get_id");
+
+	ClassDB::bind_method(D_METHOD("set_name_var", "p_name"), &ResourceEcs::set_name_var);
+	ClassDB::bind_method(D_METHOD("get_name_var"), &ResourceEcs::get_name_var);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name_var"), "set_name_var", "get_name_var");
+
 }
+
+void NodeEcs::_bind_methods() {
+}
+
+void Actor::_bind_methods() {
+}
+
 
 void Component::_bind_methods() {
 }
 
-void Ecs::_notification(int p_what) {
-	switch(p_what) {
+void Ecs::_notification(int _what) {
+	switch(_what) {
 		case NOTIFICATION_READY:
 			//print("READY!!");
 			this->set_physics_process(true);
@@ -72,28 +99,49 @@ void Ecs::process_ecs() {
 	}
 }
 
-void Ecs::create_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>()) {
+/* //todo: add
+void Ecs::register_entity(Object* object, const TypedArray<Component>& components) {
 	print("creating..");
 	print("obj class", object->get_class());
 	print("components", components.size());
-	Entity* new_entity = memnew(Entity(object));
-	int entity_id = entity_map.insert(new_entity);
-	new_entity->id = entity_id;
+	Entity* p_entity = memnew(Entity(object));
+	int entity_id = entity_map.insert(p_entity);
+	p_entity->id = entity_id;
 	for(int i; i < components.size(); i++) {
 		auto component = cast_to<Component>(components[i]);
-		new_entity->components.insert(component->id);
+		p_entity->components.insert(component->id);
 	}
 }
+*/
 
-void Ecs::remove_entity(Object *object) {
-	Entity* entity;
-	int entity_id = entity_map.find[entity];
+void Ecs::register_entity(Entity* p_entity) {
+	//Entity* p_entity = memnew(Entity(p_entity));
+	int entity_id = entity_map.insert(p_entity);
+	p_entity->set_id(entity_id);
+}
+
+
+void Ecs::unregister_entity(Entity *p_entity) {
+	int entity_id = entity_map.find[p_entity];
 	entity_map.remove(entity_id);
-	memdelete(entity);
+	//memdelete(entity);
+}
+
+void Ecs::register_system(System *system) {
+}
+
+void Ecs::unregister_system(System *system) {
+}
+
+void Ecs::register_component(Component *system) {
+}
+
+void Ecs::unregister_component(Component *system) {
 }
 
 void System::update() {
-	print("updating system : ", this->id);
+	print("updating system");
+	//print("updating system : ", this->get_id());
 	GDVIRTUAL_CALL(_update);
 }
 

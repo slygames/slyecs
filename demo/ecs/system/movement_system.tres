@@ -1,0 +1,4 @@
+[gd_resource type="System" format=3 uid="uid://bsa34xa04uexg"]
+
+[resource]
+tags_example = Array[StringName]([&""])

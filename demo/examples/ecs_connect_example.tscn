@@ -1,8 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://dh0oj81pufivs"]
+[gd_scene load_steps=3 format=3 uid="uid://dh0oj81pufivs"]
 
 [ext_resource type="Script" uid="uid://bkwk40ybs8kgm" path="res://examples/ecs_connect_example.gd" id="1_jvf1w"]
+[ext_resource type="Texture2D" uid="uid://dbx66sovxd1" path="res://icon.svg" id="2_8j3u6"]
 
 [node name="example_scene" type="Node"]
 script = ExtResource("1_jvf1w")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="player" type="Actor" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="player"]
+texture = ExtResource("2_8j3u6")
+
+[node name="hq_building" type="Actor" parent="."]
+
+[node name="monster" type="Actor" parent="."]
