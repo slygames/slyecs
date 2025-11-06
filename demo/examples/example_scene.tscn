@@ -1,13 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://ef1q1crihevn"]
+[gd_scene load_steps=3 format=3 uid="uid://ef1q1crihevn"]
 
 [ext_resource type="Script" uid="uid://bkwk40ybs8kgm" path="res://examples/example_scene.gd" id="1_qleqb"]
 [ext_resource type="Texture2D" uid="uid://dbx66sovxd1" path="res://icon.svg" id="2_fighv"]
 
-[sub_resource type="Image" id="Image_mjtio"]
-
 [node name="example_scene" type="Node"]
 script = ExtResource("1_qleqb")
-Component_Value_Example = SubResource("Image_mjtio")
 
 [node name="player" type="Node2D" parent="."]
 

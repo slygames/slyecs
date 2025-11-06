@@ -420,8 +420,9 @@ protected:
 public:
 	Component() = default;
 	~Component() override = default;
+	Component(Variant p_data_var) { data_var = p_data_var; }
 
-	void set_data_var(Variant p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
+	void set_data_var(const Variant& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
 	Variant get_data_var() const { return data_var; }; // get value (does conversion to_var())
 
 	void set_var(int entity_id, Variant& value) {}; // sets value from variant (does conversion from_var())

@@ -6,7 +6,7 @@ extends Node
 
 #@export var components : Array[Component]
 
-@export var Component_Value_Example : Variant
+#@export var Component_Value_Example : Variant
 
 func _ready() -> void:
 	pass
