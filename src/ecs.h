@@ -2,7 +2,7 @@
 
 #include <godot_cpp/classes/wrapped.hpp>
 //#include "godot_cpp/variant/variant.hpp"
-#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/classes/resource.hpp>
 //#include <godot_cpp/classes/array.hpp> // Includes the definition for TypedArray
 #include <godot_cpp/variant/variant.hpp>
@@ -184,8 +184,8 @@ public:
     }
 };
 
-class NodeEcs : public Node {
-GDCLASS(NodeEcs, Node);
+class NodeEcs : public godot::Node2D {
+GDCLASS(NodeEcs, Node2D);
 
 	int id;
 
