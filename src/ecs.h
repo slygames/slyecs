@@ -412,6 +412,8 @@ public:
 class Component : public ResourceEcs {
 GDCLASS(Component, ResourceEcs);
 
+	Variant data_var;
+
 protected:
 	static void _bind_methods();
 
@@ -419,8 +421,11 @@ public:
 	Component() = default;
 	~Component() override = default;
 
-	const Variant get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
+	void set_data_var(Variant p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
+	Variant get_data_var() const { return data_var; }; // get value (does conversion to_var())
+
 	void set_var(int entity_id, Variant& value) {}; // sets value from variant (does conversion from_var())
+	const Variant get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
 
 	template <typename T>
 	Variant to_var(T val) { return Variant(val); }; // convert actual type to variant for editor
@@ -429,10 +434,10 @@ public:
 	T from_var(Variant var) { return cast_to<T>(var); };	// convert variant from editor to actual type
 
 	template <typename T>
-	void set_value(int entity_id, T& value) {}; // sets value directly (no conversion)
+	const T get_value(int entity_id) { return T(); }; // get value directly (no conversion)
 
 	template <typename T>
-	const T get_value(int entity_id) { return T(); }; // get value directly (no conversion)
+	void set_value(int entity_id, T& value) {}; // sets value directly (no conversion)
 
 	//todo:overload * operator and maybe = operator in sly::map so that two components can be multiplied together which will be useful to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
 
