@@ -6,8 +6,7 @@ namespace sly {
 map<Entity*> Ecs::entity_map;
 map<Component*> Ecs::component_map;
 map<System*> Ecs::system_map;
-map<StringName> Ecs::tag_map;
-
+map<StringName*> Ecs::tag_map;
 
 // initialize static variables
 Ecs* Ecs::singleton = nullptr;

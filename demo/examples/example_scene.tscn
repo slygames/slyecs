@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://ef1q1crihevn"]
+[gd_scene load_steps=6 format=3 uid="uid://ef1q1crihevn"]
 
 [ext_resource type="Script" uid="uid://bkwk40ybs8kgm" path="res://examples/example_scene.gd" id="1_qleqb"]
 [ext_resource type="Texture2D" uid="uid://dbx66sovxd1" path="res://icon.svg" id="2_fighv"]
+[ext_resource type="Entity" uid="uid://clundp2henlpx" path="res://ecs/entity/sword_entity.tres" id="3_bbie7"]
 [ext_resource type="Entity" uid="uid://cp2w7q8dba1kq" path="res://ecs/entity/unit_entity.tres" id="3_qqekj"]
+[ext_resource type="Entity" uid="uid://dmhaf036vmyia" path="res://ecs/entity/building_entity.tres" id="4_fighv"]
 
 [node name="example_scene" type="Node"]
 script = ExtResource("1_qleqb")
@@ -14,6 +16,9 @@ texture = ExtResource("2_fighv")
 
 [node name="sword" type="Node2D" parent="player"]
 
+[node name="NodeECS" type="NodeECS" parent="player/sword"]
+entity = ExtResource("3_bbie7")
+
 [node name="NodeECS" type="NodeECS" parent="player"]
 entity = ExtResource("3_qqekj")
 
@@ -24,6 +29,12 @@ texture = ExtResource("2_fighv")
 
 [node name="sword" type="Node2D" parent="monster_01"]
 
+[node name="NodeECS" type="NodeECS" parent="monster_01/sword"]
+entity = ExtResource("3_bbie7")
+
+[node name="NodeECS" type="NodeECS" parent="monster_01"]
+entity = ExtResource("3_qqekj")
+
 [node name="monster_02" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="monster_02"]
@@ -31,15 +42,32 @@ texture = ExtResource("2_fighv")
 
 [node name="sword" type="Node2D" parent="monster_02"]
 
+[node name="NodeECS" type="NodeECS" parent="monster_02/sword"]
+entity = ExtResource("3_bbie7")
+
+[node name="NodeECS" type="NodeECS" parent="monster_02"]
+entity = ExtResource("3_qqekj")
+
 [node name="building_01" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="building_01"]
 texture = ExtResource("2_fighv")
 
+[node name="NodeECS" type="NodeECS" parent="building_01"]
+entity = ExtResource("4_fighv")
+
 [node name="building_02" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="building_02"]
 
+[node name="NodeECS" type="NodeECS" parent="building_02"]
+entity = ExtResource("4_fighv")
+
 [node name="tree_01" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="tree_01"]
+
+[node name="NodeECS" type="NodeECS" parent="tree_01"]
+entity = ExtResource("4_fighv")
+
+[node name="Ecs" type="Ecs" parent="."]

@@ -31,12 +31,14 @@ class ResourceEcs;
 class Entity;
 class System;
 class Component;
+class Tags;
 
 /*
 struct Tag {
 	StringName label;
 };
 */
+
 /*
 class EcsSpec {
 	bool is_enabled;
@@ -85,7 +87,7 @@ public:
 	static map<Entity*> entity_map;
 	static map<Component*> component_map;
 	static map<System*> system_map;
-	static map<StringName> tag_map;
+	static map<StringName*> tag_map;
 
 	static Ecs* singleton;
 
@@ -162,7 +164,6 @@ public:
 	map<StringName*> tags;
 };*/
 
-/*
 class RefCountedEcs : public RefCounted {
 GDCLASS(RefCountedEcs, RefCounted);
 
@@ -182,7 +183,7 @@ public:
         return id == other.id;
     }
 };
-*/
+
 
 /*
 class NodeECS : public godot::Node2D {
@@ -354,40 +355,7 @@ public:
 };
 */
 
-class SystemUpdater : public Object {
-GDCLASS(SystemUpdater, Object);
 
-/*
-//todo: enums should be components so this value can be read from the component instead, then system_combat can handle all these states, and have a gdscript equivalent in systems.gd
-enum : unsigned char {
-	COMBAT_PUNCH_RIGHT,
-	COMBAT_PUNCH_LEFT,
-	COMBAT_KICK_LEFT,
-	COMBAT_KICK_RIGHT,
-	COMBAT_KICK_LEFT,
-	COMBAT_KICK_RIGHT,
-	COMBAT_KICK_RIGHT,
-};
-*/
-
-	static const TypedArray<Callable>& callables;
-	static const void get_affected_entities(TypedArray<int>& entities) {};
-	
-protected:
-	static void _bind_methods() {};
-
-public:
-	//static TypedArray<Callable> callables;
-
-	static void system_movement() {};
-	/*
-	static system_damage();
-	static system_render();
-	static system_combat();
-	*/
-};
-
-/*
 class Tags : public ResourceEcs {
 GDCLASS(Tags, ResourceEcs); 
 
@@ -403,53 +371,6 @@ public:
 	void set_tags(const TypedArray<StringName>& p_tags) { tags = p_tags; }
 	TypedArray<StringName> get_tags() const { return tags; };
 };
-*/
-
-
-class System : public ResourceEcs {
-GDCLASS(System, ResourceEcs);
-
-	TypedArray<Component> components;
-
-	TypedArray<StringName> tags_required;
-	TypedArray<StringName> tags_forbidden;
-	TypedArray<StringName> tags_add;
-	TypedArray<StringName> tags_remove;
-
-protected:
-	static void _bind_methods();
-
-	// load callable functions into Ecs
-	void load_callable();
-	void load_callable_script();
-
-public:
-	System() = default;
-	~System() override = default;
-
-	Callable system_callable; // callable called by update()
-
-	static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update components e.g., to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
-
-	//TypedArray<int> effects;
-
-	//array<int> components_required;
-
-
-	//map<Tag*> tags_required;
-
-
-	// setters and getters
-	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
-	TypedArray<Component> get_components() const { return components; };
-
-	void set_tags_required(TypedArray<StringName> p_tags_required) { tags_required = p_tags_required; }
-    TypedArray<StringName> get_tags_required() const { return tags_required; }
-
-	virtual void update();
-	GDVIRTUAL0(_update);
-};
-
 
 //template <typename T>
 class Component : public ResourceEcs {
@@ -504,22 +425,93 @@ public:
 };
 
 
+
+class SystemUpdater : public Object {
+GDCLASS(SystemUpdater, Object);
+
+/*
+//todo: enums should be components so this value can be read from the component instead, then system_combat can handle all these states, and have a gdscript equivalent in systems.gd
+enum : unsigned char {
+	COMBAT_PUNCH_RIGHT,
+	COMBAT_PUNCH_LEFT,
+	COMBAT_KICK_LEFT,
+	COMBAT_KICK_RIGHT,
+	COMBAT_KICK_LEFT,
+	COMBAT_KICK_RIGHT,
+	COMBAT_KICK_RIGHT,
+};
+*/
+
+	static const TypedArray<Callable>& callables;
+	static const void get_affected_entities(TypedArray<int>& entities) {};
+	
+protected:
+	static void _bind_methods() {};
+
+public:
+	//static TypedArray<Callable> callables;
+
+	static void system_movement() {};
+	/*
+	static system_damage();
+	static system_render();
+	static system_combat();
+	*/
+};
+
+
+class System : public ResourceEcs {
+GDCLASS(System, ResourceEcs);
+
+	TypedArray<Component> components;
+	TypedArray<StringName> tags_required;
+
+	//map<Tag*> tags_required;
+	Tags tags_forbidden;
+	Tags tags_add;
+	Tags tags_remove;
+
+protected:
+	static void _bind_methods();
+
+	// load callable functions into Ecs
+	void load_callable();
+	void load_callable_script();
+
+public:
+	System() = default;
+	~System() override = default;
+
+	Callable system_callable; // callable called by update()
+
+	static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update components e.g., to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
+
+	//TypedArray<int> effects;
+
+	//array<int> components_required;
+
+	// setters and getters
+	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
+	TypedArray<Component> get_components() const { return components; };
+
+	void set_tags_required(TypedArray<StringName> p_tags_required) { tags_required = p_tags_required; }
+    TypedArray<StringName> get_tags_required() const { return tags_required; }
+
+	virtual void update();
+	GDVIRTUAL0(_update);
+};
+
+
+
+
 } // namespace sly
 
 
 /**
  * Hash function for reverse lookup hash table, used by sly::map so it can store pointers to any ResourceEcs objects i.e. Entity, Component, System resources
  */
+/*
  namespace std {
-
-	/*
-	template <>
-	struct hash<godot::StringName> {
-		std::size_t operator()(const godot::StringName& sn) const noexcept {
-			// Use the built-in hash() method from StringName and cast it to std::size_t
-			return static_cast<std::size_t>(sn.hash());
-		}
-	};*/
 
 	template <typename T>
 	struct hash<Ref<T>> {
@@ -528,8 +520,7 @@ public:
         return std::hash<T*>{}(ref.ptr()); 
 		}
 	};
-	
-	/*
+
 	template <>
 	struct hash<godot::WeakRef> {
 		size_t operator()(const godot::WeakRef& wr) const {
@@ -546,6 +537,8 @@ public:
 			// Hash the id member of the object pointed to by ptr
 			return hash<int>()(ptr->get_id()); 
 		}
-	};*/
+	};
 	
-} // namespace std
+} // namespac
+ e std
+*/

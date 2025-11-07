@@ -6,18 +6,12 @@
 namespace sly {
 
 template <typename T>
-class map : public array<T> {
+class umap : public array<T> {
 public:
-
-
-    // this stores a hash of the object in the same index as the object is stored in the object_list, so for any item
-    //std::vector<int> hash;
-
-    //std::unordered_map<int, int> find; // <hash_val, object_index> stores the hash value as a key in this table, uses hash function to find items by getting the key and then returning the object, this can be used to lookup actual objects by hash
 
     std::unordered_map<T, int> find;
 
-    map& operator=(const map& new_val) {
+    umap& operator=(const umap& new_val) {
 		for(int i=0; i<new_val; i++) {
             set(i, new_val);
             /*
@@ -54,11 +48,6 @@ public:
         std::unordered_set<T>(find.begin(), find.end()).swap(find);
         */
     }
-
-    /*
-    virtual int hash(T& object) {
-        std::hash(*object)
-    }*/
 
 };
 
