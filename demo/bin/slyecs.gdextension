@@ -5,13 +5,13 @@ compatibility_minimum = "4.5"
 reloadable = true
 
 [icons]
-;NodeECS = "res://addons/slyecs/icons/cube.svg"
-NodeECS = "res://icons/cube.svg"
-Ecs = "res://icons/cube.svg"
-Entity = "res://icons/cube.svg"
-Component = "res://icons/cube.svg"
-System = "res://icons/cube.svg"
-
+;NodeECS = "res://addons/slyecs/icons/gear_2.svg"
+NodeECS = "res://icons/gear_2.svg"
+Ecs = "res://icons/animation_gear.svg"
+Entity = "res://icons/inverse_gear_2.svg"
+System = "res://icons/inverse_gear_1.svg"
+Component = "res://icons/gear_1.svg"
+;Tags = "res://icons/Marker.svg"
 
 
 [libraries]

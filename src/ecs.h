@@ -32,15 +32,11 @@ class Entity;
 class System;
 class Component;
 
-
+/*
 struct Tag {
 	StringName label;
 };
-
-class TagContainer {
-	map<Tag*> container;
-};
-
+*/
 /*
 class EcsSpec {
 	bool is_enabled;
@@ -89,6 +85,7 @@ public:
 	static map<Entity*> entity_map;
 	static map<Component*> component_map;
 	static map<System*> system_map;
+	static map<StringName> tag_map;
 
 	static Ecs* singleton;
 
@@ -165,6 +162,7 @@ public:
 	map<StringName*> tags;
 };*/
 
+/*
 class RefCountedEcs : public RefCounted {
 GDCLASS(RefCountedEcs, RefCounted);
 
@@ -184,7 +182,7 @@ public:
         return id == other.id;
     }
 };
-
+*/
 
 /*
 class NodeECS : public godot::Node2D {
@@ -389,12 +387,34 @@ public:
 	*/
 };
 
+/*
+class Tags : public ResourceEcs {
+GDCLASS(Tags, ResourceEcs); 
+
+	TypedArray<StringName> tags;
+
+protected:
+	static void _bind_methods() {};
+
+public:
+	Tags() = default;
+	~Tags() override = default;
+
+	void set_tags(const TypedArray<StringName>& p_tags) { tags = p_tags; }
+	TypedArray<StringName> get_tags() const { return tags; };
+};
+*/
+
 
 class System : public ResourceEcs {
 GDCLASS(System, ResourceEcs);
 
 	TypedArray<Component> components;
+
 	TypedArray<StringName> tags_required;
+	TypedArray<StringName> tags_forbidden;
+	TypedArray<StringName> tags_add;
+	TypedArray<StringName> tags_remove;
 
 protected:
 	static void _bind_methods();
@@ -417,9 +437,7 @@ public:
 
 
 	//map<Tag*> tags_required;
-	map<Tag*> tags_forbidden;
-	map<Tag*> tags_add;
-	map<Tag*> tags_remove;
+
 
 	// setters and getters
 	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
@@ -493,11 +511,41 @@ public:
  * Hash function for reverse lookup hash table, used by sly::map so it can store pointers to any ResourceEcs objects i.e. Entity, Component, System resources
  */
  namespace std {
+
+	/*
+	template <>
+	struct hash<godot::StringName> {
+		std::size_t operator()(const godot::StringName& sn) const noexcept {
+			// Use the built-in hash() method from StringName and cast it to std::size_t
+			return static_cast<std::size_t>(sn.hash());
+		}
+	};*/
+
+	template <typename T>
+	struct hash<Ref<T>> {
+		size_t operator()(const godot::Ref<T>& ref) const {
+        // Hash the underlying pointer
+        return std::hash<T*>{}(ref.ptr()); 
+		}
+	};
+	
+	/*
+	template <>
+	struct hash<godot::WeakRef> {
+		size_t operator()(const godot::WeakRef& wr) const {
+			// Get the underlying Object* from the WeakRef
+			godot::Object* obj = wr.get_ref(); // get_ref() returns Object*
+			return std::hash<godot::Object*>()(obj);
+		}
+	};
+
+	//todo:remove
 	template <>
 	struct hash<sly::ResourceEcs> {
 		size_t operator()(const sly::ResourceEcs* ptr) const {
 			// Hash the id member of the object pointed to by ptr
 			return hash<int>()(ptr->get_id()); 
 		}
-	};
+	};*/
+	
 } // namespace std
