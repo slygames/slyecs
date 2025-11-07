@@ -19,15 +19,26 @@ void sly::Ecs::_bind_methods() {
 }
 
 void NodeECS::_bind_methods() {
+
+	ClassDB::bind_method(D_METHOD("set_entity", "p_entity"), &NodeECS::set_entity);
+	ClassDB::bind_method(D_METHOD("get_entity"), &NodeECS::get_entity);
+	ADD_PROPERTY(PropertyInfo(godot::Variant::OBJECT, "entity", godot::PROPERTY_HINT_RESOURCE_TYPE, "Entity"), "set_entity", "get_entity");
+/*
 	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &NodeECS::set_components);
 	ClassDB::bind_method(D_METHOD("get_components"), &NodeECS::get_components);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
+*/
 }
 
 void Entity::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &Entity::set_components);
 	ClassDB::bind_method(D_METHOD("get_components"), &Entity::get_components);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
+	/*
+	ClassDB::bind_method(D_METHOD("set_nodes", "p_nodes"), &Entity::set_nodes);
+	ClassDB::bind_method(D_METHOD("get_nodes"), &Entity::get_nodes);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "nodes", PROPERTY_HINT_NODE_TYPE, "Node"), "set_nodes", "get_nodes");
+	*/
 
 	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_ARRAY_TYPE, "Variant::Component"), "set_components", "get_components" );
 	
@@ -47,9 +58,13 @@ void System::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update"), &System::update);
 	GDVIRTUAL_BIND(_update);
 
-	ClassDB::bind_method(D_METHOD("set_tags_example", "tags_example"), &System::set_tags_example);
-	ClassDB::bind_method(D_METHOD("get_tags_example"), &System::get_tags_example);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_example", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_example", "get_tags_example" );
+	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &System::set_components);
+	ClassDB::bind_method(D_METHOD("get_components"), &System::get_components);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
+
+	ClassDB::bind_method(D_METHOD("set_tags_required", "tags_required"), &System::set_tags_required);
+	ClassDB::bind_method(D_METHOD("get_tags_required"), &System::get_tags_required);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_required", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_required", "get_tags_required" );
 	
 	//PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Image")
 }

@@ -7,6 +7,11 @@ reloadable = true
 [icons]
 ;NodeECS = "res://addons/slyecs/icons/cube.svg"
 NodeECS = "res://icons/cube.svg"
+Ecs = "res://icons/cube.svg"
+Entity = "res://icons/cube.svg"
+Component = "res://icons/cube.svg"
+System = "res://icons/cube.svg"
+
 
 
 [libraries]

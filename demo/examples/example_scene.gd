@@ -8,8 +8,16 @@ extends Node
 
 #@export var Component_Value_Example : Variant
 
+@export
+var variant_sample : Variant
+
 func _ready() -> void:
-	pass
+	var prop_list = get_property_list()
+	for prop in prop_list:
+		if prop.name == "variant_sample":
+			print(prop)
+		#if prop.name == "VELOCITY_COMPONENT":
+			#print(prop)
 	#Ecs.connect(get_tree())
 	#Ecs.create_entity(sprite_2d, components)
 	#Ecs.create_entity(sprite_2d, [new_component, new_component2])

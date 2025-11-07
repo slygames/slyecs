@@ -218,6 +218,9 @@ GDCLASS(Entity, Resource);
 
 	int id;
 
+	//todo:these should all be ids really.. not nodes and components, but components are easier in editor picker..
+	TypedArray<Node> nodes;	// actual godot nodes of this entity
+
 	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
 	TypedArray<Component> components;
 
@@ -246,6 +249,11 @@ public:
 
 	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
 	TypedArray<Component> get_components() const { return components; };
+
+	/*
+	void set_nodes(const TypedArray<Node>& p_nodes) { nodes = p_nodes; }
+	TypedArray<Node> get_nodes() const { return nodes; };
+	*/
 };
 
 
@@ -287,8 +295,12 @@ GDCLASS(NodeECS, Node);
 
 	int id;
 
-	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
+	/*
 	TypedArray<Component> components;
+	*/
+
+	Ref<Entity> entity;
+	//Entity entity;
 
 protected:
 	static void _bind_methods();
@@ -313,8 +325,18 @@ public:
 	void set_id(int p_id) { id = p_id; }
 	int get_id() const { return id; };
 
+	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
+	Ref<Entity> get_entity() const { return entity; };
+
+	/*
+	void set_entity(const Entity& p_entity) { entity = p_entity; }
+	Entity get_entity() const { return entity; };
+	*/
+
+	/*
 	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
 	TypedArray<Component> get_components() const { return components; };
+	*/
 };
 
 /*
@@ -371,6 +393,9 @@ public:
 class System : public ResourceEcs {
 GDCLASS(System, ResourceEcs);
 
+	TypedArray<Component> components;
+	TypedArray<StringName> tags_required;
+
 protected:
 	static void _bind_methods();
 
@@ -390,18 +415,18 @@ public:
 
 	//array<int> components_required;
 
-	TypedArray<StringName> tags_example;
 
-	map<Tag*> tags_required;
+	//map<Tag*> tags_required;
 	map<Tag*> tags_forbidden;
 	map<Tag*> tags_add;
 	map<Tag*> tags_remove;
 
-	void set_tags_example(TypedArray<StringName> p_tags_example) { tags_example = p_tags_example; }
+	// setters and getters
+	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
+	TypedArray<Component> get_components() const { return components; };
 
-    TypedArray<StringName> get_tags_example() const {
-        return tags_example;
-    }
+	void set_tags_required(TypedArray<StringName> p_tags_required) { tags_required = p_tags_required; }
+    TypedArray<StringName> get_tags_required() const { return tags_required; }
 
 	virtual void update();
 	GDVIRTUAL0(_update);
