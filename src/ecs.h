@@ -31,7 +31,7 @@ class ResourceEcs;
 class Entity;
 class System;
 class Component;
-class Tags;
+//class Tags;
 
 /*
 struct Tag {
@@ -87,7 +87,7 @@ public:
 	static map<Entity*> entity_map;
 	static map<Component*> component_map;
 	static map<System*> system_map;
-	static map<StringName*> tag_map;
+	//static map<StringName> tag_map;
 
 	static Ecs* singleton;
 
@@ -164,6 +164,7 @@ public:
 	map<StringName*> tags;
 };*/
 
+/*
 class RefCountedEcs : public RefCounted {
 GDCLASS(RefCountedEcs, RefCounted);
 
@@ -183,7 +184,7 @@ public:
         return id == other.id;
     }
 };
-
+*/
 
 /*
 class NodeECS : public godot::Node2D {
@@ -355,7 +356,7 @@ public:
 };
 */
 
-
+/*
 class Tags : public ResourceEcs {
 GDCLASS(Tags, ResourceEcs); 
 
@@ -371,6 +372,7 @@ public:
 	void set_tags(const TypedArray<StringName>& p_tags) { tags = p_tags; }
 	TypedArray<StringName> get_tags() const { return tags; };
 };
+*/
 
 //template <typename T>
 class Component : public ResourceEcs {
@@ -465,11 +467,9 @@ GDCLASS(System, ResourceEcs);
 
 	TypedArray<Component> components;
 	TypedArray<StringName> tags_required;
-
-	//map<Tag*> tags_required;
-	Tags tags_forbidden;
-	Tags tags_add;
-	Tags tags_remove;
+	TypedArray<StringName> tags_forbidden;
+	TypedArray<StringName> tags_add;
+	TypedArray<StringName> tags_remove;
 
 protected:
 	static void _bind_methods();
