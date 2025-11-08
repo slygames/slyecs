@@ -54,7 +54,7 @@ public:
 		value[key] = val;
 	}
 
-	virtual int insert(T& val) {
+	virtual int insert(const T& val) {
 		value.push_back(val);
 		int new_index = size()-1;
 		lookup.push_back(new_index);

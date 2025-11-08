@@ -114,21 +114,23 @@ public:
 
 	void register_object(Object* object);
 	void unregister_object(Object* object);
-
+	
+/*
 	void register_entity(Entity* entity);
 	void unregister_entity(Entity* entity);
 
 	void register_system(System* system);
 	void unregister_system(System* system);
 
-	void register_component(Component* system);
-	void unregister_component(Component* system);
+	void register_component(Component* component);
+	void unregister_component(Component* component);
+*/
 };
 
 class ResourceEcs : public Resource {
 GDCLASS(ResourceEcs, Resource);
 
-	int id;
+	//int id;
 
 protected:
 	static void _bind_methods();
@@ -137,7 +139,7 @@ public:
 	ResourceEcs() = default;
 	~ResourceEcs() override = default;
 	
-	ResourceEcs(int p_id) : id(p_id) {}
+	//ResourceEcs(int p_id) : id(p_id) {}
 
 	StringName name_var;
 
@@ -147,12 +149,13 @@ public:
 
 	// to enable hashing in unordered map
 	bool operator==(const ResourceEcs& other) const {
-        return id == other.id;
+		return this == &other;
     }
-
+/*
 	// setters and getters
 	void set_id(int p_id) { id = p_id; }
 	int get_id() const { return id; };
+*/
 };
 /*
 class Tag : public Object {
@@ -220,7 +223,7 @@ public:
 class Entity : public Resource {
 GDCLASS(Entity, Resource);
 
-	int id;
+	//int id;
 
 	/*
 	//todo:these should all be ids really.. not nodes and components, but components are easier in editor picker..
@@ -234,25 +237,26 @@ protected:
 	static void _bind_methods();
 
 public:
-	Entity() = default;
+	Entity();
 	~Entity() override = default;
 
 	//Entity(int p_id) : id(p_id) {}
 
+/*
 	// to enable hashing in unordered map
 	bool operator==(const Entity& other) const {
         return id == other.id;
     }
-
+*/
 	//Entity(Object* p_object) : object(p_object) {}
 	//Object* object; // actual godot game object
 
 	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
-	
+/*	
 	// setters and getters
 	void set_id(int p_id) { id = p_id; }
 	int get_id() const { return id; };
-
+*/
 	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
 	TypedArray<Component> get_components() const { return components; };
 
@@ -299,7 +303,7 @@ public:
 class NodeECS : public Node {
 GDCLASS(NodeECS, Node);
 
-	int id;
+	//int id;
 
 	/*
 	TypedArray<Component> components;
@@ -316,23 +320,26 @@ protected:
 public:
 	NodeECS() = default;
 	~NodeECS() override = default;
+	/*
 	//Entity(const Entity& other) = default; // default copy constructor (should be generated implicitly by the compiler)
 	NodeECS(int p_id) : id(p_id) {}
-
+	*/
 	// to enable hashing in unordered map
 	bool operator==(const NodeECS& other) const {
-        return id == other.id;
+		return this == &other;
+        //return id == other.id;
     }
 
 	//Entity(Object* p_object) : object(p_object) {}
 	//Object* object; // actual godot game object
 
 	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
-	
+
+/*	
 	// setters and getters
 	void set_id(int p_id) { id = p_id; }
 	int get_id() const { return id; };
-
+*/
 	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
 	Ref<Entity> get_entity() const { return entity; };
 
@@ -392,7 +399,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	Component() = default;
+	Component();
 	~Component() override = default;
 	Component(Variant p_data_var) { data_var = p_data_var; }
 
@@ -487,7 +494,7 @@ protected:
 	void load_callable_script();
 
 public:
-	System() = default;
+	System();
 	~System() override = default;
 
 	Callable system_callable; // callable called by update()

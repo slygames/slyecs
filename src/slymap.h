@@ -28,7 +28,7 @@ public:
 		}
 	}
 
-    virtual int insert(T& val) override {
+    virtual int insert(const T& val) override {
         int key = array<T>::insert(val);
         find[val] = key;
         return key;
