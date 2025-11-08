@@ -1,7 +1,9 @@
 #pragma once
 
 #include <vector>
-//#include <algorithm> // for vector.find()
+#include <type_traits> // For std::is_arithmetic_v
+#include "util.h"
+//#include <algorithm> // for vector.find(), not using this anymore, //todo:remove
 
 /**
  * sly::array is optimized for fast lookup by key and fast iteration and all other operations are very fast, except find is at normal vector find() speed and remove() does a swapping mechanism which is much faster than vectors do.
@@ -26,6 +28,123 @@ public:
 			lookup[value[i]] = i;
 		}
 	}
+
+/*	
+	array& operator+(const array& other) const {
+		constexpr bool is_arithmetic = std::is_arithmetic_v<T>(value[0]);
+		constexpr bool is_arithmetic_other = std::is_arithmetic_v<T>(other.value[0]);
+
+		if (is_arithmetic && is_arithmetic_other) {
+			for(int i=0; i<value.size() ;i++) {
+				value[i] += other.value[i];
+			}
+		} else {
+			if(!is_arithmetic) printerr(typeid(this).name(), " Error: Can't multiply with this type.");
+			else if(!is_arithmetic_other) printerr(typeid(other).name(), " Error: Can't multiply with this type.");
+		}
+	}
+
+	array& operator-(const array& other) const {
+		constexpr bool is_arithmetic = std::is_arithmetic_v<T>(value[0]);
+		constexpr bool is_arithmetic_other = std::is_arithmetic_v<T>(other.value[0]);
+
+		if (is_arithmetic && is_arithmetic_other) {
+			for(int i=0; i<value.size() ;i++) {
+				value[i] -= other.value[i];
+			}
+		} else {
+			if(!is_arithmetic) printerr(typeid(this).name(), " Error: Can't subtract with this type.");
+			else if(!is_arithmetic_other) printerr(typeid(other).name(), " Error: Can't subtract with this type.");
+		}
+	}
+
+	array& operator*(const array& other) const {
+		constexpr bool is_arithmetic = std::is_arithmetic_v<T>(value[0]);
+		constexpr bool is_arithmetic_other = std::is_arithmetic_v<T>(other.value[0]);
+
+		if (is_arithmetic && is_arithmetic_other) {
+			for(int i=0; i<value.size() ;i++) {
+				value[i] *= other.value[i];
+			}
+		} else {
+			if(!is_arithmetic) printerr(typeid(this).name(), " Error: Can't multiply with this type.");
+			else if(!is_arithmetic_other) printerr(typeid(other).name(), " Error: Can't multiply with this type.");
+		}
+	}
+
+	array& operator/(const array& other) const {
+		constexpr bool is_arithmetic = std::is_arithmetic_v<T>(value[0]);
+		constexpr bool is_arithmetic_other = std::is_arithmetic_v<T>(other.value[0]);
+
+		if (is_arithmetic && is_arithmetic_other) {
+			for(int i=0; i<value.size() ;i++) {
+				if(other.value[i]!=0) value[i] /= other.value[i];
+			}
+		} else {
+			if(!is_arithmetic) print_err(typeid(this).name(), " Error: Can't divide with this type.");
+			else if(!is_arithmetic_other) print_err(typeid(other).name(), " Error: Can't divide with this type.");
+		}
+	}
+*/
+
+	/*
+	array& operator+(const array& other) const {
+		constexpr bool is_arithmetic = std::is_arithmetic_v<T>(value[0]);
+		constexpr bool is_arithmetic_other = std::is_arithmetic_v<T>(other.value[0]);
+
+		if (is_arithmetic && is_arithmetic_other) {
+			for(int i=0; i<value.size() ;i++) {
+				value[i] += other.value[i];
+			}
+		} else {
+			if(!is_arithmetic) printerr(typeid(this).name(), " Error: Can't multiply with this type.");
+			else if(!is_arithmetic_other) printerr(typeid(other).name(), " Error: Can't multiply with this type.");
+		}
+	}*/
+
+	/*
+	array& operator-(const array& other) const {
+		constexpr bool is_arithmetic = std::is_arithmetic_v<T>(value[0]);
+		constexpr bool is_arithmetic_other = std::is_arithmetic_v<T>(other.value[0]);
+
+		if (is_arithmetic && is_arithmetic_other) {
+			for(int i=0; i<value.size() ;i++) {
+				value[i] -= other.value[i];
+			}
+		} else {
+			if(!is_arithmetic) printerr(typeid(this).name(), " Error: Can't subtract with this type.");
+			else if(!is_arithmetic_other) printerr(typeid(other).name(), " Error: Can't subtract with this type.");
+		}
+	}
+
+	array& operator*(const array& other) const {
+		constexpr bool is_arithmetic = std::is_arithmetic_v<T>(value[0]);
+		constexpr bool is_arithmetic_other = std::is_arithmetic_v<T>(other.value[0]);
+
+		if (is_arithmetic && is_arithmetic_other) {
+			for(int i=0; i<value.size() ;i++) {
+				value[i] *= other.value[i];
+			}
+		} else {
+			if(!is_arithmetic) printerr(typeid(this).name(), " Error: Can't multiply with this type.");
+			else if(!is_arithmetic_other) printerr(typeid(other).name(), " Error: Can't multiply with this type.");
+		}
+	}
+
+	array& operator/(const array& other) const {
+		constexpr bool is_arithmetic = std::is_arithmetic_v<T>(value[0]);
+		constexpr bool is_arithmetic_other = std::is_arithmetic_v<T>(other.value[0]);
+
+		if (is_arithmetic && is_arithmetic_other) {
+			for(int i=0; i<value.size() ;i++) {
+				if(other.value[i]!=0) value[i] /= other.value[i];
+			}
+		} else {
+			if(!is_arithmetic) print_err(typeid(this).name(), " Error: Can't divide with this type.");
+			else if(!is_arithmetic_other) print_err(typeid(other).name(), " Error: Can't divide with this type.");
+		}
+	}
+*/
 
 	const T& operator[](int key) const & {
 		return value[lookup[key]];
@@ -135,6 +254,36 @@ private:
 		value.resize(new_size);
 	}
 
+	template <typename U, typename V>
+	friend array<U>& operator+= (array<U>& lhs,  const V& rhs);
 };
 
-}
+template <typename U, typename V>
+array<U>& operator+= (array<U>& lhs, const V& rhs) {
+    //lhs._value += rhs._value;
+    //return lhs;
+
+	array<U> result;
+
+	//constexpr bool is_array = type_id(&lhs) == type_id(array<U>);
+
+	constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
+	constexpr bool is_arithmetic_other = std::is_arithmetic_v<U>(rhs.value[0]);
+
+	array<U>* lhsptr = dynamic_cast<array<U>*>(&lhs);
+	constexpr bool is_array = lhsptr != nullptr;
+
+	if (is_arithmetic && is_arithmetic_other) {
+		for(int i=0; i<lhs.value.size() ;i++) {
+			if(is_array) result.value[i] = lhs.value[i] + rhs.value[i];
+			else lhs.value[i] += rhs;
+		}
+	} else {
+		if(!is_arithmetic) godot::UtilityFunctions::printerr(typeid(lhs).name(), " Error: Can't multiply with this type.");
+		else if(!is_arithmetic_other) godot::UtilityFunctions::printerr(typeid(rhs).name(), " Error: Can't multiply with this type.");
+	}
+
+	return result;
+} 
+
+} // namespace sly

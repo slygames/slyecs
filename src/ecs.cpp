@@ -232,6 +232,20 @@ void Ecs::register_object(Object *object) {
 	*/
 	print("comp map size B: ", component_map.size());
 	print("system map size B: ", system_map.size());
+
+	print("adding 2 to all components");
+	for(int i=0;i<component_map.size();i++)
+	{
+		Component* component = component_map[i];
+		component = component + 2;
+	}
+/*
+	for(int i=0;i<component_map.size();i++)
+	{
+		Component* component = component_map[i];
+		print(component.get_data)
+	}
+*/
 }
 
 void Ecs::unregister_object(Object *object) {
