@@ -427,7 +427,9 @@ public:
 class Component : public Resource{
 GDCLASS(Component, Resource);
 
-	Variant data_var;
+	//TypedArray<Variant> data_var;
+	
+	Array data_var;
 
 protected:
 	static void _bind_methods();
@@ -435,10 +437,25 @@ protected:
 public:
 	Component();
 	~Component() override = default;
-	Component(Variant p_data_var) { data_var = p_data_var; }
+	//Component(Variant p_data_var) { data_var = p_data_var; }
 
-	void set_data_var(const Variant& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
-	Variant get_data_var() const { return data_var; }; // get value (does conversion to_var())
+	/*
+	void set_data_var(const TypedArray<Variant>& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
+	const TypedArray<Variant>& get_data_var() const { return data_var; }; // get value (does conversion to_var())
+	*/
+
+	void set_data_var(const Array& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
+	const Array& get_data_var() const { return data_var; }; // get value (does conversion to_var())
+
+
+	/*
+    void set_data_var(TypedArray<Variant> p_array) {
+        data_var = p_array;
+    }
+
+    TypedArray<Variant> get_data_var() const {
+        return data_var;
+    }*/
 
 	void set_var(int entity_id, Variant& value) {}; // sets value from variant (does conversion from_var())
 	const Variant get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
