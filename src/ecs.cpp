@@ -107,14 +107,39 @@ void System::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update"), &System::update);
 	GDVIRTUAL_BIND(_update);
 
-	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &System::set_components);
-	ClassDB::bind_method(D_METHOD("get_components"), &System::get_components);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
+	ClassDB::bind_method(D_METHOD("set_components_required", "p_components_required"), &System::set_components_required);
+	ClassDB::bind_method(D_METHOD("get_components_required"), &System::get_components_required);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components_required", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components_required", "get_components_required");
+
+	ClassDB::bind_method(D_METHOD("set_components_forbidden", "p_components_forbidden"), &System::set_components_forbidden);
+	ClassDB::bind_method(D_METHOD("get_components_forbidden"), &System::get_components_forbidden);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components_forbidden", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components_forbidden", "get_components_forbidden");
+
+	ClassDB::bind_method(D_METHOD("set_components_add", "p_components_add"), &System::set_components_add);
+	ClassDB::bind_method(D_METHOD("get_components_add"), &System::get_components_add);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components_add", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components_add", "get_components_add");
+
+	ClassDB::bind_method(D_METHOD("set_components_remove", "p_components_remove"), &System::set_components_remove);
+	ClassDB::bind_method(D_METHOD("get_components_remove"), &System::get_components_remove);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components_remove", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components_remove", "get_components_remove");
+
 
 	ClassDB::bind_method(D_METHOD("set_tags_required", "tags_required"), &System::set_tags_required);
 	ClassDB::bind_method(D_METHOD("get_tags_required"), &System::get_tags_required);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_required", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_required", "get_tags_required" );
-	
+
+	ClassDB::bind_method(D_METHOD("set_tags_forbidden", "tags_forbidden"), &System::set_tags_forbidden);
+	ClassDB::bind_method(D_METHOD("get_tags_forbidden"), &System::get_tags_forbidden);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_forbidden", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_forbidden", "get_tags_forbidden" );
+
+	ClassDB::bind_method(D_METHOD("set_tags_add", "tags_add"), &System::set_tags_add);
+	ClassDB::bind_method(D_METHOD("get_tags_add"), &System::get_tags_add);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_add", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_add", "get_tags_add" );
+
+	ClassDB::bind_method(D_METHOD("set_tags_remove", "tags_remove"), &System::set_tags_remove);
+	ClassDB::bind_method(D_METHOD("get_tags_remove"), &System::get_tags_remove);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_remove", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_remove", "get_tags_remove" );
+
 	//PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Image")
 }
 /*

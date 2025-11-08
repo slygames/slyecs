@@ -513,13 +513,20 @@ enum : unsigned char {
 	COMBAT_KICK_RIGHT,
 };
 */
+	TypedArray<Component> components_required;
+	TypedArray<Component> components_forbidden;
+	TypedArray<Component> components_remove;
+	TypedArray<Component> components_add;
 
-
-	TypedArray<Component> components;
 	TypedArray<StringName> tags_required;
 	TypedArray<StringName> tags_forbidden;
 	TypedArray<StringName> tags_add;
 	TypedArray<StringName> tags_remove;
+
+	/*
+	float duration;
+	effect_type : on_off; / periodic
+	*/
 
 protected:
 	static void _bind_methods();
@@ -545,11 +552,29 @@ public:
 	//array<int> components_required;
 
 	// setters and getters
-	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
-	TypedArray<Component> get_components() const { return components; };
+	void set_components_required(const TypedArray<Component>& p_components_required) { components_required = p_components_required; }
+	TypedArray<Component> get_components_required() const { return components_required; };
+
+	void set_components_forbidden(const TypedArray<Component>& p_components_forbidden) { components_forbidden = p_components_forbidden; }
+	TypedArray<Component> get_components_forbidden() const { return components_forbidden; };
+
+	void set_components_add(const TypedArray<Component>& p_components_add) { components_add = p_components_add; }
+	TypedArray<Component> get_components_add() const { return components_add; };
+
+	void set_components_remove(const TypedArray<Component>& p_components_remove) { components_remove = p_components_remove; }
+	TypedArray<Component> get_components_remove() const { return components_remove; };
 
 	void set_tags_required(TypedArray<StringName> p_tags_required) { tags_required = p_tags_required; }
     TypedArray<StringName> get_tags_required() const { return tags_required; }
+
+	void set_tags_forbidden(TypedArray<StringName> p_tags_forbidden) { tags_forbidden = p_tags_forbidden; }
+    TypedArray<StringName> get_tags_forbidden() const { return tags_forbidden; }
+
+	void set_tags_add(TypedArray<StringName> p_tags_add) { tags_add = p_tags_add; }
+    TypedArray<StringName> get_tags_add() const { return tags_add; }
+
+	void set_tags_remove(TypedArray<StringName> p_tags_remove) { tags_remove = p_tags_remove; }
+    TypedArray<StringName> get_tags_remove() const { return tags_remove; }
 
 	virtual void update();
 	GDVIRTUAL0(_update);
