@@ -59,9 +59,9 @@ public:
 	Ecs() = default;
 	~Ecs() override = default;
 
-	// static method to get the singleton instance
-	static Ecs* get_singleton();
-
+	// setters and getters
+	static Ecs* get_singleton(); // static method to get the singleton instance
+	
 	// alternate way to connect from _ready in gdscript by calling Ecs.connect(get_tree()) instead of using autoload scene
 	void connect(SceneTree* scene_tree);
 
@@ -72,7 +72,6 @@ public:
 
 	void register_object(Object* object);
 	void unregister_object(Object* object);
-
 /*
 	void register_entity(Entity* entity);
 	void unregister_entity(Entity* entity);
@@ -83,7 +82,6 @@ public:
 	void register_component(Component* component);
 	void unregister_component(Component* component);
 */
-	// setters and getters
 	void set_systems(const TypedArray<System>& p_systems) { systems = p_systems; }
 	TypedArray<System> get_systems() const { return systems; };
 

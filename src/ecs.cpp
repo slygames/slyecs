@@ -12,7 +12,8 @@ map<System*> Ecs::system_map;
 // initialize static variables
 Ecs* Ecs::singleton = nullptr;
 
-void sly::Ecs::_bind_methods() {
+void Ecs::_bind_methods() {
+	//ClassDB::bind_static_method("Ecs", D_METHOD("get_singleton"), &Ecs::get_singleton);
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
 	//todo:add
 	//ClassDB::bind_method(D_METHOD("create_entity", "object", "components"), &Ecs::register_entity, DEFVAL(TypedArray<Component>()));
