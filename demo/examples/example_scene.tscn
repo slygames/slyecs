@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://ef1q1crihevn"]
+[gd_scene load_steps=8 format=3 uid="uid://ef1q1crihevn"]
 
 [ext_resource type="Script" uid="uid://bkwk40ybs8kgm" path="res://examples/example_scene.gd" id="1_qleqb"]
 [ext_resource type="Texture2D" uid="uid://dbx66sovxd1" path="res://icon.svg" id="2_fighv"]
 [ext_resource type="Entity" uid="uid://clundp2henlpx" path="res://ecs/entity/sword_entity.tres" id="3_bbie7"]
 [ext_resource type="Entity" uid="uid://cp2w7q8dba1kq" path="res://ecs/entity/unit_entity.tres" id="3_qqekj"]
 [ext_resource type="Entity" uid="uid://dmhaf036vmyia" path="res://ecs/entity/building_entity.tres" id="4_fighv"]
+[ext_resource type="System" uid="uid://ccm2fsa51iwun" path="res://ecs/system/movement_system.tres" id="6_7jamt"]
+[ext_resource type="System" uid="uid://bl1okg57r041r" path="res://ecs/system/damage_system.tres" id="7_wagko"]
 
 [node name="example_scene" type="Node"]
 script = ExtResource("1_qleqb")
@@ -68,6 +70,6 @@ entity = ExtResource("4_fighv")
 [node name="Sprite2D" type="Sprite2D" parent="tree_01"]
 
 [node name="NodeECS" type="NodeECS" parent="tree_01"]
-entity = ExtResource("4_fighv")
 
 [node name="Ecs" type="Ecs" parent="."]
+systems = Array[System]([ExtResource("6_7jamt"), ExtResource("7_wagko")])

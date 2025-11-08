@@ -18,6 +18,13 @@ void sly::Ecs::_bind_methods() {
 	//ClassDB::bind_method(D_METHOD("create_entity", "object", "components"), &Ecs::register_entity, DEFVAL(TypedArray<Component>()));
 	ClassDB::bind_method(D_METHOD("create_entity", "entity"), &Ecs::register_object);
 	ClassDB::bind_method(D_METHOD("remove_entity", "entity"), &Ecs::unregister_object);
+
+
+	ClassDB::bind_method(D_METHOD("set_systems", "p_systems"), &Ecs::set_systems);
+	ClassDB::bind_method(D_METHOD("get_systems"), &Ecs::get_systems);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "systems", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":System"), "set_systems", "get_systems");
+	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "systems", PROPERTY_HINT_ARRAY_TYPE, "System"), "set_systems", "get_systems");
+
 }
 
 void NodeECS::_bind_methods() {
@@ -62,11 +69,15 @@ Entity::Entity() {
 
 
 Component::Component() {
+	print("CONSTRUCT component");
 	Ecs::component_map.insert(this);
+	print("comp map size A: ", Ecs::component_map.size());
 }
 
 System::System() {
+	print("CONSTRUCT System");
 	Ecs::system_map.insert(this);
+	print("system map size A: ", Ecs::system_map.size());
 }
 
 
@@ -173,6 +184,14 @@ void Ecs::register_entity(Object* object, const TypedArray<Component>& component
 
 void Ecs::register_object(Object *object) {
 	object_map.insert(object);
+	print("entities ", entity_map.size());
+	/*
+	print("components ", component_map.size());
+	print("systems ", system_map.size());
+	print("objects ", object_map.size());
+	*/
+	print("comp map size B: ", component_map.size());
+	print("system map size B: ", system_map.size());
 }
 
 void Ecs::unregister_object(Object *object) {
@@ -213,7 +232,7 @@ void System::update() {
 	//print("updating system : ", this->get_id());
 	GDVIRTUAL_CALL(_update);
 }
-
+/*
 // loads callables from gdscript
 void System::load_callable_script() {
 	Ref<Script> script = ResourceLoader::get_singleton()->load("res://systems.gd");
@@ -229,6 +248,8 @@ void System::load_callable() {
 	Callable movement_system = Callable(this, "update");
 	movement_system.call();
 }
+*/
+
 /*
 void SystemUpdaters::system_movement() {
 }*/

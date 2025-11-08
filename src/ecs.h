@@ -25,12 +25,79 @@ using namespace godot;
 
 namespace sly {
 
-
 // forward declare classes
 class ResourceEcs;
 class Entity;
 class System;
 class Component;
+
+
+
+//MAKE_TYPED_ARRAY(Ref<System>, Variant::OBJECT)
+//MAKE_TYPED_ARRAY_INFO(Ref<System>, Variant::OBJECT)
+
+/**
+ * Ecs runs as a singleton and calls update on each system in physics process.
+ */
+class Ecs : public Node {
+	GDCLASS(Ecs, Node)
+
+public:
+	static map<Object*> object_map;
+	static map<Entity*> entity_map;
+	static map<Component*> component_map;
+	static map<System*> system_map;
+	//static map<StringName> tag_map;
+
+	static Ecs* singleton;
+
+	TypedArray<System> systems;
+
+protected:
+	static void _bind_methods();
+
+	void _notification(int p_what);
+
+public:
+	Ecs() = default;
+	~Ecs() override = default;
+
+	// static method to get the singleton instance
+	static Ecs* get_singleton();
+
+	// alternate way to connect from _ready in gdscript by calling Ecs.connect(get_tree()) instead of using autoload scene
+	void connect(SceneTree* scene_tree);
+
+	void process_ecs();
+
+	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>()); // todo: add
+	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>());
+
+	void register_object(Object* object);
+	void unregister_object(Object* object);
+
+/*
+	void register_entity(Entity* entity);
+	void unregister_entity(Entity* entity);
+
+	void register_system(System* system);
+	void unregister_system(System* system);
+
+	void register_component(Component* component);
+	void unregister_component(Component* component);
+*/
+	// setters and getters
+	void set_systems(const TypedArray<System>& p_systems) { systems = p_systems; }
+	TypedArray<System> get_systems() const { return systems; };
+
+/*
+	void set_systems(const TypedArray<Ref<System>>& p_systems) { systems = p_systems; }
+	TypedArray<Ref<System>> get_systems() const { return systems; };
+*/
+};
+
+
+
 //class Tags;
 
 /*
@@ -73,59 +140,6 @@ class SystemSpec {
 
 
 
-
-
-
-
-/**
- * Ecs runs as a singleton and calls update on each system in physics process.
- */
-class Ecs : public Node {
-	GDCLASS(Ecs, Node)
-
-public:
-	static map<Object*> object_map;
-	static map<Entity*> entity_map;
-	static map<Component*> component_map;
-	static map<System*> system_map;
-	//static map<StringName> tag_map;
-
-	static Ecs* singleton;
-
-protected:
-	static void _bind_methods();
-
-	void _notification(int p_what);
-
-public:
-	Ecs() = default;
-	~Ecs() override = default;
-
-	// static method to get the singleton instance
-	static Ecs* get_singleton();
-
-	// alternate way to connect from _ready in gdscript by calling Ecs.connect(get_tree()) instead of using autoload scene
-	void connect(SceneTree* scene_tree);
-
-	void process_ecs();
-
-	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>()); // todo: add
-	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>());
-
-	void register_object(Object* object);
-	void unregister_object(Object* object);
-	
-/*
-	void register_entity(Entity* entity);
-	void unregister_entity(Entity* entity);
-
-	void register_system(System* system);
-	void unregister_system(System* system);
-
-	void register_component(Component* component);
-	void unregister_component(Component* component);
-*/
-};
 
 class ResourceEcs : public Resource {
 GDCLASS(ResourceEcs, Resource);
@@ -220,8 +234,8 @@ public:
 };
 */
 
-class Entity : public Resource {
-GDCLASS(Entity, Resource);
+class Entity : public ResourceEcs {
+GDCLASS(Entity, ResourceEcs);
 
 	//int id;
 
@@ -230,7 +244,6 @@ GDCLASS(Entity, Resource);
 	TypedArray<Node> nodes;	// actual godot nodes of this entity
 	*/
 
-	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
 	TypedArray<Component> components;
 
 protected:
@@ -489,18 +502,19 @@ GDCLASS(System, ResourceEcs);
 protected:
 	static void _bind_methods();
 
+	/*
 	// load callable functions into Ecs
 	void load_callable();
 	void load_callable_script();
-
+	*/
 public:
 	System();
 	~System() override = default;
-
+/*
 	Callable system_callable; // callable called by update()
 
 	static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update components e.g., to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
-
+*/
 	//TypedArray<int> effects;
 
 	//array<int> components_required;
@@ -515,6 +529,7 @@ public:
 	virtual void update();
 	GDVIRTUAL0(_update);
 };
+
 
 
 
@@ -557,3 +572,4 @@ public:
 } // namespac
  e std
 */
+
