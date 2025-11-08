@@ -84,6 +84,7 @@ class Ecs : public Node {
 	GDCLASS(Ecs, Node)
 
 public:
+	static map<Object*> object_map;
 	static map<Entity*> entity_map;
 	static map<Component*> component_map;
 	static map<System*> system_map;
@@ -110,7 +111,10 @@ public:
 
 	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>()); // todo: add
 	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>());
-	
+
+	void register_object(Object* object);
+	void unregister_object(Object* object);
+
 	void register_entity(Entity* entity);
 	void unregister_entity(Entity* entity);
 
@@ -218,8 +222,10 @@ GDCLASS(Entity, Resource);
 
 	int id;
 
+	/*
 	//todo:these should all be ids really.. not nodes and components, but components are easier in editor picker..
 	TypedArray<Node> nodes;	// actual godot nodes of this entity
+	*/
 
 	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
 	TypedArray<Component> components;
@@ -304,6 +310,8 @@ GDCLASS(NodeECS, Node);
 
 protected:
 	static void _bind_methods();
+
+	void _notification(int p_what);
 
 public:
 	NodeECS() = default;

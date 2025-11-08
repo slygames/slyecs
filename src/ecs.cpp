@@ -3,6 +3,7 @@
 
 namespace sly {
 
+map<Object*> Ecs::object_map;
 map<Entity*> Ecs::entity_map;
 map<Component*> Ecs::component_map;
 map<System*> Ecs::system_map;
@@ -29,6 +30,16 @@ void NodeECS::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_components"), &NodeECS::get_components);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
 */
+}
+
+void NodeECS::_notification(int p_what) {
+	switch(p_what) {
+		case NOTIFICATION_READY:
+			Ecs* ecs = Ecs::get_singleton();
+			ecs->register_object(this->get_parent());
+			//.register_entity(this->get_parent());
+			break;
+	}
 }
 
 void Entity::_bind_methods() {
@@ -148,15 +159,23 @@ void Ecs::register_entity(Object* object, const TypedArray<Component>& component
 }
 */
 
-void Ecs::register_entity(Entity* p_entity) {
-	//Entity* p_entity = memnew(Entity(p_entity));
-	int entity_id = entity_map.insert(p_entity);
-	p_entity->set_id(entity_id);
+void Ecs::register_object(Object *object) {
+	int id = object_map.insert(object);
+	print("object registerered ", id);
 }
 
+void Ecs::unregister_object(Object *object) {
+	object_map.remove(object_map.find[object]);
+}
 
-void Ecs::unregister_entity(Entity *p_entity) {
-	int entity_id = entity_map.find[p_entity];
+void Ecs::register_entity(Entity *entity) {
+	//Entity* p_entity = memnew(Entity(p_entity));
+	int entity_id = entity_map.insert(entity);
+	entity->set_id(entity_id);
+}
+
+void Ecs::unregister_entity(Entity *entity) {
+	int entity_id = entity_map.find[entity];
 	entity_map.remove(entity_id);
 	//memdelete(entity);
 }
