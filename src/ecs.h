@@ -26,12 +26,9 @@ using namespace godot;
 namespace sly {
 
 // forward declare classes
-class ResourceEcs;
 class Entity;
 class System;
 class Component;
-
-
 
 //MAKE_TYPED_ARRAY(Ref<System>, Variant::OBJECT)
 //MAKE_TYPED_ARRAY_INFO(Ref<System>, Variant::OBJECT)
@@ -130,19 +127,10 @@ class SystemSpec {
 */
 
 
-
-
-
-
-
-
-
-
-
-
-
-class ResourceEcs : public Resource {
-GDCLASS(ResourceEcs, Resource);
+//todo:remove
+/*
+class Resource : public Resource {
+GDCLASS(Resource, Resource);
 
 	//int id;
 
@@ -150,27 +138,27 @@ protected:
 	static void _bind_methods();
 	
 public:
-	ResourceEcs() = default;
-	~ResourceEcs() override = default;
+	Resource() = default;
+	~Resource() override = default;
 	
-	//ResourceEcs(int p_id) : id(p_id) {}
+	//Resource(int p_id) : id(p_id) {}
 
-	StringName name_var;
+	//StringName name_var;
 
 	// getters and setters
-    const StringName& get_name_var() const { return name_var; };
-    void set_name_var(const StringName& p_name_var) { name_var = p_name_var; };
+	//const StringName& get_name_var() const { return name_var; };
+    //void set_name_var(const StringName& p_name_var) { name_var = p_name_var; };
 
 	// to enable hashing in unordered map
-	bool operator==(const ResourceEcs& other) const {
+	bool operator==(const Resource& other) const {
 		return this == &other;
     }
-/*
+
 	// setters and getters
-	void set_id(int p_id) { id = p_id; }
-	int get_id() const { return id; };
-*/
+	//void set_id(int p_id) { id = p_id; }
+	//int get_id() const { return id; };
 };
+*/
 /*
 class Tag : public Object {
 	GDCLASS(Tag, Object);
@@ -234,51 +222,6 @@ public:
 };
 */
 
-class Entity : public ResourceEcs {
-GDCLASS(Entity, ResourceEcs);
-
-	//int id;
-
-	/*
-	//todo:these should all be ids really.. not nodes and components, but components are easier in editor picker..
-	TypedArray<Node> nodes;	// actual godot nodes of this entity
-	*/
-
-	TypedArray<Component> components;
-
-protected:
-	static void _bind_methods();
-
-public:
-	Entity();
-	~Entity() override = default;
-
-	//Entity(int p_id) : id(p_id) {}
-
-/*
-	// to enable hashing in unordered map
-	bool operator==(const Entity& other) const {
-        return id == other.id;
-    }
-*/
-	//Entity(Object* p_object) : object(p_object) {}
-	//Object* object; // actual godot game object
-
-	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
-/*	
-	// setters and getters
-	void set_id(int p_id) { id = p_id; }
-	int get_id() const { return id; };
-*/
-	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
-	TypedArray<Component> get_components() const { return components; };
-
-	/*
-	void set_nodes(const TypedArray<Node>& p_nodes) { nodes = p_nodes; }
-	TypedArray<Node> get_nodes() const { return nodes; };
-	*/
-};
-
 
 /*
 // this should be Entity and should be a RefCounted, not in editor.
@@ -312,6 +255,79 @@ public:
 };
 */
 
+
+
+
+
+
+
+
+/*
+class EntityParams {
+public:
+};
+*/
+
+
+class Entity : public Resource {
+GDCLASS(Entity, Resource);
+
+	//int id;
+
+	TypedArray<Component> components;
+	TypedArray<StringName> tags;
+	/*
+	//todo:these should all be ids really.. not nodes and components, but components are easier in editor picker..
+	TypedArray<Node> nodes;	// actual godot nodes of this entity
+	*/
+
+protected:
+	static void _bind_methods();
+
+public:
+	Entity();
+	~Entity() override = default;
+
+	//Entity(int p_id) : id(p_id) {}
+
+	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
+	TypedArray<Component> get_components() const { return components; };
+
+	void set_tags(TypedArray<StringName> p_tags_required) { tags = p_tags_required; }
+    TypedArray<StringName> get_tags() const { return tags; }
+
+/*
+	// to enable hashing in unordered map
+	bool operator==(const Entity& other) const {
+        return id == other.id;
+    }
+*/
+	//Entity(Object* p_object) : object(p_object) {}
+	//Object* object; // actual godot game object
+
+	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
+/*	
+	// setters and getters
+	void set_id(int p_id) { id = p_id; }
+	int get_id() const { return id; };
+*/
+	/*
+	void set_nodes(const TypedArray<Node>& p_nodes) { nodes = p_nodes; }
+	TypedArray<Node> get_nodes() const { return nodes; };
+	*/
+};
+
+
+
+
+
+
+
+
+
+
+
+
 //todo: this should be Entity
 class NodeECS : public Node {
 GDCLASS(NodeECS, Node);
@@ -325,6 +341,9 @@ GDCLASS(NodeECS, Node);
 	Ref<Entity> entity;
 	//Entity entity;
 
+	TypedArray<Component> components;
+	TypedArray<StringName> tags;
+	
 protected:
 	static void _bind_methods();
 
@@ -345,9 +364,6 @@ public:
 
 	//Entity(Object* p_object) : object(p_object) {}
 	//Object* object; // actual godot game object
-
-	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
-
 /*	
 	// setters and getters
 	void set_id(int p_id) { id = p_id; }
@@ -365,6 +381,13 @@ public:
 	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
 	TypedArray<Component> get_components() const { return components; };
 	*/
+
+	// setters and getters
+	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
+	TypedArray<Component> get_components() const { return components; };
+
+	void set_tags(TypedArray<StringName> p_tags_required) { tags = p_tags_required; }
+    TypedArray<StringName> get_tags() const { return tags; }
 };
 
 /*
@@ -385,8 +408,8 @@ public:
 */
 
 /*
-class Tags : public ResourceEcs {
-GDCLASS(Tags, ResourceEcs); 
+class Tags : public Resource {
+GDCLASS(Tags, Resource); 
 
 	TypedArray<StringName> tags;
 
@@ -403,8 +426,8 @@ public:
 */
 
 //template <typename T>
-class Component : public ResourceEcs {
-GDCLASS(Component, ResourceEcs);
+class Component : public Resource{
+GDCLASS(Component, Resource);
 
 	Variant data_var;
 
@@ -455,9 +478,28 @@ public:
 };
 
 
-
+/*
 class SystemUpdater : public Object {
 GDCLASS(SystemUpdater, Object);
+
+
+	static const TypedArray<Callable>& callables;
+	
+protected:
+	static void _bind_methods() {};
+
+public:
+	//static TypedArray<Callable> callables;
+
+	static void system_movement() {};
+	//static system_damage();
+	//static system_render();
+	//static system_combat();
+};
+*/
+
+class System : public Resource {
+GDCLASS(System, Resource);
 
 /*
 //todo: enums should be components so this value can be read from the component instead, then system_combat can handle all these states, and have a gdscript equivalent in systems.gd
@@ -472,26 +514,6 @@ enum : unsigned char {
 };
 */
 
-	static const TypedArray<Callable>& callables;
-	static const void get_affected_entities(TypedArray<int>& entities) {};
-	
-protected:
-	static void _bind_methods() {};
-
-public:
-	//static TypedArray<Callable> callables;
-
-	static void system_movement() {};
-	/*
-	static system_damage();
-	static system_render();
-	static system_combat();
-	*/
-};
-
-
-class System : public ResourceEcs {
-GDCLASS(System, ResourceEcs);
 
 	TypedArray<Component> components;
 	TypedArray<StringName> tags_required;
@@ -507,6 +529,9 @@ protected:
 	void load_callable();
 	void load_callable_script();
 	*/
+
+	static const void get_affected_entities(TypedArray<int>& entities) {};
+
 public:
 	System();
 	~System() override = default;
@@ -538,7 +563,7 @@ public:
 
 
 /**
- * Hash function for reverse lookup hash table, used by sly::map so it can store pointers to any ResourceEcs objects i.e. Entity, Component, System resources
+ * Hash function for reverse lookup hash table, used by sly::map so it can store pointers to any Resource objects i.e. Entity, Component, System resources
  */
 /*
  namespace std {
@@ -562,8 +587,8 @@ public:
 
 	//todo:remove
 	template <>
-	struct hash<sly::ResourceEcs> {
-		size_t operator()(const sly::ResourceEcs* ptr) const {
+	struct hash<sly::Resource> {
+		size_t operator()(const sly::Resource* ptr) const {
 			// Hash the id member of the object pointed to by ptr
 			return hash<int>()(ptr->get_id()); 
 		}

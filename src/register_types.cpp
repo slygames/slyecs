@@ -20,16 +20,17 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 
 	// register classes
 	GDREGISTER_RUNTIME_CLASS(Ecs);
-	//GDREGISTER_RUNTIME_CLASS(Tag);
-	GDREGISTER_RUNTIME_CLASS(ResourceEcs);
-	//GDREGISTER_RUNTIME_CLASS(RefCountedEcs);
 	GDREGISTER_RUNTIME_CLASS(NodeECS);
-	//GDREGISTER_RUNTIME_CLASS(Actor);
-	//GDREGISTER_RUNTIME_CLASS(Tags);
 	GDREGISTER_RUNTIME_CLASS(Entity);
 	GDREGISTER_RUNTIME_CLASS(Component);
 	GDREGISTER_RUNTIME_CLASS(System);
-	GDREGISTER_RUNTIME_CLASS(SystemUpdater);	// todo: should this be merged with system?!
+	//GDREGISTER_RUNTIME_CLASS(Tags);
+	//GDREGISTER_RUNTIME_CLASS(Actor);
+	//GDREGISTER_RUNTIME_CLASS(Tag);
+	//GDREGISTER_RUNTIME_CLASS(SystemUpdater);	// todo: should this be merged with system?!
+	//GDREGISTER_RUNTIME_CLASS(ResourceEcs);
+	//GDREGISTER_RUNTIME_CLASS(RefCountedEcs);
+	
 
 
 	// register singletons

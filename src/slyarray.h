@@ -13,10 +13,11 @@ template <typename T>
 class array {
 
 protected:
-	std::vector<T> value;
 	std::vector<int> lookup;	// keys are the indices of the values in the value array, at the same positions as the value array, a key of 5 points to the this is used to quickly look things up.
 	
 public:
+	std::vector<T> value;
+
 	array() = default;
 
 	array& operator=(const array& new_val) {

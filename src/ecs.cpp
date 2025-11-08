@@ -37,6 +37,14 @@ void NodeECS::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_components"), &NodeECS::get_components);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
 */
+
+	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &NodeECS::set_components);
+	ClassDB::bind_method(D_METHOD("get_components"), &NodeECS::get_components);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
+
+	ClassDB::bind_method(D_METHOD("set_tags", "tags"), &NodeECS::set_tags);
+	ClassDB::bind_method(D_METHOD("get_tags"), &NodeECS::get_tags);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags", "get_tags" );
 }
 
 void NodeECS::_notification(int p_what) {
@@ -52,6 +60,12 @@ void Entity::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &Entity::set_components);
 	ClassDB::bind_method(D_METHOD("get_components"), &Entity::get_components);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
+
+	ClassDB::bind_method(D_METHOD("set_tags", "tags"), &Entity::set_tags);
+	ClassDB::bind_method(D_METHOD("get_tags"), &Entity::get_tags);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags", "get_tags" );
+
+
 	/*
 	ClassDB::bind_method(D_METHOD("set_nodes", "p_nodes"), &Entity::set_nodes);
 	ClassDB::bind_method(D_METHOD("get_nodes"), &Entity::get_nodes);
@@ -103,7 +117,7 @@ void System::_bind_methods() {
 	
 	//PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Image")
 }
-
+/*
 void ResourceEcs::_bind_methods() {
 	//ClassDB::bind_method(D_METHOD("set_id", "p_id"), &ResourceEcs::set_id);
 	//ClassDB::bind_method(D_METHOD("get_id"), &ResourceEcs::get_id);
@@ -113,7 +127,7 @@ void ResourceEcs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_name_var"), &ResourceEcs::get_name_var);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "name_var"), "set_name_var", "get_name_var");
 }
-
+*/
 /*
 void NodeECS::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_entity", "p_entity"), &NodeECS::set_entity);
@@ -162,7 +176,7 @@ void Ecs::process_ecs() {
 	
 	//print("processing.. ", get_process_delta_time());
 
-	for(Ref<System> system : system_map) {
+	for(System* system : system_map) {
 		system->update();
 	}
 }
@@ -229,7 +243,21 @@ void Ecs::unregister_component(Component *component) {
 
 void System::update() {
 	print("updating system");
-	//print("updating system : ", this->get_id());
+	/*
+	print("updating system : ", Ecs::system_map.find[this]);
+
+	for(System* system : Ecs::system_map.value) {
+
+	}*/
+
+	//vector<Entity*> affected_entities;
+	//get_affected_entities()
+
+	/*
+	for (NodeEcs* node_ecs : node_ecs_map) {
+
+	}*/
+
 	GDVIRTUAL_CALL(_update);
 }
 /*
