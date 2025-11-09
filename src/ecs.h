@@ -337,9 +337,10 @@ GDCLASS(NodeECS, Node);
 	TypedArray<Component> components;
 	*/
 
-	Ref<Entity> entity;
+	//Ref<Entity> entity;
 	//Entity entity;
 
+	TypedArray<Component> entities;
 	TypedArray<Component> components;
 	TypedArray<StringName> tags;
 	
@@ -368,8 +369,11 @@ public:
 	void set_id(int p_id) { id = p_id; }
 	int get_id() const { return id; };
 */
+/*
 	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
 	Ref<Entity> get_entity() const { return entity; };
+*/
+
 
 	/*
 	void set_entity(const Entity& p_entity) { entity = p_entity; }
@@ -382,6 +386,9 @@ public:
 	*/
 
 	// setters and getters
+	void set_entities(const TypedArray<Entity>& p_entities) { entities = p_entities; }
+	TypedArray<Entity> get_entities() const { return entities; };
+
 	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
 	TypedArray<Component> get_components() const { return components; };
 
@@ -454,7 +461,8 @@ public:
 
 	Variant data_var;	// default value
 
-	void set_data_var(const Variant& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
+	void set_data_var(const Variant& p_data_var);
+	// sets value from variant (does conversion from_var())
 	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
 
 /*

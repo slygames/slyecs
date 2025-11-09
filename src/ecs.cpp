@@ -29,15 +29,21 @@ void Ecs::_bind_methods() {
 }
 
 void NodeECS::_bind_methods() {
-
+/*
 	ClassDB::bind_method(D_METHOD("set_entity", "p_entity"), &NodeECS::set_entity);
 	ClassDB::bind_method(D_METHOD("get_entity"), &NodeECS::get_entity);
 	ADD_PROPERTY(PropertyInfo(godot::Variant::OBJECT, "entity", godot::PROPERTY_HINT_RESOURCE_TYPE, "Entity"), "set_entity", "get_entity");
+*/
+
 /*
 	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &NodeECS::set_components);
 	ClassDB::bind_method(D_METHOD("get_components"), &NodeECS::get_components);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "components", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Component"), "set_components", "get_components");
 */
+
+	ClassDB::bind_method(D_METHOD("set_entities", "p_entities"), &NodeECS::set_entities);
+	ClassDB::bind_method(D_METHOD("get_entities"), &NodeECS::get_entities);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "entities", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Entity"), "set_entities", "get_entities");
 
 	ClassDB::bind_method(D_METHOD("set_components", "p_components"), &NodeECS::set_components);
 	ClassDB::bind_method(D_METHOD("get_components"), &NodeECS::get_components);
@@ -53,6 +59,30 @@ void NodeECS::_notification(int p_what) {
 		case NOTIFICATION_READY:
 			// register parent of NodeEcs as the game object
 			Ecs::get_singleton()->register_object(this->get_parent());
+
+			// get unique set of all components from entities
+			std::set<Component*> object_components;
+			for(int i=0;i<entities.size();i++) {
+				Entity* entity = cast_to<Entity>(entities[i]);
+				TypedArray<Component> entity_components = entity->get_components();
+				for(int j=0;j<entity_components.size();j++) {
+					Component* component = cast_to<Component>(entity_components[j]);
+					object_components.insert(component);
+				}
+			}
+			// also get components arrays specified in the NodeEcs
+			for(int i=0;i<components.size();i++) {
+				Component* component = cast_to<Component>(components[i]);
+				object_components.insert(component);
+			}
+
+			/*
+			for(int i=0;i<object_components.size();i++) {
+				object_components.data_var
+			}*/
+
+			//todo: need to create all the data rows for the components for this object and also associate the tags with the object.
+
 			break;
 	}
 }
@@ -88,6 +118,55 @@ Component::Component() {
 	print("comp map size A: ", Ecs::component_map.size());
 }
 
+void Component::set_data_var(const Variant &p_data_var) {
+		print("set_data_var gdextension");
+		data_var = p_data_var; 
+		if(&p_data_var==nullptr) {
+			print("data_var is null");
+		}
+		print("setting data_var ", p_data_var.get_type(), " : ", p_data_var);
+
+		int id; //todo:remove
+		switch(data_var.get_type()) {
+			case Variant::BOOL:
+				print("Vbool");
+				data_array = sly::array<bool>();
+				std::get<array<bool>>(data_array).insert(data_var);
+				break;
+			case Variant::INT:
+				print("Vint");
+				data_array = sly::array<int>();
+				std::get<array<int>>(data_array).insert(data_var);
+				break;
+			case Variant::FLOAT:
+				print("Vfloat");
+				data_array = sly::array<float>();
+				id = std::get<array<float>>(data_array).insert(data_var);
+				print("inserted ", id, " into float component with value ", std::get<array<float>>(data_array)[id]);
+				/*
+				array<float>* float_array = &std::get<array<float>>(data_array);
+				float_array->insert(data_var);
+				*/
+				break;
+			case Variant::STRING:
+				print("Vstring");
+				data_array = sly::array<String>();
+				std::get<array<String>>(data_array).insert(data_var);
+				break;
+			case Variant::STRING_NAME:
+				print("Vstringname");
+				data_array = sly::array<StringName>();
+				std::get<array<StringName>>(data_array).insert(data_var);
+				break;
+				//todo: add other cases for primitive types
+			default:
+				print("Vvariant");
+				data_array = sly::array<Variant>();
+				std::get<array<Variant>>(data_array).insert(data_var);
+		}
+		emit_changed(); // for Resources to notify the editor/users of changes
+}
+
 System::System() {
 	print("CONSTRUCT System");
 	Ecs::system_map.insert(this);
@@ -99,6 +178,8 @@ void Component::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_data_var", "p_data_var"), &Component::set_data_var);
 	ClassDB::bind_method(D_METHOD("get_data_var"), &Component::get_data_var);
+	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT), "set_data_var", "get_data_var");
+	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 
 	/*
@@ -241,25 +322,27 @@ void Ecs::register_entity(Object* object, const TypedArray<Component>& component
 void Ecs::register_object(Object *object) {
 	int object_id = object_map.insert(object);
 
-
+	/*
 	//todo:remove
 	print("registering entity and creating components");
 	print("entities ", entity_map.size());
+	*/
 	/*
 	print("components ", component_map.size());
 	print("systems ", system_map.size());
 	print("objects ", object_map.size());
 	*/
+	/*
 	print("comp map size B: ", component_map.size());
 	print("system map size B: ", system_map.size());
-
+	*/
 
 	// add default value entry in each member component at index object_id
+	
 
 
 
-
-
+/*
 
 	//todo: remove for loop need to do for one component at a time based on the specific entity components.
 	for(int i=0;i<component_map.size();i++)
@@ -273,6 +356,7 @@ void Ecs::register_object(Object *object) {
 		print("inserted ", object_id, " : ", data_var);
 		//component->create_array_from_variant(component->get_data_var());
 		*/
+		/*
 		int id;
 		print("data type", component->data_var.get_type());
 		switch(component->data_var.get_type()) {
@@ -291,10 +375,8 @@ void Ecs::register_object(Object *object) {
 				component->data_array = sly::array<float>();
 				id = std::get<array<float>>(component->data_array).insert(component->data_var);
 				print("inserted ", id, " into float component with value ", std::get<array<float>>(component->data_array)[id]);
-				/*
-				array<float>* float_array = &std::get<array<float>>(component->data_array);
-				float_array->insert(component->data_var);
-				*/
+				//array<float>* float_array = &std::get<array<float>>(component->data_array);
+				//float_array->insert(component->data_var);
 				break;
 			case Variant::STRING:
 				print("Vstring");
@@ -312,14 +394,14 @@ void Ecs::register_object(Object *object) {
 				component->data_array = sly::array<Variant>();
 				std::get<array<Variant>>(component->data_array).insert(component->data_var);
 		}
-
+		*/
 
 		/*
 		int data_id = 
 		print("Object Id ", object_id, "Data Id ", data_id);
 		print("VARIANT DATA : ", component->values[object_id]);
 		*/
-	}
+	//}
 /*
 	for(int i=0;i<component_map.size();i++) {
 			Component* component = component_map[i];
