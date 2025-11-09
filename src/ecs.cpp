@@ -99,13 +99,13 @@ void Component::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_data_var", "p_data_var"), &Component::set_data_var);
 	ClassDB::bind_method(D_METHOD("get_data_var"), &Component::get_data_var);
-	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "data_var_array", PROPERTY_HINT_TYPE_STRING, String::num(Variant::NIL)+ "/" + String::num(PROPERTY_HINT_NONE) + ":Variant"), "set_data_var", "get_data_var");
+	ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 
 	/*
 	ClassDB::bind_method(D_METHOD("set_data_var", "p_data_var"), &Component::set_data_var);
 	ClassDB::bind_method(D_METHOD("get_data_var"), &Component::get_data_var);
-	ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "data_var_array", PROPERTY_HINT_TYPE_STRING, String::num(Variant::NIL)+ "/" + String::num(PROPERTY_HINT_NONE) + ":Variant"), "set_data_var", "get_data_var");
+	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 	*/
 
 
@@ -239,7 +239,11 @@ void Ecs::register_entity(Object* object, const TypedArray<Component>& component
 */
 
 void Ecs::register_object(Object *object) {
-	object_map.insert(object);
+	int object_id = object_map.insert(object);
+
+
+	//todo:remove
+	print("registering entity and creating components");
 	print("entities ", entity_map.size());
 	/*
 	print("components ", component_map.size());
@@ -249,12 +253,83 @@ void Ecs::register_object(Object *object) {
 	print("comp map size B: ", component_map.size());
 	print("system map size B: ", system_map.size());
 
-	print("adding 2 to all components");
+
+	// add default value entry in each member component at index object_id
+
+
+
+
+
+
+	//todo: remove for loop need to do for one component at a time based on the specific entity components.
 	for(int i=0;i<component_map.size();i++)
 	{
+		print("in for loop ", i);
+
 		Component* component = component_map[i];
-		component = component + 2;
+		//Variant data_var = component->get_data_var();
+		/*
+		component->values[object_id] = data_var;
+		print("inserted ", object_id, " : ", data_var);
+		//component->create_array_from_variant(component->get_data_var());
+		*/
+		int id;
+		print("data type", component->data_var.get_type());
+		switch(component->data_var.get_type()) {
+			case Variant::BOOL:
+				print("Vbool");
+				component->data_array = sly::array<bool>();
+				std::get<array<bool>>(component->data_array).insert(component->data_var);
+				break;
+			case Variant::INT:
+				print("Vint");
+				component->data_array = sly::array<int>();
+				std::get<array<int>>(component->data_array).insert(component->data_var);
+				break;
+			case Variant::FLOAT:
+				print("Vfloat");
+				component->data_array = sly::array<float>();
+				id = std::get<array<float>>(component->data_array).insert(component->data_var);
+				print("inserted ", id, " into float component with value ", std::get<array<float>>(component->data_array)[id]);
+				/*
+				array<float>* float_array = &std::get<array<float>>(component->data_array);
+				float_array->insert(component->data_var);
+				*/
+				break;
+			case Variant::STRING:
+				print("Vstring");
+				component->data_array = sly::array<String>();
+				std::get<array<String>>(component->data_array).insert(component->data_var);
+				break;
+			case Variant::STRING_NAME:
+				print("Vstringname");
+				component->data_array = sly::array<StringName>();
+				std::get<array<StringName>>(component->data_array).insert(component->data_var);
+				break;
+				//todo: add other cases for primitive types
+			default:
+				print("Vvariant");
+				component->data_array = sly::array<Variant>();
+				std::get<array<Variant>>(component->data_array).insert(component->data_var);
+		}
+
+
+		/*
+		int data_id = 
+		print("Object Id ", object_id, "Data Id ", data_id);
+		print("VARIANT DATA : ", component->values[object_id]);
+		*/
 	}
+/*
+	for(int i=0;i<component_map.size();i++) {
+			Component* component = component_map[i];
+			for(int i=0;i<component->values.size();i++) {
+				//print("Variant Data");
+				//print("VARIANT DATA : ", component->values[i]);
+				print("VARIANT DATA : ", component->values[i]);
+			}
+	}
+*/
 /*
 	for(int i=0;i<component_map.size();i++)
 	{
@@ -339,4 +414,64 @@ void SystemUpdaters::system_movement() {
 }*/
 
 	//for(SystemUpdater::ge)
+
+
+/*
+//TypedArray<Variant::Type> Component::create_typed_array_from_variant(const Variant& p_variant) {
+Array Component::create_array_from_variant(const Variant& p_variant) {
+    // get the type from the Variant
+    Variant::Type type = p_variant.get_type();
+
+	//TypedArray<type> typed_node_array;
+	//godot::Array new_array(base_array, godot::Variant::NIL, godot::StringName(), (godot::Script*)nullptr);
+	//Array base_array; // Create an empty base array
+
+	Array base_array;
+	//TypedArray<Variant> base_array;
+
+	StringName class_name = "";
+
+	// If the variant holds an Object-derived type, we need its class name
+    if (type == Variant::Type::OBJECT) {
+        // We attempt to get the object's actual class name if it exists.
+        // If p_variant is null/empty, we can't reliably get the class, 
+        // so you might want a default behavior (e.g., untyped Array or Array[Object]).
+
+		Object* object = cast_to<Object>(p_variant);
+        if (object != nullptr) {
+            Object* obj = p_variant.operator Object *();
+            if (obj) {
+                class_name = obj->get_class();
+            }
+        }
+    }
+
+    // 2. Create the TypedArray using the type information
+    // The Array constructor allows setting the expected type at runtime.
+    // We use the base Array constructor for runtime typing, then cast to TypedArray<Variant>.
+    // Internally, Godot manages type checking for these arrays.
+
+    Array new_array(base_array, type, class_name, (Script*)nullptr); // Pass type, class_name, and script (null for C++ built-ins)
+
+	new_array.set_typed(type, Node::get_class_static(), Variant());
+
+	new_array.push_back(p_variant);
+
+	print("array created", new_array.size());
+	print("variant value is :", p_variant);
+
+    // Note: The TypedArray<T> C++ wrapper is mostly for compile-time convenience and
+    // better C++ type handling, but the underlying Godot Array can have its type
+    // set at runtime using the Variant::Type enum and class name.
+
+    // You can now add elements of the correct type to the 'new_array'.
+    // The Godot runtime will enforce the type check.
+    // For this example, we return a TypedArray<Variant> which holds the runtime type info.
+    // When passed to GDScript, it will behave as a typed array of the specified type.
+    return new_array;
+}
+*/
+
+
+
 } // namespace sly

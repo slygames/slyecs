@@ -16,6 +16,7 @@
 //#include <cstdint>
 #include "slymap.h"
 #include "util.h"
+#include <variant> // for std::variant
 #include <godot_cpp/classes/scene_tree.hpp> // for Ecs::connect()
 #include <godot_cpp/classes/window.hpp> // for Ecs::connect()
 #include <godot_cpp/core/gdvirtual.gen.inc>
@@ -423,13 +424,18 @@ public:
 };
 */
 
+/*
+union Union_Array {
+	array<Variant> array_var;	// array which holds <value> all the variants in the same index as the object is stored in object_list
+	array<bool> array_bool;
+	array<int> array_int;
+	array<float> array_float;
+};
+*/
+
 //template <typename T>
 class Component : public Resource{
 GDCLASS(Component, Resource);
-
-	//TypedArray<Variant> data_var;
-	
-	Array data_var;
 
 protected:
 	static void _bind_methods();
@@ -439,14 +445,27 @@ public:
 	~Component() override = default;
 	//Component(Variant p_data_var) { data_var = p_data_var; }
 
+	//Union_Array union_array;
+
+	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer as a Variant is always 20 bytes.
+    using Variant_Array = std::variant<array<Variant>, array<bool>, array<int>, array<float>, array<String>, array<StringName>>;
+
+	Variant_Array data_array;
+
+	Variant data_var;	// default value
+
+	void set_data_var(const Variant& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
+	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
+
+/*
+	void set_data_var(const Array& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
+	const Array& get_data_var() const { return data_var; }; // get value (does conversion to_var())
+*/
+
 	/*
 	void set_data_var(const TypedArray<Variant>& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
 	const TypedArray<Variant>& get_data_var() const { return data_var; }; // get value (does conversion to_var())
 	*/
-
-	void set_data_var(const Array& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
-	const Array& get_data_var() const { return data_var; }; // get value (does conversion to_var())
-
 
 	/*
     void set_data_var(TypedArray<Variant> p_array) {
@@ -489,6 +508,11 @@ public:
 /*
 	void set_name(StringName p_name) 
 	StringName get_name() {return name_var;}
+*/
+
+/*
+	//TypedArray<Variant> create_typed_array_from_variant(const Variant& p_variant, Array& new_array);
+	Array create_array_from_variant(const Variant& p_variant);
 */
 };
 

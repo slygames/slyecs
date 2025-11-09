@@ -21,13 +21,45 @@ public:
 	std::vector<T> value;
 
 	array() = default;
+	//~array() = default;
+/*
+	array& operator=(const array& new_val) const {
 
-	array& operator=(const array& new_val) {
-		for(int i=0; i<new_val; i++) {
+		for(int i=0; i<new_val.size(); i++) {
 			value[i] = new_val[i];
 			lookup[value[i]] = i;
 		}
+		return *this;
 	}
+*/
+
+    array& operator=(const array& other) {
+        if (this!=&other) {	// if not assigning to self
+			value = other.value; // std::vector's own assignment operator handles deep copy
+			lookup = other.lookup;
+        }
+        return *this; // enable chained assignments (e.g., obj1 = obj2 = obj3;).
+    }
+
+
+
+	/*
+    MyCustomClass(std::string n, int v) : name(std::move(n)), value(v) {
+        std::cout << "MyCustomClass constructor: " << name << ", " << value << std::endl;
+    }
+
+    // Copy constructor (optional, but good practice if you manage resources)
+    MyCustomClass(const MyCustomClass& other) : name(other.name), value(other.value) {
+        std::cout << "MyCustomClass copy constructor: " << name << ", " << value << std::endl;
+    }
+
+    // Move constructor (optional, for efficiency)
+    MyCustomClass(MyCustomClass&& other) noexcept : name(std::move(other.name)), value(other.value) {
+        std::cout << "MyCustomClass move constructor: " << name << ", " << value << std::endl;
+    }*/
+
+
+
 
 /*	
 	array& operator+(const array& other) const {
@@ -208,7 +240,7 @@ public:
 		hash(val)]
 	}*/
 
-	int size() {
+	size_t size() const {
 		return value.size();
 	}
 
