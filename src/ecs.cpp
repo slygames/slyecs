@@ -59,7 +59,8 @@ void NodeECS::_notification(int p_what) {
 		case NOTIFICATION_READY:
 			// register parent of NodeEcs as the game object
 			Ecs::get_singleton()->register_object(this->get_parent());
-
+//todo:enable
+/*			
 			// get unique set of all components from entities
 			std::set<Component*> object_components;
 			for(int i=0;i<entities.size();i++) {
@@ -75,7 +76,7 @@ void NodeECS::_notification(int p_what) {
 				Component* component = cast_to<Component>(components[i]);
 				object_components.insert(component);
 			}
-
+*/
 			/*
 			for(int i=0;i<object_components.size();i++) {
 				object_components.data_var
@@ -109,7 +110,9 @@ void Entity::_bind_methods() {
 }
 
 Entity::Entity() {
+	print("CONSTRUCT entity");
 	Ecs::entity_map.insert(this);
+	print("entity map size A: ", Ecs::component_map.size());
 }
 
 Component::Component() {
@@ -119,12 +122,12 @@ Component::Component() {
 }
 
 void Component::set_data_var(const Variant &p_data_var) {
-		print("set_data_var gdextension");
 		data_var = p_data_var; 
 		if(&p_data_var==nullptr) {
-			print("data_var is null");
+			return;
 		}
-		print("setting data_var ", p_data_var.get_type(), " : ", p_data_var);
+
+		//print("setting data_var ", p_data_var.get_type(), " : ", p_data_var);
 
 		int id; //todo:remove
 		switch(data_var.get_type()) {
@@ -140,6 +143,7 @@ void Component::set_data_var(const Variant &p_data_var) {
 				break;
 			case Variant::FLOAT:
 				print("Vfloat");
+				//data_var = (float)data_var * 2; //todo:remove
 				data_array = sly::array<float>();
 				id = std::get<array<float>>(data_array).insert(data_var);
 				print("inserted ", id, " into float component with value ", std::get<array<float>>(data_array)[id]);
@@ -176,11 +180,11 @@ System::System() {
 
 void Component::_bind_methods() {
 
-	ClassDB::bind_method(D_METHOD("set_data_var", "p_data_var"), &Component::set_data_var);
+	ClassDB::bind_method(D_METHOD("set_data_var", "data_var"), &Component::set_data_var);
 	ClassDB::bind_method(D_METHOD("get_data_var"), &Component::get_data_var);
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT), "set_data_var", "get_data_var");
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
-	ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
+	ADD_PROPERTY(PropertyInfo(Variant::NIL, "gd_data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 
 	/*
 	ClassDB::bind_method(D_METHOD("set_data_var", "p_data_var"), &Component::set_data_var);
@@ -321,7 +325,7 @@ void Ecs::register_entity(Object* object, const TypedArray<Component>& component
 
 void Ecs::register_object(Object *object) {
 	int object_id = object_map.insert(object);
-
+	print("register_object");
 	/*
 	//todo:remove
 	print("registering entity and creating components");

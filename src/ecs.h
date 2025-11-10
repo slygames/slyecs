@@ -340,7 +340,7 @@ GDCLASS(NodeECS, Node);
 	//Ref<Entity> entity;
 	//Entity entity;
 
-	TypedArray<Component> entities;
+	TypedArray<Entity> entities;
 	TypedArray<Component> components;
 	TypedArray<StringName> tags;
 	

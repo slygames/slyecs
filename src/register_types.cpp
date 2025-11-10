@@ -22,8 +22,9 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	GDREGISTER_RUNTIME_CLASS(Ecs);
 	GDREGISTER_RUNTIME_CLASS(NodeECS);
 	GDREGISTER_RUNTIME_CLASS(Entity);
-	GDREGISTER_RUNTIME_CLASS(Component);
+	GDREGISTER_CLASS(Component); // not runtime class because data_var setter needs to be called in editor
 	GDREGISTER_RUNTIME_CLASS(System);
+
 	//GDREGISTER_RUNTIME_CLASS(Tags);
 	//GDREGISTER_RUNTIME_CLASS(Actor);
 	//GDREGISTER_RUNTIME_CLASS(Tag);

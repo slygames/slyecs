@@ -1,4 +1,4 @@
 [gd_resource type="Component" format=3 uid="uid://ctbbrptk80w3f"]
 
 [resource]
-data_var = null
+gd_data_var = 600.0
