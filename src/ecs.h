@@ -465,6 +465,12 @@ public:
 	// sets value from variant (does conversion from_var())
 	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
 
+	template <typename T>
+	array<T>& get_data() {
+		return std::get<array<T>>(data_array);
+	}
+
+
 /*
 	void set_data_var(const Array& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
 	const Array& get_data_var() const { return data_var; }; // get value (does conversion to_var())

@@ -134,18 +134,21 @@ void Component::set_data_var(const Variant &p_data_var) {
 			case Variant::BOOL:
 				print("Vbool");
 				data_array = sly::array<bool>();
-				std::get<array<bool>>(data_array).insert(data_var);
+				//std::get<array<bool>>(data_array).insert(data_var);
+				get_data<bool>().insert(data_var);
 				break;
 			case Variant::INT:
 				print("Vint");
 				data_array = sly::array<int>();
-				std::get<array<int>>(data_array).insert(data_var);
+				//std::get<array<int>>(data_array).insert(data_var);
+				get_data<int>().insert(data_var);
 				break;
 			case Variant::FLOAT:
 				print("Vfloat");
 				//data_var = (float)data_var * 2; //todo:remove
 				data_array = sly::array<float>();
-				id = std::get<array<float>>(data_array).insert(data_var);
+				//id = std::get<array<float>>(data_array).insert(data_var);
+				id = get_data<float>().insert(data_var);
 				print("inserted ", id, " into float component with value ", std::get<array<float>>(data_array)[id]);
 				/*
 				array<float>* float_array = &std::get<array<float>>(data_array);
@@ -155,21 +158,28 @@ void Component::set_data_var(const Variant &p_data_var) {
 			case Variant::STRING:
 				print("Vstring");
 				data_array = sly::array<String>();
-				std::get<array<String>>(data_array).insert(data_var);
+				get_data<String>().insert(data_var);
 				break;
 			case Variant::STRING_NAME:
 				print("Vstringname");
 				data_array = sly::array<StringName>();
-				std::get<array<StringName>>(data_array).insert(data_var);
+				get_data<StringName>().insert(data_var);
+				//std::get<array<StringName>>(data_array).insert(data_var);
 				break;
 				//todo: add other cases for primitive types
 			default:
 				print("Vvariant");
 				data_array = sly::array<Variant>();
-				std::get<array<Variant>>(data_array).insert(data_var);
+				get_data<Variant>().insert(data_var);
+				//std::get<array<Variant>>(data_array).insert(data_var);
 		}
 		emit_changed(); // for Resources to notify the editor/users of changes
 }
+
+/*
+const Variant &Component::get_data_var() const {
+	return data_var; // get value (does conversion to_var())
+}*/
 
 System::System() {
 	print("CONSTRUCT System");
