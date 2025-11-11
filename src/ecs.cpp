@@ -127,51 +127,25 @@ void Component::set_data_var(const Variant &p_data_var) {
 			return;
 		}
 
-		//print("setting data_var ", p_data_var.get_type(), " : ", p_data_var);
-
-		int id; //todo:remove
 		switch(data_var.get_type()) {
 			case Variant::BOOL:
-				print("Vbool");
 				data_array = sly::array<bool>();
-				//std::get<array<bool>>(data_array).insert(data_var);
-				get_data<bool>().insert(data_var);
 				break;
 			case Variant::INT:
-				print("Vint");
 				data_array = sly::array<int>();
-				//std::get<array<int>>(data_array).insert(data_var);
-				get_data<int>().insert(data_var);
 				break;
 			case Variant::FLOAT:
-				print("Vfloat");
-				//data_var = (float)data_var * 2; //todo:remove
 				data_array = sly::array<float>();
-				//id = std::get<array<float>>(data_array).insert(data_var);
-				id = get_data<float>().insert(data_var);
-				print("inserted ", id, " into float component with value ", std::get<array<float>>(data_array)[id]);
-				/*
-				array<float>* float_array = &std::get<array<float>>(data_array);
-				float_array->insert(data_var);
-				*/
 				break;
 			case Variant::STRING:
-				print("Vstring");
 				data_array = sly::array<String>();
-				get_data<String>().insert(data_var);
 				break;
 			case Variant::STRING_NAME:
-				print("Vstringname");
 				data_array = sly::array<StringName>();
-				get_data<StringName>().insert(data_var);
-				//std::get<array<StringName>>(data_array).insert(data_var);
 				break;
-				//todo: add other cases for primitive types
+			//todo: add other cases for primitive types
 			default:
-				print("Vvariant");
 				data_array = sly::array<Variant>();
-				get_data<Variant>().insert(data_var);
-				//std::get<array<Variant>>(data_array).insert(data_var);
 		}
 		emit_changed(); // for Resources to notify the editor/users of changes
 }
@@ -336,6 +310,16 @@ void Ecs::register_entity(Object* object, const TypedArray<Component>& component
 void Ecs::register_object(Object *object) {
 	int object_id = object_map.insert(object);
 	print("register_object");
+
+	array<Component*> object_components;
+
+	// get components for all entity ids associated with this object
+	array<int> entity_ids;
+	//todo:
+
+	for(Component* component : object_components) {
+		component->create_component_data_entry(); // creates an entry in the component for this object and assigns the default values.
+	}
 	/*
 	//todo:remove
 	print("registering entity and creating components");
@@ -433,6 +417,29 @@ void Ecs::register_object(Object *object) {
 		print(component.get_data)
 	}
 */
+}
+
+void Component::create_component_data_entry() {
+	switch(data_var.get_type()) {
+		case Variant::BOOL:
+			get_data<bool>().insert(data_var);
+			break;
+		case Variant::INT:
+			get_data<int>().insert(data_var);
+			break;
+		case Variant::FLOAT:
+			get_data<float>().insert(data_var);
+			break;
+		case Variant::STRING:
+			get_data<String>().insert(data_var);
+			break;
+		case Variant::STRING_NAME:
+			get_data<StringName>().insert(data_var);
+			break;
+		//todo: add other cases for primitive types
+		default:
+			get_data<Variant>().insert(data_var);
+	}
 }
 
 void Ecs::unregister_object(Object *object) {

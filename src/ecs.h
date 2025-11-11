@@ -452,6 +452,8 @@ public:
 	~Component() override = default;
 	//Component(Variant p_data_var) { data_var = p_data_var; }
 
+	void create_component_data_entry();
+
 	//Union_Array union_array;
 
 	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer as a Variant is always 20 bytes.
