@@ -1,3 +1,6 @@
-[gd_resource type="Archetype" format=3 uid="uid://cwk1u13nhhumv"]
+[gd_resource type="Archetype" load_steps=2 format=3 uid="uid://cwk1u13nhhumv"]
+
+[ext_resource type="Archetype" uid="uid://be78d8xr5fn4n" path="res://ecs/archetype/tree_archetype.tres" id="1_h1o5k"]
 
 [resource]
+parents = Array[Archetype]([ExtResource("1_h1o5k")])

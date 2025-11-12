@@ -272,8 +272,13 @@ public:
 class Archetype : public Resource {	// Archetype
 GDCLASS(Archetype, Resource);
 
-	Dictionary attributes; // <StringName, Attribute>
 
+	TypedArray<Attribute> attributes;
+	TypedArray<Archetype> parents;
+
+/*
+	Dictionary attributes; // <StringName, Attribute>
+*/
 
 	//int id;
 	//TypedArray<StringName> tags;
@@ -291,8 +296,16 @@ public:
 
 	//Archetype(int p_id) : id(p_id) {}
 
+	void set_attributes(const TypedArray<Attribute>& p_attributes) { attributes = p_attributes; }
+	TypedArray<Attribute> get_attributes() const { return attributes; }; //todo: maybe return Dictionary&
+/*
+	void set_parents(const TypedArray<Archetype>& p_parents) { parents = p_parents; }
+	TypedArray<Archetype> get_parents() const { return parents; };
+*/
+	/*
 	void set_attributes(const Dictionary& p_attributes) { attributes = p_attributes; }
 	Dictionary get_attributes() const { return attributes; }; //todo: maybe return Dictionary&
+	*/
 /*
 	void set_tags(TypedArray<StringName> p_tags_required) { tags = p_tags_required; }
     TypedArray<StringName> get_tags() const { return tags; }

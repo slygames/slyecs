@@ -96,12 +96,19 @@ void NodeECS::_notification(int p_what) {
 void Archetype::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_attributes", "p_attributes"), &Archetype::set_attributes);
 	ClassDB::bind_method(D_METHOD("get_attributes"), &Archetype::get_attributes);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes", "get_attributes");
+/*
+	ClassDB::bind_method(D_METHOD("set_parents", "p_parents"), &Archetype::set_parents);
+	ClassDB::bind_method(D_METHOD("get_parents"), &Archetype::get_parents);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "parents", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Archetype"), "set_parents", "get_parents");
+*/
 	//ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "attributes", PROPERTY_HINT_DICTIONARY_TYPE, "Variant::STRING_NAME, Attribute"), "set_attributes", "get_attributes");
 	
-	
+	//todo:this maybe useful TYPED_DICTIONARY
+	/*
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::STRING_NAME) + ":;" + String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":" + "Attribute", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE), "set_attributes", "get_attributes");
+	*/
 
-	
 /*
 	ClassDB::bind_method(D_METHOD("set_tags", "tags"), &Archetype::set_tags);
 	ClassDB::bind_method(D_METHOD("get_tags"), &Archetype::get_tags);

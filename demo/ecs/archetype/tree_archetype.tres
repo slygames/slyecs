@@ -1,3 +1,6 @@
-[gd_resource type="Archetype" format=3 uid="uid://dxwrsoycc0ndc"]
+[gd_resource type="Archetype" load_steps=2 format=3 uid="uid://be78d8xr5fn4n"]
+
+[ext_resource type="Attribute" uid="uid://bgw7ltkxsg524" path="res://ecs/attribute/position_attribute.tres" id="1_fu6t1"]
 
 [resource]
+attributes = Array[Attribute]([ExtResource("1_fu6t1")])
