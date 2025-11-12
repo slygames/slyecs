@@ -1,0 +1,7 @@
+[gd_resource type="Entity" load_steps=3 format=3 uid="uid://7jnsx1aqbwom"]
+
+[ext_resource type="Component" uid="uid://bw4kohoavqbtt" path="res://ecs/component_del/transform3d_component.tres" id="1_d51ck"]
+[ext_resource type="Component" uid="uid://ctbbrptk80w3f" path="res://ecs/component_del/test_component.tres" id="2_wjxqa"]
+
+[resource]
+components = Array[Component]([ExtResource("1_d51ck"), ExtResource("2_wjxqa")])

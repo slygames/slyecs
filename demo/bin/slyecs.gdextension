@@ -8,10 +8,11 @@ reloadable = true
 ;NodeECS = "res://addons/slyecs/icons/gear_2.svg"
 NodeECS = "res://icons/gear_2.svg"
 Ecs = "res://icons/animation_gear.svg"
-Entity = "res://icons/inverse_gear_2.svg"
-System = "res://icons/inverse_gear_1.svg"
-Component = "res://icons/inverse_gear_2.svg"
+Ability = "res://icons/inverse_gear_1.svg"
+Archetype = "res://icons/inverse_gear_2.svg"
+Attribute = "res://icons/inverse_gear_2.svg"
 ;Tags = "res://icons/Marker.svg"
+
 
 
 [libraries]

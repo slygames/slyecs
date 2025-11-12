@@ -21,14 +21,14 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	// register classes
 	GDREGISTER_RUNTIME_CLASS(Ecs);
 	GDREGISTER_RUNTIME_CLASS(NodeECS);
-	GDREGISTER_RUNTIME_CLASS(Entity);
-	GDREGISTER_CLASS(Component); // not runtime class because data_var setter needs to be called in editor
-	GDREGISTER_RUNTIME_CLASS(System);
+	GDREGISTER_RUNTIME_CLASS(Archetype);
+	GDREGISTER_CLASS(Attribute); // not runtime class because data_var setter needs to be called in editor
+	GDREGISTER_RUNTIME_CLASS(Ability);
 
 	//GDREGISTER_RUNTIME_CLASS(Tags);
 	//GDREGISTER_RUNTIME_CLASS(Actor);
 	//GDREGISTER_RUNTIME_CLASS(Tag);
-	//GDREGISTER_RUNTIME_CLASS(SystemUpdater);	// todo: should this be merged with system?!
+	//GDREGISTER_RUNTIME_CLASS(AbilityUpdater);	// todo: should this be merged with ability?!
 	//GDREGISTER_RUNTIME_CLASS(ResourceEcs);
 	//GDREGISTER_RUNTIME_CLASS(RefCountedEcs);
 	

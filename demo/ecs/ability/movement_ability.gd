@@ -1,4 +1,4 @@
-extends System
+extends Ability
 
 func _update():
 	print("_update for movement system called from gdscript")

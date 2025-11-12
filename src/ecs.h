@@ -6,8 +6,8 @@
 #include <godot_cpp/classes/resource.hpp>
 //#include <godot_cpp/classes/array.hpp> // Includes the definition for TypedArray
 #include <godot_cpp/variant/variant.hpp>
-#include <godot_cpp/classes/resource_loader.hpp> // for load_system_script
-#include <godot_cpp/classes/script.hpp> // for load_system_script
+#include <godot_cpp/classes/resource_loader.hpp> // for load_ability_script
+#include <godot_cpp/classes/script.hpp> // for load_ability_script
 #include <godot_cpp/variant/string_name.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
 //#include "godot_cpp/classes/ref_counted.hpp"
@@ -27,29 +27,29 @@ using namespace godot;
 namespace sly {
 
 // forward declare classes
-class Entity;
-class System;
-class Component;
+class Archetype;
+class Ability;
+class Attribute;
 
-//MAKE_TYPED_ARRAY(Ref<System>, Variant::OBJECT)
-//MAKE_TYPED_ARRAY_INFO(Ref<System>, Variant::OBJECT)
+//MAKE_TYPED_ARRAY(Ref<Ability>, Variant::OBJECT)
+//MAKE_TYPED_ARRAY_INFO(Ref<Ability>, Variant::OBJECT)
 
 /**
- * Ecs runs as a singleton and calls update on each system in physics process.
+ * Ecs runs as a singleton and calls update on each ability in physics process.
  */
 class Ecs : public Node {
 	GDCLASS(Ecs, Node)
 
 public:
 	static map<Object*> object_map;
-	static map<Entity*> entity_map;
-	static map<Component*> component_map;
-	static map<System*> system_map;
+	static map<Archetype*> archetype_map;
+	static map<Attribute*> attribute_map;
+	static map<Ability*> ability_map;
 	//static map<StringName> tag_map;
 
 	static Ecs* singleton;
 
-	TypedArray<System> systems;
+	TypedArray<Ability> abilities;
 
 protected:
 	static void _bind_methods();
@@ -68,27 +68,27 @@ public:
 
 	void process_ecs();
 
-	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>()); // todo: add
-	//void register_entity(Object* object, const TypedArray<Component>& components = TypedArray<Component>());
+	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>()); // todo: add
+	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>());
 
 	void register_object(Object* object);
 	void unregister_object(Object* object);
 /*
-	void register_entity(Entity* entity);
-	void unregister_entity(Entity* entity);
+	void register_archetype(Archetype* archetype);
+	void unregister_archetype(Archetype* archetype);
 
-	void register_system(System* system);
-	void unregister_system(System* system);
+	void register_ability(Ability* ability);
+	void unregister_ability(Ability* ability);
 
-	void register_component(Component* component);
-	void unregister_component(Component* component);
+	void register_attribute(Attribute* attribute);
+	void unregister_attribute(Attribute* attribute);
 */
-	void set_systems(const TypedArray<System>& p_systems) { systems = p_systems; }
-	TypedArray<System> get_systems() const { return systems; };
+	void set_abilities(const TypedArray<Ability>& p_abilities) { abilities = p_abilities; }
+	TypedArray<Ability> get_abilities() const { return abilities; };
 
 /*
-	void set_systems(const TypedArray<Ref<System>>& p_systems) { systems = p_systems; }
-	TypedArray<Ref<System>> get_systems() const { return systems; };
+	void set_abilities(const TypedArray<Ref<Ability>>& p_abilities) { abilities = p_abilities; }
+	TypedArray<Ref<Ability>> get_abilities() const { return abilities; };
 */
 };
 
@@ -109,11 +109,11 @@ class EcsSpec {
 	EcsSpec() : is_enabled(true) {};
 };
 
-class ComponentSpec {
+class AttributeSpec {
 	map<Variant*> data_var;
 };
 
-class EntitySpec {
+class ArchetypeSpec {
 	StringName name_var;
 
 	// getters and setters
@@ -121,7 +121,7 @@ class EntitySpec {
     void set_name_var(const StringName& p_name_var) { name_var = p_name_var; };
 };
 
-class SystemSpec {
+class Abilitiespec {
 };
 */
 
@@ -200,7 +200,7 @@ GDCLASS(NodeECS, Node2D);
 
 	int id;
 
-	Ref<Entity> entity;
+	Ref<Archetype> archetype;
 
 protected:
 	static void _bind_methods();
@@ -216,21 +216,21 @@ public:
         return id == other.id;
     }
 
-	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
-	Ref<Entity> get_entity() const { return entity; };
+	void set_archetype(const Ref<Archetype>& p_archetype) { archetype = p_archetype; }
+	Ref<Archetype> get_archetype() const { return archetype; };
 };
 */
 
 
 /*
-// this should be Entity and should be a RefCounted, not in editor.
+// this should be Archetype and should be a RefCounted, not in editor.
 class Actor : public NodeECS {
 GDCLASS(Actor, NodeECS);
 
-	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Entity just needs it's own id.
-	TypedArray<Component> components;
+	//todo: this is unnecessary, should only store ints and those should be in a register in Ecs class or something. Archetype just needs it's own id.
+	TypedArray<Attribute> attributes;
 
-	Ref<Entity> entity;
+	Ref<Archetype> archetype;
 
 protected:
 	static void _bind_methods();
@@ -239,18 +239,18 @@ public:
 	Actor() {};
 	~Actor() override = default;
 	
-	//Entity(Object* p_object) : object(p_object) {}
+	//Archetype(Object* p_object) : object(p_object) {}
 	//Object* object; // actual godot game object
 
-	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
+	// todo: these should be in ArchetypeSpec or something like this on a per type basis to set the default values
 	
 	// setters and getters
-	//void set_components(const TypedArray<Component>& p_components) { components = p_components; }
-	//TypedArray<Component> get_components() const { return components; };
+	//void set_attributes(const TypedArray<Attribute>& p_attributes) { attributes = p_attributes; }
+	//TypedArray<Attribute> get_attributes() const { return attributes; };
 
 
-	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
-	Ref<Entity> get_entity() const { return entity; };
+	void set_archetype(const Ref<Archetype>& p_archetype) { archetype = p_archetype; }
+	Ref<Archetype> get_archetype() const { return archetype; };
 };
 */
 
@@ -262,49 +262,49 @@ public:
 
 
 /*
-class EntityParams {
+class ArchetypeParams {
 public:
 };
 */
 
 
-class Entity : public Resource {
-GDCLASS(Entity, Resource);
+class Archetype : public Resource {	// Archetype
+GDCLASS(Archetype, Resource);
 
 	//int id;
 
-	TypedArray<Component> components;
+	TypedArray<Attribute> attributes;
 	TypedArray<StringName> tags;
 	/*
-	//todo:these should all be ids really.. not nodes and components, but components are easier in editor picker..
-	TypedArray<Node> nodes;	// actual godot nodes of this entity
+	//todo:these should all be ids really.. not nodes and attributes, but attributes are easier in editor picker..
+	TypedArray<Node> nodes;	// actual godot nodes of this 
 	*/
 
 protected:
 	static void _bind_methods();
 
 public:
-	Entity();
-	~Entity() override = default;
+	Archetype();
+	~Archetype() override = default;
 
-	//Entity(int p_id) : id(p_id) {}
+	//Archetype(int p_id) : id(p_id) {}
 
-	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
-	TypedArray<Component> get_components() const { return components; };
+	void set_attributes(const TypedArray<Attribute>& p_attributes) { attributes = p_attributes; }
+	TypedArray<Attribute> get_attributes() const { return attributes; };
 
 	void set_tags(TypedArray<StringName> p_tags_required) { tags = p_tags_required; }
     TypedArray<StringName> get_tags() const { return tags; }
 
 /*
 	// to enable hashing in unordered map
-	bool operator==(const Entity& other) const {
+	bool operator==(const Archetype& other) const {
         return id == other.id;
     }
 */
-	//Entity(Object* p_object) : object(p_object) {}
+	//Archetype(Object* p_object) : object(p_object) {}
 	//Object* object; // actual godot game object
 
-	// todo: these should be in EntitySpec or something like this on a per type basis to set the default values
+	// todo: these should be in ArchetypeSpec or something like this on a per type basis to set the default values
 /*	
 	// setters and getters
 	void set_id(int p_id) { id = p_id; }
@@ -327,21 +327,21 @@ public:
 
 
 
-//todo: this should be Entity
+//todo: this should be Archetype
 class NodeECS : public Node {
 GDCLASS(NodeECS, Node);
 
 	//int id;
 
 	/*
-	TypedArray<Component> components;
+	TypedArray<Attribute> attributes;
 	*/
 
-	//Ref<Entity> entity;
-	//Entity entity;
+	//Ref<Archetype> archetype;
+	//Archetype archetype;
 
-	TypedArray<Entity> entities;
-	TypedArray<Component> components;
+	TypedArray<Archetype> archetypes;
+	TypedArray<Attribute> attributes;
 	TypedArray<StringName> tags;
 	
 protected:
@@ -353,7 +353,7 @@ public:
 	NodeECS() = default;
 	~NodeECS() override = default;
 	/*
-	//Entity(const Entity& other) = default; // default copy constructor (should be generated implicitly by the compiler)
+	//Archetype(const Archetype& other) = default; // default copy constructor (should be generated implicitly by the compiler)
 	NodeECS(int p_id) : id(p_id) {}
 	*/
 	// to enable hashing in unordered map
@@ -362,7 +362,7 @@ public:
         //return id == other.id;
     }
 
-	//Entity(Object* p_object) : object(p_object) {}
+	//Archetype(Object* p_object) : object(p_object) {}
 	//Object* object; // actual godot game object
 /*	
 	// setters and getters
@@ -370,27 +370,27 @@ public:
 	int get_id() const { return id; };
 */
 /*
-	void set_entity(const Ref<Entity>& p_entity) { entity = p_entity; }
-	Ref<Entity> get_entity() const { return entity; };
+	void set_archetype(const Ref<Archetype>& p_archetype) { archetype = p_archetype; }
+	Ref<Archetype> get_archetype() const { return archetype; };
 */
 
 
 	/*
-	void set_entity(const Entity& p_entity) { entity = p_entity; }
-	Entity get_entity() const { return entity; };
+	void set_archetype(const Archetype& p_archetype) { archetype = p_archetype; }
+	Archetype get_archetype() const { return archetype; };
 	*/
 
 	/*
-	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
-	TypedArray<Component> get_components() const { return components; };
+	void set_attributes(const TypedArray<Attribute>& p_attributes) { attributes = p_attributes; }
+	TypedArray<Attribute> get_attributes() const { return attributes; };
 	*/
 
 	// setters and getters
-	void set_entities(const TypedArray<Entity>& p_entities) { entities = p_entities; }
-	TypedArray<Entity> get_entities() const { return entities; };
+	void set_archetypes(const TypedArray<Archetype>& p_archetypes) { archetypes = p_archetypes; }
+	TypedArray<Archetype> get_archetypes() const { return archetypes; };
 
-	void set_components(const TypedArray<Component>& p_components) { components = p_components; }
-	TypedArray<Component> get_components() const { return components; };
+	void set_attributes(const TypedArray<Attribute>& p_attributes) { attributes = p_attributes; }
+	TypedArray<Attribute> get_attributes() const { return attributes; };
 
 	void set_tags(TypedArray<StringName> p_tags_required) { tags = p_tags_required; }
     TypedArray<StringName> get_tags() const { return tags; }
@@ -401,7 +401,7 @@ class Tags : public Object {
 GDCLASS(Tags, Object);
 
 	static const TypedArray<Callable>& callables;
-	static const TypedArray<int>& get_affected_entities();
+	static const TypedArray<int>& get_affected_archetypes();
 	
 protected:
 	static void _bind_methods() {};
@@ -441,18 +441,18 @@ union Union_Array {
 */
 
 //template <typename T>
-class Component : public Resource{
-GDCLASS(Component, Resource);
+class Attribute : public Resource{ // Attribute
+GDCLASS(Attribute, Resource);
 
 protected:
 	static void _bind_methods();
 
 public:
-	Component();
-	~Component() override = default;
-	//Component(Variant p_data_var) { data_var = p_data_var; }
+	Attribute();
+	~Attribute() override = default;
+	//Attribute(Variant p_data_var) { data_var = p_data_var; }
 
-	void create_component_data_entry();
+	void create_attribute_data_entry();
 
 	//Union_Array union_array;
 
@@ -492,8 +492,8 @@ public:
         return data_var;
     }*/
 
-	void set_var(int entity_id, Variant& value) {}; // sets value from variant (does conversion from_var())
-	const Variant get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
+	void set_var(int archetype_id, Variant& value) {}; // sets value from variant (does conversion from_var())
+	const Variant get_var(int archetype_id) const { return 0; }; // get value (does conversion to_var())
 
 	template <typename T>
 	Variant to_var(T val) { return Variant(val); }; // convert actual type to variant for editor
@@ -502,12 +502,12 @@ public:
 	T from_var(Variant var) { return cast_to<T>(var); };	// convert variant from editor to actual type
 
 	template <typename T>
-	const T get_value(int entity_id) { return T(); }; // get value directly (no conversion)
+	const T get_value(int archetype_id) { return T(); }; // get value directly (no conversion)
 
 	template <typename T>
-	void set_value(int entity_id, T& value) {}; // sets value directly (no conversion)
+	void set_value(int archetype_id, T& value) {}; // sets value directly (no conversion)
 
-	//todo:overload * operator and maybe = operator in sly::map so that two components can be multiplied together which will be useful to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
+	//todo:overload * operator and maybe = operator in sly::map so that two attributes can be multiplied together which will be useful to multiply all values by scalaras and same index values in other attributes by using queries like (movement_attribute = velocity_attribute * position_attribute * direction_attribute * delta)
 
 	/*
 	map<bool> data_bool;
@@ -534,8 +534,8 @@ public:
 
 
 /*
-class SystemUpdater : public Object {
-GDCLASS(SystemUpdater, Object);
+class AbilityUpdater : public Object {
+GDCLASS(AbilityUpdater, Object);
 
 
 	static const TypedArray<Callable>& callables;
@@ -546,18 +546,18 @@ protected:
 public:
 	//static TypedArray<Callable> callables;
 
-	static void system_movement() {};
-	//static system_damage();
-	//static system_render();
-	//static system_combat();
+	static void ability_movement() {};
+	//static ability_damage();
+	//static ability_render();
+	//static ability_combat();
 };
 */
 
-class System : public Resource {
-GDCLASS(System, Resource);
+class Ability : public Resource {	// Ability
+GDCLASS(Ability, Resource);
 
 /*
-//todo: enums should be components so this value can be read from the component instead, then system_combat can handle all these states, and have a gdscript equivalent in systems.gd
+//todo: enums should be attributes so this value can be read from the attribute instead, then ability_combat can handle all these states, and have a gdscript equivalent in abilities.gd
 enum : unsigned char {
 	COMBAT_PUNCH_RIGHT,
 	COMBAT_PUNCH_LEFT,
@@ -568,10 +568,10 @@ enum : unsigned char {
 	COMBAT_KICK_RIGHT,
 };
 */
-	TypedArray<Component> components_required;
-	TypedArray<Component> components_forbidden;
-	TypedArray<Component> components_remove;
-	TypedArray<Component> components_add;
+	TypedArray<Attribute> attributes_required;
+	TypedArray<Attribute> attributes_forbidden;
+	TypedArray<Attribute> attributes_remove;
+	TypedArray<Attribute> attributes_add;
 
 	TypedArray<StringName> tags_required;
 	TypedArray<StringName> tags_forbidden;
@@ -592,32 +592,32 @@ protected:
 	void load_callable_script();
 	*/
 
-	static const void get_affected_entities(TypedArray<int>& entities) {};
+	static const void get_affected_archetypes(TypedArray<int>& archetypes) {};
 
 public:
-	System();
-	~System() override = default;
+	Ability();
+	~Ability() override = default;
 /*
-	Callable system_callable; // callable called by update()
+	Callable ability_callable; // callable called by update()
 
-	static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update components e.g., to multiply all values by scalaras and same index values in other components by using queries like (movement_component = velocity_component * position_component * direction_component * delta)
+	static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update attributes e.g., to multiply all values by scalaras and same index values in other attributes by using queries like (movement_attribute = velocity_attribute * position_attribute * direction_attribute * delta)
 */
 	//TypedArray<int> effects;
 
-	//array<int> components_required;
+	//array<int> attributes_required;
 
 	// setters and getters
-	void set_components_required(const TypedArray<Component>& p_components_required) { components_required = p_components_required; }
-	TypedArray<Component> get_components_required() const { return components_required; };
+	void set_attributes_required(const TypedArray<Attribute>& p_attributes_required) { attributes_required = p_attributes_required; }
+	TypedArray<Attribute> get_attributes_required() const { return attributes_required; };
 
-	void set_components_forbidden(const TypedArray<Component>& p_components_forbidden) { components_forbidden = p_components_forbidden; }
-	TypedArray<Component> get_components_forbidden() const { return components_forbidden; };
+	void set_attributes_forbidden(const TypedArray<Attribute>& p_attributes_forbidden) { attributes_forbidden = p_attributes_forbidden; }
+	TypedArray<Attribute> get_attributes_forbidden() const { return attributes_forbidden; };
 
-	void set_components_add(const TypedArray<Component>& p_components_add) { components_add = p_components_add; }
-	TypedArray<Component> get_components_add() const { return components_add; };
+	void set_attributes_add(const TypedArray<Attribute>& p_attributes_add) { attributes_add = p_attributes_add; }
+	TypedArray<Attribute> get_attributes_add() const { return attributes_add; };
 
-	void set_components_remove(const TypedArray<Component>& p_components_remove) { components_remove = p_components_remove; }
-	TypedArray<Component> get_components_remove() const { return components_remove; };
+	void set_attributes_remove(const TypedArray<Attribute>& p_attributes_remove) { attributes_remove = p_attributes_remove; }
+	TypedArray<Attribute> get_attributes_remove() const { return attributes_remove; };
 
 	void set_tags_required(TypedArray<StringName> p_tags_required) { tags_required = p_tags_required; }
     TypedArray<StringName> get_tags_required() const { return tags_required; }
@@ -643,7 +643,7 @@ public:
 
 
 /**
- * Hash function for reverse lookup hash table, used by sly::map so it can store pointers to any Resource objects i.e. Entity, Component, System resources
+ * Hash function for reverse lookup hash table, used by sly::map so it can store pointers to any Resource objects i.e. Archetype, Attribute, Ability resources
  */
 /*
  namespace std {
