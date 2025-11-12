@@ -1,6 +1,0 @@
-[gd_resource type="Entity" load_steps=2 format=3 uid="uid://clundp2henlpx"]
-
-[ext_resource type="Component" uid="uid://ctbbrptk80w3f" path="res://ecs/component_del/test_component.tres" id="1_3sojn"]
-
-[resource]
-components = Array[Component]([ExtResource("1_3sojn")])

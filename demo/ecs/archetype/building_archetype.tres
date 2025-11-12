@@ -1,0 +1,7 @@
+[gd_resource type="Archetype" load_steps=2 format=3 uid="uid://be78d8xr5fn4n"]
+
+[sub_resource type="Attribute" id="Attribute_d5so2"]
+gd_data_var = 0.0
+
+[resource]
+attributes = Array[Attribute]([SubResource("Attribute_d5so2")])

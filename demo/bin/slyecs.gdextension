@@ -10,7 +10,7 @@ NodeECS = "res://icons/gear_2.svg"
 Ecs = "res://icons/animation_gear.svg"
 Ability = "res://icons/inverse_gear_1.svg"
 Archetype = "res://icons/inverse_gear_2.svg"
-Attribute = "res://icons/inverse_gear_2.svg"
+Attribute = "res://icons/gear_1.svg"
 ;Tags = "res://icons/Marker.svg"
 
 
