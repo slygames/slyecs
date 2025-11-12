@@ -35,19 +35,24 @@ void NodeECS::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(godot::Variant::OBJECT, "archetype", godot::PROPERTY_HINT_RESOURCE_TYPE, "Archetype"), "set_archetype", "get_archetype");
 */
 
-/*
 	ClassDB::bind_method(D_METHOD("set_attributes", "p_attributes"), &NodeECS::set_attributes);
 	ClassDB::bind_method(D_METHOD("get_attributes"), &NodeECS::get_attributes);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes", "get_attributes");
-*/
 
 	ClassDB::bind_method(D_METHOD("set_archetypes", "p_archetypes"), &NodeECS::set_archetypes);
 	ClassDB::bind_method(D_METHOD("get_archetypes"), &NodeECS::get_archetypes);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "archetypes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Archetype"), "set_archetypes", "get_archetypes");
+/*
+	ClassDB::bind_method(D_METHOD("set_attributes", "p_attributes"), &NodeEcs::set_attributes);
+	ClassDB::bind_method(D_METHOD("get_attributes"), &NodeEcs::get_attributes);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes", "get_attributes");
+*/
 
+/*
 	ClassDB::bind_method(D_METHOD("set_attributes", "p_attributes"), &NodeECS::set_attributes);
 	ClassDB::bind_method(D_METHOD("get_attributes"), &NodeECS::get_attributes);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes", "get_attributes");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + "StringName,Attribute"), "set_attributes", "get_attributes");
+*/
 
 	ClassDB::bind_method(D_METHOD("set_tags", "tags"), &NodeECS::set_tags);
 	ClassDB::bind_method(D_METHOD("get_tags"), &NodeECS::get_tags);
@@ -91,12 +96,17 @@ void NodeECS::_notification(int p_what) {
 void Archetype::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_attributes", "p_attributes"), &Archetype::set_attributes);
 	ClassDB::bind_method(D_METHOD("get_attributes"), &Archetype::get_attributes);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes", "get_attributes");
+	//ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "attributes", PROPERTY_HINT_DICTIONARY_TYPE, "Variant::STRING_NAME, Attribute"), "set_attributes", "get_attributes");
+	
+	
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::STRING_NAME) + ":;" + String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":" + "Attribute", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE), "set_attributes", "get_attributes");
 
+	
+/*
 	ClassDB::bind_method(D_METHOD("set_tags", "tags"), &Archetype::set_tags);
 	ClassDB::bind_method(D_METHOD("get_tags"), &Archetype::get_tags);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags", "get_tags" );
-
+*/
 
 	/*
 	ClassDB::bind_method(D_METHOD("set_nodes", "p_nodes"), &Archetype::set_nodes);

@@ -17,6 +17,7 @@
 #include "slymap.h"
 #include "util.h"
 #include <variant> // for std::variant
+#include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/classes/scene_tree.hpp> // for Ecs::connect()
 #include <godot_cpp/classes/window.hpp> // for Ecs::connect()
 #include <godot_cpp/core/gdvirtual.gen.inc>
@@ -271,10 +272,11 @@ public:
 class Archetype : public Resource {	// Archetype
 GDCLASS(Archetype, Resource);
 
-	//int id;
+	Dictionary attributes; // <StringName, Attribute>
 
-	TypedArray<Attribute> attributes;
-	TypedArray<StringName> tags;
+
+	//int id;
+	//TypedArray<StringName> tags;
 	/*
 	//todo:these should all be ids really.. not nodes and attributes, but attributes are easier in editor picker..
 	TypedArray<Node> nodes;	// actual godot nodes of this 
@@ -289,12 +291,12 @@ public:
 
 	//Archetype(int p_id) : id(p_id) {}
 
-	void set_attributes(const TypedArray<Attribute>& p_attributes) { attributes = p_attributes; }
-	TypedArray<Attribute> get_attributes() const { return attributes; };
-
+	void set_attributes(const Dictionary& p_attributes) { attributes = p_attributes; }
+	Dictionary get_attributes() const { return attributes; }; //todo: maybe return Dictionary&
+/*
 	void set_tags(TypedArray<StringName> p_tags_required) { tags = p_tags_required; }
     TypedArray<StringName> get_tags() const { return tags; }
-
+*/
 /*
 	// to enable hashing in unordered map
 	bool operator==(const Archetype& other) const {
