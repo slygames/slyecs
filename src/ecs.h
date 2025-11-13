@@ -38,9 +38,6 @@ class Attribute;
 class Ecs : public Node {
 	GDCLASS(Ecs, Node)
 
-public:
-	//static array<Ability*> abilities; // all enabled abilities
-
 	/*
 	static map<Object*> object_map;
 	static map<Archetype*> archetype_map;
@@ -49,7 +46,7 @@ public:
 	*/
 	static Ecs* singleton;
 
-	TypedArray<Ability> abilities;
+	//TypedArray<Ability> abilities;
 
 protected:
 	static void _bind_methods();
@@ -68,6 +65,8 @@ public:
 
 	void process_ecs();
 
+	map<Ability*> abilities; // all enabled abilities
+
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>()); // todo: add
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>());
 
@@ -85,8 +84,10 @@ public:
 	void register_attribute(Attribute* attribute);
 	void unregister_attribute(Attribute* attribute);
 */
+	/*
 	void set_abilities(const TypedArray<Ability>& p_abilities) { abilities = p_abilities; }
 	TypedArray<Ability> get_abilities() const { return abilities; };
+	*/
 
 /*
 	void set_abilities(const TypedArray<Ref<Ability>>& p_abilities) { abilities = p_abilities; }
@@ -649,6 +650,9 @@ public:
 
 	void set_tags_remove(TypedArray<StringName> p_tags_remove) { tags_remove = p_tags_remove; }
     TypedArray<StringName> get_tags_remove() const { return tags_remove; }
+
+	void set_is_enabled(bool p_is_enabled);
+	bool get_is_enabled();
 
 	virtual void update();
 	GDVIRTUAL0(_update);

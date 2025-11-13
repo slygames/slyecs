@@ -179,11 +179,11 @@ public:
 */
 
 	const T& operator[](int key) const & {
-		return value[lookup[key]];
+		return get(key);
 	}
 
 	T& operator[](int key) & {
-		return value[lookup[key]];
+		return get(key);
 	}
 
 	// this doesn't work, so can't do []= to assign values
@@ -213,7 +213,7 @@ public:
 		return new_index; // return index of added element
 	}
 
-	virtual void remove(int key) {
+	virtual void remove_key(int key) {
 		int lastkey = value.size()-1;
 		lookup[key] = -1; // disable in lookup by setting to -1
 		lookup[lastkey] = key; // swap keys

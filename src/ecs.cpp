@@ -26,10 +26,11 @@ void Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_archetype", "archetype"), &Ecs::unregister_object);
 	*/
 
+	/*
 	ClassDB::bind_method(D_METHOD("set_abilities", "p_abilities"), &Ecs::set_abilities);
 	ClassDB::bind_method(D_METHOD("get_abilities"), &Ecs::get_abilities);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Ability"), "set_abilities", "get_abilities");
-
+	*/
 
 	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_ARRAY_TYPE, "Ability"), "set_abilities", "get_abilities");
 
@@ -189,7 +190,7 @@ const Variant &Attribute::get_data_var() const {
 }*/
 
 Ability::Ability() : is_enabled(true) {
-	Ecs::get_singleton()->abilities.push_back(this);
+	Ecs::get_singleton()->abilities.insert(this);
 }
 
 
@@ -223,6 +224,12 @@ void Attribute::_bind_methods() {
 void Ability::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update"), &Ability::update);
 	GDVIRTUAL_BIND(_update);
+
+	ClassDB::bind_method(D_METHOD("set_is_enabled", "p_is_enabled"), &Ability::set_is_enabled);
+	ClassDB::bind_method(D_METHOD("get_is_enabled"), &Ability::get_is_enabled);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_enabled"), "set_is_enabled", "get_is_enabled");
+
+	//ADD_PROPERTY(PropertyInfo(Variant::BOOL, "toggled"), "set_toggled", "is_toggled");
 
 	ClassDB::bind_method(D_METHOD("set_attributes_required", "p_attributes_required"), &Ability::set_attributes_required);
 	ClassDB::bind_method(D_METHOD("get_attributes_required"), &Ability::get_attributes_required);
@@ -315,8 +322,7 @@ void Ecs::connect(SceneTree* scene_tree) {
 }
 
 void Ecs::process_ecs() {
-	for(int i=0; i<abilities.size();i++) {
-		Ability* ability = cast_to<Ability>(abilities[i]);
+	for(Ability* ability : abilities) {
 		ability->update();
 	}
 }
@@ -607,6 +613,16 @@ Array Attribute::create_array_from_variant(const Variant& p_variant) {
 }
 */
 
+void Ability::set_is_enabled(bool p_is_enabled) {
+	is_enabled = p_is_enabled;
+	Ecs::get_singleton()->abilities.insert(this);
+}
+
+bool Ability::get_is_enabled() {
+	map<Ability*> abilities = Ecs::get_singleton()->abilities;
+	abilities.remove(this);
+	return is_enabled;
+}
 
 
 } // namespace sly

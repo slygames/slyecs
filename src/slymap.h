@@ -28,7 +28,14 @@ public:
 		}
 	}
 
+    bool has(T& val) const {
+        return (bool)find.count(val); // count returns number of occurrences of a key but for a map this will be either 0 or 1
+    }
+
     virtual int insert(const T& val) override {
+        // check if val exists then do not insert, as maps can only have unique items
+        if(has(val)) return -1;
+        // value doesn't exist so insert into map
         int key = array<T>::insert(val);
         find[val] = key;
         return key;
@@ -39,10 +46,15 @@ public:
         find[val] = key;
 	}
 
-    virtual void remove(int key) override {
-        T val;
-        array<T>::remove(key);
+    virtual void remove_key(int key) override {
+        T val = array<T>::get(key);
+        array<T>::remove_key(key);
         find.erase(val);
+    }
+
+    void remove(T val) {
+        int key = find[val];
+        remove_key(key);
     }
 
     virtual void clear() {  
