@@ -1,5 +1,6 @@
 #include "ecs.h"
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/engine.hpp>
 
 namespace sly {
 
@@ -68,9 +69,25 @@ void NodeECS::_bind_methods() {
 }
 
 void NodeECS::_notification(int p_what) {
+	//print(p_what);
 	switch(p_what) {
+		/*
 		case NOTIFICATION_READY:
-		//todo1:create entity
+			// create entity
+			Entity* new_entity = Ecs::get_singleton()->create_entity(this->get_parent());
+			break;
+		*/
+		case NOTIFICATION_ENTER_TREE:
+			// create entity
+			entity = Ecs::get_singleton()->create_entity(this->get_parent());
+			//print("Entity created");
+			break;
+		case NOTIFICATION_EXIT_TREE:
+			// create entity
+			Ecs::get_singleton()->remove_entity(entity);
+			entity = nullptr;
+			//print("Entity removed");
+			break;
 
 		/*
 			// register parent of NodeEcs as the game object
@@ -190,7 +207,7 @@ const Variant &Attribute::get_data_var() const {
 }*/
 
 Ability::Ability() : is_enabled(true) {
-	Ecs::get_singleton()->abilities.insert(this->get_id());
+	Ecs::get_singleton()->ability_register.insert(this);
 }
 
 
@@ -295,7 +312,9 @@ void Ecs::_notification(int _what) {
 	switch(_what) {
 		case NOTIFICATION_READY:
 			//print("READY!!");
-			this->set_physics_process(true);
+			if (!Engine::get_singleton()->is_editor_hint()) {
+				this->set_physics_process(true);
+			}
 			break;
 		case NOTIFICATION_PHYSICS_PROCESS:
 			//print("PHYSICS_PROCESS!!");
@@ -322,15 +341,22 @@ void Ecs::connect(SceneTree* scene_tree) {
 }
 
 void Ecs::process_ecs() {
-	for(Ability* ability : abilities) {
-		ability->update();
+	//todo: maybe make this multithreaded and also the actual array and map operations like * / etc. or the operations in effects, however this is done
+	for(Ability* ability : ability_register) {
+		if(ability->get_is_enabled()) { ability->update(); }
 	}
 }
 
-void Ecs::create_entity(Object* object) {
-	Ref<Entity> new_entity(memnew(Entity));
-	new_entity->object_id = new_entity->get_instance_id();
+Entity* Ecs::create_entity(Object* object) {
+	Entity* new_entity = memnew(Entity); // reserve memory
+	new_entity->set_object(object);
 	entity_register.insert(new_entity);
+	return new_entity;
+}
+
+void Ecs::remove_entity(Entity* entity) {
+	entity_register.remove(entity);
+	memdelete(entity); // free memory
 }
 
 /* //todo: add
@@ -620,14 +646,15 @@ Array Attribute::create_array_from_variant(const Variant& p_variant) {
 */
 
 void Ability::set_is_enabled(bool p_is_enabled) {
+	/*
 	if(p_is_enabled) {
-		Ecs::get_singleton()->abilities.insert(this);
-		print("Ability registered");
+		Ecs::get_singleton()->ability_register.insert(this);
+		//print("Ability registered");
 	} else {
-		map<Ability*> abilities = Ecs::get_singleton()->abilities;
-		abilities.remove(this);
-		print("Ability unregistered");
+		Ecs::get_singleton()->ability_register.remove(this);
+		//print("Ability unregistered");
 	}
+	*/
 	is_enabled = p_is_enabled;
 }
 
@@ -636,14 +663,13 @@ bool Ability::get_is_enabled() {
 }
 
 // set game object id from instance id
-void Entity::set_object(Ref<RefCounted> object) {
+void Entity::set_object(Object* object) {
 	object_id = object->get_instance_id();
 }
 
 // get game object ref from instance id
-Ref<RefCounted> Entity::get_object() {
-	Ref<RefCounted> ref(UtilityFunctions::instance_from_id(object_id));
-	return ref;
+Object* Entity::get_object() {
+	return UtilityFunctions::instance_from_id(object_id);
 }
 
 } // namespace sly

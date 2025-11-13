@@ -13,6 +13,7 @@
 //#include "godot_cpp/classes/ref_counted.hpp"
 //#include <godot_cpp/classes/weak_ref.hpp>
 #include <functional> // for std::hash
+//#include <godot_cpp/variant/ref.hpp>
 //#include <cstdint>
 #include "slymap.h"
 #include "util.h"
@@ -29,9 +30,11 @@ using namespace godot;
 namespace sly {
 
 // forward declare classes
-class Archetype;
 class Ability;
+class Entity;
+
 class Attribute;
+class Archetype;
 
 /**
  * Ecs runs as a singleton and calls update on each ability in physics process.
@@ -49,6 +52,10 @@ class Ecs : public Node {
 
 	//TypedArray<Ability> abilities;
 
+	// registers containing all existing items not just enabled ones
+	map<Ability*> ability_register;
+	map<Entity*> entity_register;
+
 protected:
 	static void _bind_methods();
 
@@ -60,18 +67,17 @@ public:
 
 	// setters and getters
 	static Ecs* get_singleton(); // static method to get the singleton instance
-	
+
 	// alternate way to connect from _ready in gdscript by calling Ecs.connect(get_tree()) instead of using autoload scene
 	void connect(SceneTree* scene_tree);
 
 	void process_ecs();
 
-	// registers containing all existing items not just enabled ones
-	map<Ref<Ability>> ability_register;
-	map<Ref<Entity>> entity_register;
-
 	// create an Entity for a godot game object
-	void create_entity(Object* object);
+	Entity* create_entity(Object* object);
+	void remove_entity(Entity* entity);
+	
+	//void create_entity(Object* object);
 
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>()); // todo: add
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>());
@@ -99,6 +105,10 @@ public:
 	void set_abilities(const TypedArray<Ref<Ability>>& p_abilities) { abilities = p_abilities; }
 	TypedArray<Ref<Ability>> get_abilities() const { return abilities; };
 */
+
+	//friend Ability::Ability();
+	//friend Entity::Entity();
+	friend Ability;
 };
 
 
@@ -363,6 +373,8 @@ GDCLASS(NodeECS, Node);
 	//Ref<Archetype> archetype;
 	//Archetype archetype;
 
+	Entity* entity;
+
 	TypedArray<Archetype> archetypes;
 	TypedArray<Attribute> attributes;
 	TypedArray<StringName> tags;
@@ -374,16 +386,19 @@ protected:
 
 public:
 	NodeECS() = default;
-	~NodeECS() override = default;
+	//~NodeECS() override = default;
 	/*
 	//Archetype(const Archetype& other) = default; // default copy constructor (should be generated implicitly by the compiler)
 	NodeECS(int p_id) : id(p_id) {}
 	*/
+	/*
 	// to enable hashing in unordered map
 	bool operator==(const NodeECS& other) const {
 		return this == &other;
         //return id == other.id;
-    }
+    }*/
+
+	
 
 	//Archetype(Object* p_object) : object(p_object) {}
 	//Object* object; // actual godot game object
@@ -587,8 +602,20 @@ protected:
 public:
 	Entity() = default;
 
-	void set_object(Ref<RefCounted> object);	// set game object id from instance id
-	Ref<RefCounted> get_object();	// get game object id from instance id
+	void set_object(Object* object);	// set game object id from instance id
+	Object* get_object();	// get game object id from instance id
+
+	/*
+	bool operator==(const godot::Ref<Entity>& lhs, const godot::Ref<Entity>& rhs) {
+		return lhs.ptr() == rhs.ptr(); // Compare the underlying pointers
+	}*/
+
+	/*
+	// to enable hashing in unordered map
+	bool operator==(const Ref<Entity>& other) const {
+		return this == other.ptr();
+        //return id == other.id;
+    }*/
 
 };
 
@@ -610,7 +637,7 @@ enum : unsigned char {
 */
 	bool is_enabled;
 
-	map<Ref<Entity>> entities_assigned;
+	map<Entity*> entities_assigned;
 
 	TypedArray<Attribute> attributes_required;
 	TypedArray<Attribute> attributes_forbidden;
@@ -650,6 +677,8 @@ public:
 
 	//array<int> attributes_required;
 
+
+	
 	// setters and getters
 	void set_attributes_required(const TypedArray<Attribute>& p_attributes_required) { attributes_required = p_attributes_required; }
 	TypedArray<Attribute> get_attributes_required() const { return attributes_required; };
@@ -678,6 +707,11 @@ public:
 	void set_is_enabled(bool p_is_enabled);
 	bool get_is_enabled();
 
+	// to enable hashing in unordered map
+	bool operator==(const Ability& other) const {
+		return this == &other;
+    }
+
 	virtual void update();
 	GDVIRTUAL0(_update);
 };
@@ -692,17 +726,75 @@ public:
 /**
  * Hash function for reverse lookup hash table, used by sly::map so it can store pointers to any Resource objects i.e. Archetype, Attribute, Ability resources
  */
+ //namespace std {
 /*
- namespace std {
-
+    template <>
+    struct hash<godot::Ref<RefCounted>> {
+        std::size_t operator()(const godot::Ref<RefCounted>& k) const noexcept {
+            // Hash the underlying raw pointer
+            return std::hash<RefCounted*>{}(k.ptr());
+        }
+    };
+*/
+/*
 	template <typename T>
-	struct hash<Ref<T>> {
+	struct hash<godot::Ref<T>> {
+		// Check if the Ref is valid before trying to get its instance ID
+		if (p_ref.is_valid()) {
+			return std::hash<uint64_t>()(p_ref->get_instance_id());
+		}
+		// Return a consistent hash for invalid/null Ref<T>
+		return 0; 
+	};
+*/
+/*
+    template <>
+	struct hash<godot::Ref<sly::Ability>> {
+        std::size_t operator()(const godot::Ref<sly::Ability>& k) const noexcept {
+            // Hash the underlying raw pointer
+            return std::hash<sly::Ability*>{}(k.ptr());
+        }
+    };
+
+    template <>
+	struct hash<godot::Ref<sly::Entity>> {
+        std::size_t operator()(const godot::Ref<sly::Entity>& k) const noexcept {
+            // Hash the underlying raw pointer
+            return std::hash<sly::Entity*>{}(k.ptr());
+        }
+    };
+*/
+	/*
+    template <template T>
+	struct hash<godot::Ref<T>> {
+        std::size_t operator()(const godot::Ref<T>& k) const noexcept {
+            // Hash the underlying raw pointer
+            return std::hash<MyObject*>{}(k.ptr());
+        }
+    };*/
+
+	/*
+    template <>
+    struct hash<godot::Ref<MyObject>> {
+        std::size_t operator()(const godot::Ref<MyObject>& k) const noexcept {
+            // Hash the underlying raw pointer
+            return std::hash<MyObject*>{}(k.ptr());
+        }
+    };*/
+
+	/*
+	template <typename T>
+	struct hash<godot::Ref<T>> {
 		size_t operator()(const godot::Ref<T>& ref) const {
         // Hash the underlying pointer
         return std::hash<T*>{}(ref.ptr()); 
 		}
-	};
+	};*/
 
+
+
+
+/*
 	template <>
 	struct hash<godot::WeakRef> {
 		size_t operator()(const godot::WeakRef& wr) const {
@@ -720,8 +812,7 @@ public:
 			return hash<int>()(ptr->get_id()); 
 		}
 	};
-	
-} // namespac
- e std
-*/
+*/	
+//} // namespace std
+
 

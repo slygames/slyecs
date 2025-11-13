@@ -12,10 +12,10 @@ script = ExtResource("1_qleqb")
 [node name="Sprite2D" type="Sprite2D" parent="player"]
 texture = ExtResource("2_fighv")
 
-[node name="sword" type="Node2D" parent="player"]
-
-[node name="NodeECS" type="NodeECS" parent="player/sword"]
+[node name="NodeECS2" type="NodeECS" parent="player/Sprite2D"]
 attributes = Array[Attribute]([ExtResource("3_qqekj")])
+
+[node name="sword" type="Node2D" parent="player"]
 
 [node name="NodeECS" type="NodeECS" parent="player"]
 

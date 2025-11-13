@@ -23,8 +23,8 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	GDREGISTER_RUNTIME_CLASS(NodeECS);
 	GDREGISTER_RUNTIME_CLASS(Archetype);
 	GDREGISTER_RUNTIME_CLASS(Entity);
+	GDREGISTER_RUNTIME_CLASS(Ability);
 	GDREGISTER_CLASS(Attribute); // not runtime class because data_var setter needs to be called in editor
-	GDREGISTER_CLASS(Ability); // not runtime class because is_enabled setter needs to be called in editor
 
 	//GDREGISTER_RUNTIME_CLASS(Tags);
 	//GDREGISTER_RUNTIME_CLASS(Actor);
