@@ -662,6 +662,14 @@ bool Ability::get_is_enabled() {
 	return is_enabled;
 }
 
+void Entity::grant_ability(Ability* p_ability) {
+	abilities.insert(p_ability);
+}
+
+void Entity::clear_ability(Ability* p_ability) {
+	abilities.remove(p_ability);
+}
+
 // set game object id from instance id
 void Entity::set_object(Object* object) {
 	object_id = object->get_instance_id();

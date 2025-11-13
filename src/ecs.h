@@ -597,7 +597,7 @@ class Entity : public RefCounted {
 	int64_t object_id;
 
 	array<Attribute*> attributes;
-	array<Ability*> abilities;
+	map<Ability*> abilities;
 	array<Effect*> effects;
 	array<StringName> tags;
 
@@ -607,12 +607,12 @@ protected:
 public:
 	Entity() = default;
 
-	void grant_ability(Ability& p_ability);
-	void clear_ability(Ability& p_ability);
-
+	void grant_ability(Ability* p_ability);
+	void clear_ability(Ability* p_ability);
+/*
 	void grant_abilities(TypedArray<Ability>& p_abilities);
 	void clear_abilities(TypedArray<Ability>& p_abilities);
-
+*/
 	void set_object(Object* object);	// set game object id from instance id
 	Object* get_object();	// get game object id from instance id
 
@@ -732,7 +732,7 @@ class Effect : public Resource {	// Ability
 GDCLASS(Effect, Resource);
 
 protected:
-	static void _bind_methods();
+	static void _bind_methods() {};
 
 };
 
