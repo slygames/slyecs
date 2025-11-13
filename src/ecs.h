@@ -32,9 +32,6 @@ class Archetype;
 class Ability;
 class Attribute;
 
-//MAKE_TYPED_ARRAY(Ref<Ability>, Variant::OBJECT)
-//MAKE_TYPED_ARRAY_INFO(Ref<Ability>, Variant::OBJECT)
-
 /**
  * Ecs runs as a singleton and calls update on each ability in physics process.
  */
@@ -42,12 +39,14 @@ class Ecs : public Node {
 	GDCLASS(Ecs, Node)
 
 public:
+	//static array<Ability*> abilities; // all enabled abilities
+
+	/*
 	static map<Object*> object_map;
 	static map<Archetype*> archetype_map;
 	static map<Attribute*> attribute_map;
-	static map<Ability*> ability_map;
 	//static map<StringName> tag_map;
-
+	*/
 	static Ecs* singleton;
 
 	TypedArray<Ability> abilities;
@@ -72,8 +71,10 @@ public:
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>()); // todo: add
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>());
 
+	/*
 	void register_object(Object* object);
 	void unregister_object(Object* object);
+	*/
 /*
 	void register_archetype(Archetype* archetype);
 	void unregister_archetype(Archetype* archetype);
@@ -456,7 +457,7 @@ union Union_Array {
 */
 
 //template <typename T>
-class Attribute : public Resource{ // Attribute
+class Attribute : public Resource { // Attribute
 GDCLASS(Attribute, Resource);
 
 protected:
@@ -471,7 +472,7 @@ public:
 
 	//Union_Array union_array;
 
-	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer as a Variant is always 20 bytes.
+	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer for ints or floats etc. as a Variant is always 20 bytes.
     using Variant_Array = std::variant<array<Variant>, array<bool>, array<int>, array<float>, array<String>, array<StringName>>;
 
 	Variant_Array data_array;
@@ -583,6 +584,9 @@ enum : unsigned char {
 	COMBAT_KICK_RIGHT,
 };
 */
+	bool is_enabled;
+
+
 	TypedArray<Attribute> attributes_required;
 	TypedArray<Attribute> attributes_forbidden;
 	TypedArray<Attribute> attributes_remove;

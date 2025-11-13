@@ -3,11 +3,14 @@
 
 namespace sly {
 
+//array<Ability*> Ecs::abilities;
+
+/*
 map<Object*> Ecs::object_map;
 map<Archetype*> Ecs::archetype_map;
 map<Attribute*> Ecs::attribute_map;
-map<Ability*> Ecs::ability_map;
 //map<StringName> Ecs::tag_map;
+*/
 
 // initialize static variables
 Ecs* Ecs::singleton = nullptr;
@@ -15,15 +18,19 @@ Ecs* Ecs::singleton = nullptr;
 void Ecs::_bind_methods() {
 	//ClassDB::bind_static_method("Ecs", D_METHOD("get_singleton"), &Ecs::get_singleton);
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
+	
+	/*
 	//todo:add
 	//ClassDB::bind_method(D_METHOD("create_archetype", "object", "attributes"), &Ecs::register_archetype, DEFVAL(TypedArray<Attribute>()));
 	ClassDB::bind_method(D_METHOD("create_archetype", "archetype"), &Ecs::register_object);
 	ClassDB::bind_method(D_METHOD("remove_archetype", "archetype"), &Ecs::unregister_object);
-
+	*/
 
 	ClassDB::bind_method(D_METHOD("set_abilities", "p_abilities"), &Ecs::set_abilities);
 	ClassDB::bind_method(D_METHOD("get_abilities"), &Ecs::get_abilities);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Ability"), "set_abilities", "get_abilities");
+
+
 	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_ARRAY_TYPE, "Ability"), "set_abilities", "get_abilities");
 
 }
@@ -62,8 +69,13 @@ void NodeECS::_bind_methods() {
 void NodeECS::_notification(int p_what) {
 	switch(p_what) {
 		case NOTIFICATION_READY:
+		//todo1:create entity
+
+		/*
 			// register parent of NodeEcs as the game object
 			Ecs::get_singleton()->register_object(this->get_parent());
+		*/
+
 //todo:enable
 /*			
 			// get unique set of all attributes from archetypes
@@ -127,15 +139,19 @@ void Archetype::_bind_methods() {
 }
 
 Archetype::Archetype() {
+	/*
 	print("CONSTRUCT archetype");
 	Ecs::archetype_map.insert(this);
 	print("archetype map size A: ", Ecs::attribute_map.size());
+	*/
 }
 
 Attribute::Attribute() {
+	/*
 	print("CONSTRUCT attribute");
 	Ecs::attribute_map.insert(this);
 	print("comp map size A: ", Ecs::attribute_map.size());
+	*/
 }
 
 void Attribute::set_data_var(const Variant &p_data_var) {
@@ -172,10 +188,8 @@ const Variant &Attribute::get_data_var() const {
 	return data_var; // get value (does conversion to_var())
 }*/
 
-Ability::Ability() {
-	print("CONSTRUCT Ability");
-	Ecs::ability_map.insert(this);
-	print("ability map size A: ", Ecs::ability_map.size());
+Ability::Ability() : is_enabled(true) {
+	Ecs::get_singleton()->abilities.push_back(this);
 }
 
 
@@ -301,10 +315,8 @@ void Ecs::connect(SceneTree* scene_tree) {
 }
 
 void Ecs::process_ecs() {
-	
-	//print("processing.. ", get_process_delta_time());
-
-	for(Ability* ability : ability_map) {
+	for(int i=0; i<abilities.size();i++) {
+		Ability* ability = cast_to<Ability>(abilities[i]);
 		ability->update();
 	}
 }
@@ -324,6 +336,7 @@ void Ecs::register_archetype(Object* object, const TypedArray<Attribute>& attrib
 }
 */
 
+/*
 void Ecs::register_object(Object *object) {
 	int object_id = object_map.insert(object);
 	print("register_object");
@@ -337,6 +350,7 @@ void Ecs::register_object(Object *object) {
 	for(Attribute* attribute : object_attributes) {
 		attribute->create_attribute_data_entry(); // creates an entry in the attribute for this object and assigns the default values.
 	}
+*/
 	/*
 	//todo:remove
 	print("registering archetype and creating attributes");
@@ -434,7 +448,7 @@ void Ecs::register_object(Object *object) {
 		print(attribute.get_data)
 	}
 */
-}
+//}
 
 void Attribute::create_attribute_data_entry() {
 	switch(data_var.get_type()) {
@@ -459,9 +473,10 @@ void Attribute::create_attribute_data_entry() {
 	}
 }
 
+/*
 void Ecs::unregister_object(Object *object) {
 	object_map.remove(object_map.find[object]);
-}
+}*/
 
 /*
 void Ecs::register_archetype(Archetype *archetype) {
