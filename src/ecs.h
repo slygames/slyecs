@@ -32,7 +32,7 @@ namespace sly {
 // forward declare classes
 class Ability;
 class Entity;
-
+class Effect;
 class Attribute;
 class Archetype;
 
@@ -596,11 +596,22 @@ class Entity : public RefCounted {
 
 	int64_t object_id;
 
+	array<Attribute*> attributes;
+	array<Ability*> abilities;
+	array<Effect*> effects;
+	array<StringName> tags;
+
 protected:
 	static void _bind_methods() {};
 
 public:
 	Entity() = default;
+
+	void grant_ability(Ability& p_ability);
+	void clear_ability(Ability& p_ability);
+
+	void grant_abilities(TypedArray<Ability>& p_abilities);
+	void clear_abilities(TypedArray<Ability>& p_abilities);
 
 	void set_object(Object* object);	// set game object id from instance id
 	Object* get_object();	// get game object id from instance id
@@ -618,7 +629,6 @@ public:
     }*/
 
 };
-
 
 class Ability : public Resource {	// Ability
 GDCLASS(Ability, Resource);
@@ -667,7 +677,7 @@ protected:
 
 public:
 	Ability();
-	~Ability() override = default;
+	//~Ability() override = default;
 /*
 	Callable ability_callable; // callable called by update()
 
@@ -717,6 +727,14 @@ public:
 };
 
 
+
+class Effect : public Resource {	// Ability
+GDCLASS(Effect, Resource);
+
+protected:
+	static void _bind_methods();
+
+};
 
 
 
