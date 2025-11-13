@@ -28,7 +28,7 @@ public:
 		}
 	}
 
-    bool has(T& val) const {
+    bool has(const T& val) const {
         return (bool)find.count(val); // count returns number of occurrences of a key but for a map this will be either 0 or 1
     }
 
@@ -41,7 +41,7 @@ public:
         return key;
     }
 
-    virtual void set(int key, T& val) override {
+    virtual void set(int key, const T& val) override {
         array<T>::set(key, val);
         find[val] = key;
 	}
@@ -52,7 +52,7 @@ public:
         find.erase(val);
     }
 
-    void remove(T val) {
+    void remove(const T& val) {
         int key = find[val];
         remove_key(key);
     }

@@ -202,7 +202,7 @@ public:
 	}
 
 	// set a value by key (or use []=) operator
-	virtual void set(int key, T& val) {
+	virtual void set(int key, const T& val) {
 		value[key] = val;
 	}
 

@@ -614,13 +614,18 @@ Array Attribute::create_array_from_variant(const Variant& p_variant) {
 */
 
 void Ability::set_is_enabled(bool p_is_enabled) {
+	if(p_is_enabled) {
+		Ecs::get_singleton()->abilities.insert(this);
+		print("Ability registered");
+	} else {
+		map<Ability*> abilities = Ecs::get_singleton()->abilities;
+		abilities.remove(this);
+		print("Ability unregistered");
+	}
 	is_enabled = p_is_enabled;
-	Ecs::get_singleton()->abilities.insert(this);
 }
 
 bool Ability::get_is_enabled() {
-	map<Ability*> abilities = Ecs::get_singleton()->abilities;
-	abilities.remove(this);
 	return is_enabled;
 }
 
