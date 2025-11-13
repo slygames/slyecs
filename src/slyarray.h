@@ -11,6 +11,8 @@
 
 namespace sly {
 
+//todo: should this use int64_t for keys as godot uid is 64 bit int64_t?
+
 template <typename T>
 class array {
 

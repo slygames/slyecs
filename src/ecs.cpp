@@ -190,7 +190,7 @@ const Variant &Attribute::get_data_var() const {
 }*/
 
 Ability::Ability() : is_enabled(true) {
-	Ecs::get_singleton()->abilities.insert(this);
+	Ecs::get_singleton()->abilities.insert(this->get_id());
 }
 
 
@@ -325,6 +325,12 @@ void Ecs::process_ecs() {
 	for(Ability* ability : abilities) {
 		ability->update();
 	}
+}
+
+void Ecs::create_entity(Object* object) {
+	Ref<Entity> new_entity(memnew(Entity));
+	new_entity->object_id = new_entity->get_instance_id();
+	entity_register.insert(new_entity);
 }
 
 /* //todo: add
@@ -629,5 +635,15 @@ bool Ability::get_is_enabled() {
 	return is_enabled;
 }
 
+// set game object id from instance id
+void Entity::set_object(Ref<RefCounted> object) {
+	object_id = object->get_instance_id();
+}
+
+// get game object ref from instance id
+Ref<RefCounted> Entity::get_object() {
+	Ref<RefCounted> ref(UtilityFunctions::instance_from_id(object_id));
+	return ref;
+}
 
 } // namespace sly

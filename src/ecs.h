@@ -17,6 +17,7 @@
 #include "slymap.h"
 #include "util.h"
 #include <variant> // for std::variant
+//#include <godot_cpp/variant/utility_functions.hpp> // for instance_from_id
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/classes/scene_tree.hpp> // for Ecs::connect()
 #include <godot_cpp/classes/window.hpp> // for Ecs::connect()
@@ -65,7 +66,12 @@ public:
 
 	void process_ecs();
 
-	map<Ability*> abilities; // all enabled abilities
+	// registers containing all existing items not just enabled ones
+	map<Ref<Ability>> ability_register;
+	map<Ref<Entity>> entity_register;
+
+	// create an Entity for a godot game object
+	void create_entity(Object* object);
 
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>()); // todo: add
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>());
@@ -570,6 +576,23 @@ public:
 };
 */
 
+class Entity : public RefCounted {
+	GDCLASS(Entity, RefCounted);
+
+	int64_t object_id;
+
+protected:
+	static void _bind_methods() {};
+
+public:
+	Entity() = default;
+
+	void set_object(Ref<RefCounted> object);	// set game object id from instance id
+	Ref<RefCounted> get_object();	// get game object id from instance id
+
+};
+
+
 class Ability : public Resource {	// Ability
 GDCLASS(Ability, Resource);
 
@@ -587,6 +610,7 @@ enum : unsigned char {
 */
 	bool is_enabled;
 
+	map<Ref<Entity>> entities_assigned;
 
 	TypedArray<Attribute> attributes_required;
 	TypedArray<Attribute> attributes_forbidden;
