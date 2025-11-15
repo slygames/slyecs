@@ -1,3 +1,4 @@
 [gd_resource type="Ability" format=3 uid="uid://blgahpsvsrbgk"]
 
 [resource]
+ability_name = &"movement_ability"

@@ -1,3 +1,4 @@
-[gd_resource type="Ability" format=3 uid="uid://vhiut8vkhy0q"]
+[gd_resource type="Ability" format=3 uid="uid://c825g6fg3fbma"]
 
 [resource]
+ability_name = &"damage_ability"

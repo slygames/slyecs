@@ -50,11 +50,11 @@ class Ecs : public Node {
 	*/
 	static Ecs* singleton;
 
-	//TypedArray<Ability> abilities;
+	TypedArray<Ability> abilities;	// all abilities added to the Ecs
 
 	// registers containing all existing items not just enabled ones
-	map<Ability*> ability_register;
-	map<Entity*> entity_register;
+	//map<Ability*> ability_register; //todo:remove
+	map<Entity*> entity_register; //todo:replace with static or remove?
 
 protected:
 	static void _bind_methods();
@@ -64,6 +64,14 @@ protected:
 public:
 	Ecs() = default;
 	~Ecs() override = default;
+
+/*
+	int testint = 0; //todo:remove
+	void increment_testint(StringName name) { 
+		testint++; 
+		print("testint val : ", testint, " from : ", name);
+	}
+*/
 
 	// setters and getters
 	static Ecs* get_singleton(); // static method to get the singleton instance
@@ -76,7 +84,10 @@ public:
 	// create an Entity for a godot game object
 	Entity* create_entity(Object* object);
 	void remove_entity(Entity* entity);
-	
+
+	void set_abilities(const TypedArray<Ability>& p_abilities) { abilities = p_abilities; }
+	TypedArray<Ability> get_abilities() const { return abilities; };
+
 	//void create_entity(Object* object);
 
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>()); // todo: add
@@ -596,19 +607,32 @@ class Entity : public RefCounted {
 
 	int64_t object_id;
 
-	array<Attribute*> attributes;
+	map<Attribute*> attributes;
 	map<Ability*> abilities;
-	array<Effect*> effects;
-	array<StringName> tags;
+	map<Effect*> effects;
+	map<StringName> tags;
 
 protected:
-	static void _bind_methods() {};
+	static void _bind_methods();
 
 public:
 	Entity() = default;
 
-	void grant_ability(Ability* p_ability);
+	void add_ability(Ability* p_ability);
 	void clear_ability(Ability* p_ability);
+
+	void add_effect(Effect* p_effect);
+	void clear_effect(Effect* p_effect);
+
+	void add_tag(StringName p_tag);
+	void clear_tag(StringName p_tag);
+
+	//todo: this should take stringname "attribute_name" instead of attribute?
+	template <typename T>
+	void set_attribute(Attribute* p_attribute, T value);
+	template <typename T>
+	T get_attribute(Attribute* p_attribute);
+
 /*
 	void grant_abilities(TypedArray<Ability>& p_abilities);
 	void clear_abilities(TypedArray<Ability>& p_abilities);
@@ -647,17 +671,19 @@ enum : unsigned char {
 */
 	bool is_enabled;
 
+	StringName ability_name;
+
 	map<Entity*> entities_assigned;
 
 	TypedArray<Attribute> attributes_required;
 	TypedArray<Attribute> attributes_forbidden;
+	/*
 	TypedArray<Attribute> attributes_remove;
 	TypedArray<Attribute> attributes_add;
+	*/
 
 	TypedArray<StringName> tags_required;
 	TypedArray<StringName> tags_forbidden;
-	TypedArray<StringName> tags_add;
-	TypedArray<StringName> tags_remove;
 
 	/*
 	float duration;
@@ -667,6 +693,8 @@ enum : unsigned char {
 protected:
 	static void _bind_methods();
 
+	//void _notification(int p_what);
+
 	/*
 	// load callable functions into Ecs
 	void load_callable();
@@ -675,20 +703,26 @@ protected:
 
 	static const void get_affected_archetypes(TypedArray<int>& archetypes) {};
 
+	/*
+	void _notification(int p_what);
+	*/
+
 public:
 	Ability();
-	//~Ability() override = default;
-/*
-	Callable ability_callable; // callable called by update()
+	//~Ability() override;
+	
+	static map<Ability*> abilities;
 
-	static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update attributes e.g., to multiply all values by scalaras and same index values in other attributes by using queries like (movement_attribute = velocity_attribute * position_attribute * direction_attribute * delta)
-*/
+	//~Ability() override = default;
+	/*
+		Callable ability_callable; // callable called by update()
+
+		static bool run_query(String query) { return false; } // returns true if query was successful }; // bulk queries to update attributes e.g., to multiply all values by scalaras and same index values in other attributes by using queries like (movement_attribute = velocity_attribute * position_attribute * direction_attribute * delta)
+	*/
 	//TypedArray<int> effects;
 
 	//array<int> attributes_required;
 
-
-	
 	// setters and getters
 	void set_attributes_required(const TypedArray<Attribute>& p_attributes_required) { attributes_required = p_attributes_required; }
 	TypedArray<Attribute> get_attributes_required() const { return attributes_required; };
@@ -696,23 +730,14 @@ public:
 	void set_attributes_forbidden(const TypedArray<Attribute>& p_attributes_forbidden) { attributes_forbidden = p_attributes_forbidden; }
 	TypedArray<Attribute> get_attributes_forbidden() const { return attributes_forbidden; };
 
-	void set_attributes_add(const TypedArray<Attribute>& p_attributes_add) { attributes_add = p_attributes_add; }
-	TypedArray<Attribute> get_attributes_add() const { return attributes_add; };
-
-	void set_attributes_remove(const TypedArray<Attribute>& p_attributes_remove) { attributes_remove = p_attributes_remove; }
-	TypedArray<Attribute> get_attributes_remove() const { return attributes_remove; };
-
 	void set_tags_required(TypedArray<StringName> p_tags_required) { tags_required = p_tags_required; }
     TypedArray<StringName> get_tags_required() const { return tags_required; }
 
 	void set_tags_forbidden(TypedArray<StringName> p_tags_forbidden) { tags_forbidden = p_tags_forbidden; }
     TypedArray<StringName> get_tags_forbidden() const { return tags_forbidden; }
 
-	void set_tags_add(TypedArray<StringName> p_tags_add) { tags_add = p_tags_add; }
-    TypedArray<StringName> get_tags_add() const { return tags_add; }
-
-	void set_tags_remove(TypedArray<StringName> p_tags_remove) { tags_remove = p_tags_remove; }
-    TypedArray<StringName> get_tags_remove() const { return tags_remove; }
+	void set_ability_name(StringName p_ability_name) { ability_name = p_ability_name; }
+	StringName get_ability_name() { return ability_name; }
 
 	void set_is_enabled(bool p_is_enabled);
 	bool get_is_enabled();
@@ -731,9 +756,36 @@ public:
 class Effect : public Resource {	// Ability
 GDCLASS(Effect, Resource);
 
-protected:
-	static void _bind_methods() {};
+	TypedArray<String> commands;
+	TypedArray<StringName> tags_add;
+	TypedArray<StringName> tags_remove;
+	float duration;
+	float cooldown;
 
+	Entity* target_entity;
+
+protected:
+	static void _bind_methods();
+public:
+	Effect() = default;
+/*
+	void attach_effect(Entity* target_entity);
+	void detach_effect(Entity* target_entity);
+*/
+	void set_commands(TypedArray<String> p_commands) { commands = p_commands; }
+    TypedArray<String> get_commands() const { return commands; }
+
+	void set_tags_add(TypedArray<StringName> p_tags_add) { tags_add = p_tags_add; }
+    TypedArray<StringName> get_tags_add() const { return tags_add; }
+
+	void set_tags_remove(TypedArray<StringName> p_tags_remove) { tags_remove = p_tags_remove; }
+    TypedArray<StringName> get_tags_remove() const { return tags_remove; }
+
+	void set_duration(float p_duration) { duration = p_duration; }
+	float get_duration() const { return duration; }
+
+	void set_cooldown(float p_cooldown) { cooldown = p_cooldown; }
+	float get_cooldown() const { return cooldown; }
 };
 
 

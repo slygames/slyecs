@@ -2,7 +2,7 @@ extends Ability
 
 func _update():
 	print("_update for movement system called from gdscript")
-
+	
 	#components_required[0] = (Transform3D)components_required[0].data_var.x
 	# * components_required[1]
 

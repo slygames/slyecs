@@ -4,6 +4,10 @@
 
 namespace sly {
 
+map<Ability*> Ability::abilities; //todo:remove
+
+//TypedArray<Ability> Ecs::abilities;
+
 //array<Ability*> Ecs::abilities;
 
 /*
@@ -16,7 +20,7 @@ map<Attribute*> Ecs::attribute_map;
 // initialize static variables
 Ecs* Ecs::singleton = nullptr;
 
-void Ecs::_bind_methods() {
+void Ecs:: _bind_methods() {
 	//ClassDB::bind_static_method("Ecs", D_METHOD("get_singleton"), &Ecs::get_singleton);
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
 	
@@ -27,11 +31,9 @@ void Ecs::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_archetype", "archetype"), &Ecs::unregister_object);
 	*/
 
-	/*
 	ClassDB::bind_method(D_METHOD("set_abilities", "p_abilities"), &Ecs::set_abilities);
 	ClassDB::bind_method(D_METHOD("get_abilities"), &Ecs::get_abilities);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Ability"), "set_abilities", "get_abilities");
-	*/
 
 	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_ARRAY_TYPE, "Ability"), "set_abilities", "get_abilities");
 
@@ -207,9 +209,34 @@ const Variant &Attribute::get_data_var() const {
 }*/
 
 Ability::Ability() : is_enabled(true) {
-	Ecs::get_singleton()->ability_register.insert(this);
+	//notification(NOTIFICATION_POSTINITIALIZE);
+	/*
+	abilities.insert(this);
+	print("instance id:", this->get_instance_id());
+	Ability* obj = cast_to<Ability>(UtilityFunctions::instance_from_id(this->get_instance_id()));
+	print("obj id: ", obj->get_instance_id());
+	print("abilities size ", abilities.size());
+	*/
+	//print("running ability constructor");
+	//Ecs::get_singleton()->increment_testint(ability_name);
+	//Ecs::get_singleton()->increment_testint(this->get_path());
 }
 
+/*
+Ability::~Ability() {
+	//abilities.remove(this);
+}*/
+
+/*
+Ability::_notification(int p_what) {
+	switch(p_what) {
+		case NOTIFICATION_READY:
+		Ecs::get_singleton()->ability_register.insert(this);
+		print("ability registered");
+		break;
+	}
+}
+*/
 
 void Attribute::_bind_methods() {
 
@@ -238,6 +265,18 @@ void Attribute::_bind_methods() {
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_TYPE_STRING, String::num(Variant::NIL) + "/" + String::num(PROPERTY_HINT_NONE) + ":Variant"), "set_data_var", "get_data_var");
 }
 
+/*
+void Ability::_notification(int p_what) {
+	print("ABILITY NOTIFICATION ", p_what);
+	switch(p_what) {
+		case NOTIFICATION_POSTINITIALIZE:
+			print("running ability constructor");
+			Ecs::get_singleton()->increment_testint(get_name());
+			//Ecs::get_singleton()->ability_register.insert(this);
+			break;
+	}
+}*/
+
 void Ability::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update"), &Ability::update);
 	GDVIRTUAL_BIND(_update);
@@ -256,6 +295,7 @@ void Ability::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_attributes_forbidden"), &Ability::get_attributes_forbidden);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes_forbidden", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes_forbidden", "get_attributes_forbidden");
 
+	/*
 	ClassDB::bind_method(D_METHOD("set_attributes_add", "p_attributes_add"), &Ability::set_attributes_add);
 	ClassDB::bind_method(D_METHOD("get_attributes_add"), &Ability::get_attributes_add);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes_add", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes_add", "get_attributes_add");
@@ -263,7 +303,7 @@ void Ability::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_attributes_remove", "p_attributes_remove"), &Ability::set_attributes_remove);
 	ClassDB::bind_method(D_METHOD("get_attributes_remove"), &Ability::get_attributes_remove);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes_remove", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes_remove", "get_attributes_remove");
-
+	*/
 
 	ClassDB::bind_method(D_METHOD("set_tags_required", "tags_required"), &Ability::set_tags_required);
 	ClassDB::bind_method(D_METHOD("get_tags_required"), &Ability::get_tags_required);
@@ -273,16 +313,51 @@ void Ability::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_tags_forbidden"), &Ability::get_tags_forbidden);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_forbidden", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_forbidden", "get_tags_forbidden" );
 
-	ClassDB::bind_method(D_METHOD("set_tags_add", "tags_add"), &Ability::set_tags_add);
-	ClassDB::bind_method(D_METHOD("get_tags_add"), &Ability::get_tags_add);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_add", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_add", "get_tags_add" );
-
-	ClassDB::bind_method(D_METHOD("set_tags_remove", "tags_remove"), &Ability::set_tags_remove);
-	ClassDB::bind_method(D_METHOD("get_tags_remove"), &Ability::get_tags_remove);
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_remove", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_remove", "get_tags_remove" );
-
 	//PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Image")
+
+	ClassDB::bind_method(D_METHOD("set_ability_name", "ability_name"), &Ability::set_ability_name);
+	ClassDB::bind_method(D_METHOD("get_ability_name"), &Ability::get_ability_name);
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "ability_name"), "set_ability_name", "get_ability_name");
+
+
 }
+
+void Effect::_bind_methods() {
+
+	ClassDB::bind_method(D_METHOD("set_tags_add", "tags_add"), &Effect::set_tags_add);
+	ClassDB::bind_method(D_METHOD("get_tags_add"), &Effect::get_tags_add);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_add", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_add", "get_tags_add");
+
+	ClassDB::bind_method(D_METHOD("set_tags_remove", "tags_remove"), &Effect::set_tags_remove);
+	ClassDB::bind_method(D_METHOD("get_tags_remove"), &Effect::get_tags_remove);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_remove", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_remove", "get_tags_remove");
+
+	ClassDB::bind_method(D_METHOD("set_commands", "tags_remove"), &Effect::set_commands);
+	ClassDB::bind_method(D_METHOD("get_commands"), &Effect::get_commands);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "commands", PROPERTY_HINT_ARRAY_TYPE, "String"), "set_commands", "get_commands");
+
+	ClassDB::bind_method(D_METHOD("set_duration", "duration"), &Effect::set_duration);
+	ClassDB::bind_method(D_METHOD("get_duration"), &Effect::get_duration);
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration"), "set_duration", "get_duration");
+
+	ClassDB::bind_method(D_METHOD("set_cooldown", "cooldown"), &Effect::set_cooldown);
+	ClassDB::bind_method(D_METHOD("get_cooldown"), &Effect::get_cooldown);
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "cooldown"), "set_cooldown", "get_cooldown");
+}
+
+/*
+void Effect::attach_effect(Entity *target_entity) {
+	target_entity->add_effect(this);
+}
+
+void Effect::detach_effect(Entity *target_entity) {
+	target_entity->clear_effect(this);
+}*/
+
+/*
+Effect::Effect() : duration(0), cooldown(0) {
+}*/
+
 /*
 void ResourceEcs::_bind_methods() {
 	//ClassDB::bind_method(D_METHOD("set_id", "p_id"), &ResourceEcs::set_id);
@@ -341,8 +416,15 @@ void Ecs::connect(SceneTree* scene_tree) {
 }
 
 void Ecs::process_ecs() {
+	//print("process_ecs");
 	//todo: maybe make this multithreaded and also the actual array and map operations like * / etc. or the operations in effects, however this is done
-	for(Ability* ability : ability_register) {
+	//print("ability register size : ", ability_register.size());
+
+	//print("ability register size : ", Ability::abilities.size());
+
+	//for(Ability* ability : ability_register) {
+	for(int i=0;i<abilities.size();i++) {
+		Ability* ability = cast_to<Ability>(abilities[i]);
 		if(ability->get_is_enabled()) { ability->update(); }
 	}
 }
@@ -662,12 +744,48 @@ bool Ability::get_is_enabled() {
 	return is_enabled;
 }
 
-void Entity::grant_ability(Ability* p_ability) {
+void Entity::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("add_ability", "ability"), &Entity::add_ability);
+	ClassDB::bind_method(D_METHOD("clear_ability", "ability"), &Entity::clear_ability);
+
+	ClassDB::bind_method(D_METHOD("add_effect", "effect"), &Entity::add_effect);
+	ClassDB::bind_method(D_METHOD("clear_effect", "effect"), &Entity::clear_effect);
+
+	ClassDB::bind_method(D_METHOD("add_tag", "tag"), &Entity::add_tag);
+	ClassDB::bind_method(D_METHOD("clear_tag", "tag"), &Entity::clear_tag);
+
+	void add_ability();
+	void clear_ability(Ability* p_ability);
+
+	void add_effect(Effect* p_effect);
+	void clear_effect(Effect* p_effect);
+
+	void add_tag(StringName p_tag);
+	void clear_tag(StringName p_tag);
+}
+
+void Entity::add_ability(Ability *p_ability) {
 	abilities.insert(p_ability);
 }
 
 void Entity::clear_ability(Ability* p_ability) {
 	abilities.remove(p_ability);
+}
+
+void Entity::add_effect(Effect *p_effect) {
+	effects.insert(p_effect);
+}
+
+void Entity::clear_effect(Effect *p_effect) {
+	effects.remove(p_effect);
+}
+
+void Entity::add_tag(StringName p_tag) {
+	tags.insert(p_tag);
+}
+
+void Entity::clear_tag(StringName p_tag) {
+	tags.remove(p_tag);
 }
 
 // set game object id from instance id
