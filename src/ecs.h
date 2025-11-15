@@ -65,6 +65,9 @@ public:
 	Ecs() = default;
 	~Ecs() override = default;
 
+	map<Attribute*> attribute_register;			// all attributes listed in an ability are added here when Ability is initialized
+	map<StringName> attribute_name_register;	// names of attributes are on the same index as the attribute in attribute_register, this allows for retrieval of attributes by name
+
 /*
 	int testint = 0; //todo:remove
 	void increment_testint(StringName name) { 
@@ -493,6 +496,8 @@ union Union_Array {
 class Attribute : public Resource { // Attribute
 GDCLASS(Attribute, Resource);
 
+	StringName attribute_name;
+
 protected:
 	static void _bind_methods();
 
@@ -501,7 +506,7 @@ public:
 	~Attribute() override = default;
 	//Attribute(Variant p_data_var) { data_var = p_data_var; }
 
-	void create_attribute_data_entry();
+	void create_attribute_data_entry(); //todo:use or remove
 
 	//Union_Array union_array;
 
@@ -541,8 +546,8 @@ public:
         return data_var;
     }*/
 
-	void set_var(int archetype_id, Variant& value) {}; // sets value from variant (does conversion from_var())
-	const Variant get_var(int archetype_id) const { return 0; }; // get value (does conversion to_var())
+	void set_var(int entity_id, Variant& value) {}; // sets value from variant (does conversion from_var())
+	const Variant get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
 
 	template <typename T>
 	Variant to_var(T val) { return Variant(val); }; // convert actual type to variant for editor
@@ -551,10 +556,14 @@ public:
 	T from_var(Variant var) { return cast_to<T>(var); };	// convert variant from editor to actual type
 
 	template <typename T>
-	const T get_value(int archetype_id) { return T(); }; // get value directly (no conversion)
+	const T get_value(int entity_id) { return T(); }; // get value directly (no conversion)
 
 	template <typename T>
-	void set_value(int archetype_id, T& value) {}; // sets value directly (no conversion)
+	void set_value(int entity_id, T& value) {}; // sets value directly (no conversion)
+
+	void set_attribute_name(StringName p_attribute_name) { attribute_name = p_attribute_name; }
+	StringName get_attribute_name() { return attribute_name; }
+
 
 	//todo:overload * operator and maybe = operator in sly::map so that two attributes can be multiplied together which will be useful to multiply all values by scalaras and same index values in other attributes by using queries like (movement_attribute = velocity_attribute * position_attribute * direction_attribute * delta)
 
@@ -630,6 +639,7 @@ public:
 	//todo: this should take stringname "attribute_name" instead of attribute?
 	template <typename T>
 	void set_attribute(Attribute* p_attribute, T value);
+
 	template <typename T>
 	T get_attribute(Attribute* p_attribute);
 
@@ -676,7 +686,7 @@ enum : unsigned char {
 	map<Entity*> entities_assigned;
 
 	TypedArray<Attribute> attributes_required;
-	TypedArray<Attribute> attributes_forbidden;
+	TypedArray<Attribute> attributes_forbidden; //todo:remove? maybe useful
 	/*
 	TypedArray<Attribute> attributes_remove;
 	TypedArray<Attribute> attributes_add;
@@ -689,6 +699,8 @@ enum : unsigned char {
 	float duration;
 	effect_type : on_off; / periodic
 	*/
+
+	array<int> entities_affected;
 
 protected:
 	static void _bind_methods();
@@ -707,11 +719,17 @@ protected:
 	void _notification(int p_what);
 	*/
 
+
+	
 public:
 	Ability();
 	//~Ability() override;
 	
 	static map<Ability*> abilities;
+
+	void set_attribute_val(StringName attribute_name, Variant value);
+
+	void initialize(); // called by Ecs class so that Ability can post attributes to attribute_register
 
 	//~Ability() override = default;
 	/*

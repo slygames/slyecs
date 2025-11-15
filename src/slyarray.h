@@ -181,11 +181,11 @@ public:
 */
 
 	const T& operator[](int key) const & {
-		return get(key);
+		return value[lookup[key]];
 	}
 
 	T& operator[](int key) & {
-		return get(key);
+		return value[lookup[key]];
 	}
 
 	// this doesn't work, so can't do []= to assign values
@@ -199,10 +199,14 @@ public:
 	}
 
 	// get a value by key (or use [] operator
-	T get(int key) {
+	T& get(int key) & {
 		return value[lookup[key]];
 	}
-
+/*
+	const T& get(int key) const & {
+		return value[lookup[key]];
+	}
+*/
 	// set a value by key (or use []=) operator
 	virtual void set(int key, const T& val) {
 		value[key] = val;

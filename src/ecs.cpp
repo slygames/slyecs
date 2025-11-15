@@ -222,6 +222,29 @@ Ability::Ability() : is_enabled(true) {
 	//Ecs::get_singleton()->increment_testint(this->get_path());
 }
 
+void Ability::set_attribute_val(StringName attribute_name, Variant value) {
+	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
+	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
+	for(int entity_id : entities_affected) {
+		attribute->set_var(entity_id, value);
+		print("set attribute ",attribute_name," to ", attribute->get_var(entity_id));
+	}
+}
+
+/**
+ * registers attributes with the Ecs
+ */
+void Ability::initialize() {
+	print("INitializeing ability");
+	for(int i=0; i<attributes_required.size(); i++) {
+		Attribute* attr = cast_to<Attribute>(attributes_required[i]);
+		Ecs::get_singleton()->attribute_register.insert(attr);
+		print("get attribute name : ", attr->get_attribute_name());
+		print("attr name", attr->get_name());
+		Ecs::get_singleton()->attribute_name_register.insert(attr->get_attribute_name());
+	}
+}
+
 /*
 Ability::~Ability() {
 	//abilities.remove(this);
@@ -245,6 +268,11 @@ void Attribute::_bind_methods() {
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT), "set_data_var", "get_data_var");
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "gd_data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
+
+	ClassDB::bind_method(D_METHOD("set_attribute_name", "attribute_name"), &Attribute::set_attribute_name);
+	ClassDB::bind_method(D_METHOD("get_attribute_name"), &Attribute::get_attribute_name);
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "attribute_name"), "set_attribute_name", "get_attribute_name");
+
 
 	/*
 	ClassDB::bind_method(D_METHOD("set_data_var", "p_data_var"), &Attribute::set_data_var);
@@ -319,7 +347,7 @@ void Ability::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_ability_name"), &Ability::get_ability_name);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "ability_name"), "set_ability_name", "get_ability_name");
 
-
+	ClassDB::bind_method(D_METHOD("set_attribute_val", "attribute_name", "value"), &Ability::set_attribute_val);
 }
 
 void Effect::_bind_methods() {
@@ -387,6 +415,13 @@ void Ecs::_notification(int _what) {
 	switch(_what) {
 		case NOTIFICATION_READY:
 			//print("READY!!");
+
+			// initialize abilities
+			for(int i=0; i<abilities.size();i++) {
+				Ability* ability = cast_to<Ability>(abilities[i]);
+				ability->initialize();
+			}
+
 			if (!Engine::get_singleton()->is_editor_hint()) {
 				this->set_physics_process(true);
 			}
@@ -628,7 +663,7 @@ void Ecs::unregister_attribute(Attribute *attribute) {
 */
 
 void Ability::update() {
-	print("updating ability");
+	//print("updating ability");
 	/*
 	print("updating ability : ", Ecs::ability_map.find[this]);
 
