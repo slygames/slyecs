@@ -235,12 +235,15 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
  * registers attributes with the Ecs
  */
 void Ability::initialize() {
-	print("INitializeing ability");
+	print("INitializeing ability ", get_path());
 	for(int i=0; i<attributes_required.size(); i++) {
 		Attribute* attr = cast_to<Attribute>(attributes_required[i]);
 		Ecs::get_singleton()->attribute_register.insert(attr);
+		/*
 		print("get attribute name : ", attr->get_attribute_name());
 		print("attr name", attr->get_name());
+		print("attr path", attr->get_path());
+		*/
 		Ecs::get_singleton()->attribute_name_register.insert(attr->get_attribute_name());
 	}
 }

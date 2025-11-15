@@ -1,4 +1,7 @@
-[gd_resource type="Ability" format=3 uid="uid://blgahpsvsrbgk"]
+[gd_resource type="Ability" load_steps=2 format=3 uid="uid://blgahpsvsrbgk"]
+
+[ext_resource type="Attribute" uid="uid://ciio3eq8qj8jg" path="res://ecs/attribute/velocity_attribute.tres" id="1_y1lx0"]
 
 [resource]
+attributes_required = Array[Attribute]([ExtResource("1_y1lx0")])
 ability_name = &"movement_ability"
