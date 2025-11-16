@@ -4,7 +4,7 @@
 
 namespace sly {
 
-map<Ability*> Ability::abilities; //todo:remove
+//map<Ability*> Ability::abilities; //todo:remove
 
 //TypedArray<Ability> Ecs::abilities;
 
@@ -87,13 +87,13 @@ void NodeECS::_notification(int p_what) {
 		*/
 		case NOTIFICATION_ENTER_TREE:
 			// create entity
-			entity = Ecs::get_singleton()->create_entity(this->get_parent());
+			Ecs::get_singleton()->create_entity(this->get_parent());
 			//print("Entity created");
 			break;
 		case NOTIFICATION_EXIT_TREE:
 			// create entity
-			Ecs::get_singleton()->remove_entity(entity);
-			entity = nullptr;
+			Ecs::get_singleton()->remove_entity(this->get_parent());
+			//entity = nullptr;
 			//print("Entity removed");
 			break;
 
@@ -131,6 +131,7 @@ void NodeECS::_notification(int p_what) {
 	}
 }
 
+#if 0
 void Archetype::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_attributes", "p_attributes"), &Archetype::set_attributes);
 	ClassDB::bind_method(D_METHOD("get_attributes"), &Archetype::get_attributes);
@@ -171,6 +172,7 @@ Archetype::Archetype() {
 	print("archetype map size A: ", Ecs::attribute_map.size());
 	*/
 }
+#endif
 
 Attribute::Attribute() {
 	/*
@@ -469,10 +471,19 @@ void Ecs::process_ecs() {
 	//for(Ability* ability : ability_register) {
 	for(int i=0;i<abilities.size();i++) {
 		Ability* ability = cast_to<Ability>(abilities[i]);
-		if(ability->get_is_enabled()) { ability->update(); }
+		if(ability->get_is_enabled()) { ability->update(/*todo: need to add an argument calculating function to this. ability->get_approved_entities()  */); }
 	}
 }
 
+int Ecs::create_entity(Object *object) {
+	return entity_register.insert(object->get_instance_id());
+}
+
+void Ecs::remove_entity(Object *object) {
+	entity_register.remove(object->get_instance_id());
+}
+
+/*
 Entity* Ecs::create_entity(Object* object) {
 	Entity* new_entity = memnew(Entity); // reserve memory
 	new_entity->set_object(object);
@@ -790,6 +801,7 @@ bool Ability::get_is_enabled() {
 	return is_enabled;
 }
 
+#if 0
 void Entity::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_ability", "ability"), &Entity::add_ability);
 	ClassDB::bind_method(D_METHOD("clear_ability", "ability"), &Entity::clear_ability);
@@ -843,5 +855,6 @@ void Entity::set_object(Object* object) {
 Object* Entity::get_object() {
 	return UtilityFunctions::instance_from_id(object_id);
 }
+#endif
 
 } // namespace sly

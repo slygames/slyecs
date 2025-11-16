@@ -31,10 +31,10 @@ namespace sly {
 
 // forward declare classes
 class Ability;
-class Entity;
+//class Entity;
 class Effect;
 class Attribute;
-class Archetype;
+//class Archetype;
 
 /**
  * Ecs runs as a singleton and calls update on each ability in physics process.
@@ -54,7 +54,10 @@ class Ecs : public Node {
 
 	// registers containing all existing items not just enabled ones
 	//map<Ability*> ability_register; //todo:remove
-	map<Entity*> entity_register; //todo:replace with static or remove?
+	//map<Entity*> entity_register; //todo:replace with static
+
+	map<int64_t> entity_register; // instance ids of all entities
+	Dictionary tag_entity; // dictionary of tags and entities they're assigned to <StringName tag, array<int64_t> entity_id>
 
 protected:
 	static void _bind_methods();
@@ -83,10 +86,15 @@ public:
 	void connect(SceneTree* scene_tree);
 
 	void process_ecs();
-
+/*
 	// create an Entity for a godot game object
 	Entity* create_entity(Object* object);
 	void remove_entity(Entity* entity);
+*/
+	// create an Entity for a godot game object
+	int create_entity(Object* object);
+	void remove_entity(Object* object);
+
 
 	void set_abilities(const TypedArray<Ability>& p_abilities) { abilities = p_abilities; }
 	TypedArray<Ability> get_abilities() const { return abilities; };
@@ -300,7 +308,7 @@ public:
 };
 */
 
-
+#if 0
 class Archetype : public Resource {	// Archetype
 GDCLASS(Archetype, Resource);
 
@@ -362,7 +370,7 @@ public:
 	TypedArray<Node> get_nodes() const { return nodes; };
 	*/
 };
-
+#endif
 
 
 
@@ -387,7 +395,9 @@ GDCLASS(NodeECS, Node);
 	//Ref<Archetype> archetype;
 	//Archetype archetype;
 
-	Entity* entity;
+	//Entity* entity;
+
+	int64_t entity_id;
 
 	TypedArray<Ability> abilities;
 	//TypedArray<Archetype> archetypes; //todo: remove or replace with system archetypes
@@ -615,6 +625,7 @@ public:
 };
 */
 
+#if 0
 class Entity : public RefCounted {
 	GDCLASS(Entity, RefCounted);
 
@@ -667,6 +678,8 @@ public:
     }*/
 
 };
+#endif
+
 
 class Ability : public Resource {	// Ability
 GDCLASS(Ability, Resource);
@@ -687,7 +700,7 @@ enum : unsigned char {
 
 	StringName ability_name;
 
-	map<Entity*> entities_assigned;
+	map<int64_t> entities_assigned;
 
 	TypedArray<Attribute> attributes_required;
 	TypedArray<Attribute> attributes_forbidden; //todo:remove? maybe useful
@@ -729,7 +742,9 @@ public:
 	Ability();
 	//~Ability() override;
 	
-	static map<Ability*> abilities;
+	//static map<Ability*> abilities;	// ability registry
+
+	array<int64_t> entities_approved;	// recalculated for each update(), filtered entities after checking tags, update operations only run for these
 
 	void set_attribute_val(StringName attribute_name, Variant value);
 
@@ -784,7 +799,7 @@ GDCLASS(Effect, Resource);
 	float duration;
 	float cooldown;
 
-	Entity* target_entity;
+	int64_t target_entity_id;
 
 protected:
 	static void _bind_methods();
