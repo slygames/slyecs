@@ -17,15 +17,14 @@ public:
 
     std::unordered_map<T, int> find;
 
-    map& operator=(const map& new_val) {
-		for(int i=0; i<new_val; i++) {
-            set(i, new_val);
-            /*
-			value[i] = new_val[i];
-			lookup[value[i]] = i;
-            hash[value] = i;
-            */
-		}
+    map& operator=(const map& other) {
+        array<T>::operator=(other); // parent =
+        if (this!=&other) {	// if not assigning to self
+            for(int i=0; i<other; i++) {
+                set(i, other);
+            }
+        }
+        return *this;
 	}
 
     bool has(const T& val) const {
@@ -66,6 +65,16 @@ public:
         std::unordered_set<T>(find.begin(), find.end()).swap(find);
         */
     }
+
+	// removes any entries which aren't also present in the other array
+	map& intersect(const map& other) {
+
+		for(int i=0;i<array<T>::size();i++) {
+			if(!other.find[array<T>::value[i]]) {
+				remove_key(i);
+			}
+		}
+	}
 
     /*
     virtual int hash(T& object) {

@@ -471,7 +471,10 @@ void Ecs::process_ecs() {
 	//for(Ability* ability : ability_register) {
 	for(int i=0;i<abilities.size();i++) {
 		Ability* ability = cast_to<Ability>(abilities[i]);
-		if(ability->get_is_enabled()) { ability->update(/*todo: need to add an argument calculating function to this. ability->get_approved_entities()  */); }
+		if(ability->get_is_enabled()) { 
+			ability->update_entities_approved(); // filter out entities without the necessary tags
+			ability->update(); // update approved entities
+		}
 	}
 }
 

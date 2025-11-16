@@ -747,7 +747,7 @@ public:
 	
 	//static map<Ability*> abilities;	// ability registry
 
-	array<int64_t> entities_approved;	// recalculated for each update(), filtered entities after checking tags, update operations only run for these
+	map<int64_t> entities_approved;	// recalculated for each update(), filtered entities after checking tags, update operations only run for these
 
 	void set_attribute_val(StringName attribute_name, Variant value);
 
