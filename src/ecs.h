@@ -57,7 +57,10 @@ class Ecs : public Node {
 	//map<Entity*> entity_register; //todo:replace with static
 
 	map<int64_t> entity_register; // instance ids of all entities
-	Dictionary tag_entity; // dictionary of tags and entities they're assigned to <StringName tag, array<int64_t> entity_id>
+
+	//Dictionary tag_entity_register; // dictionary of tags and entities they're assigned to <StringName tag, array<int64_t> entity_id>
+
+	std::unordered_map<int, map<int64_t>> tag_register; // unordered map of tags and entities they're assigned to <StringName tag, array<int64_t> entity_id>
 
 protected:
 	static void _bind_methods();
@@ -717,7 +720,7 @@ enum : unsigned char {
 	effect_type : on_off; / periodic
 	*/
 
-	array<int> entities_affected;
+	array<int64_t> entities_affected;
 
 protected:
 	static void _bind_methods();
@@ -783,6 +786,9 @@ public:
 	bool operator==(const Ability& other) const {
 		return this == &other;
     }
+
+	// updated list of entities which qualify to run update() based on if entity has required and forbidden tags
+	void update_entities_approved();
 
 	virtual void update();
 	GDVIRTUAL0(_update);

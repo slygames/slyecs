@@ -682,6 +682,19 @@ void Ecs::unregister_attribute(Attribute *attribute) {
 }
 */
 
+
+void Ability::update_entities_approved() {
+	// clear to repopulate with newly calculated entities
+	entities_approved.clear();
+
+	for(int i=0;i<tags_required.size();i++) {
+		StringName tag = tags_required[i];
+		map<int64_t> entities_assigned_to_tag = Ecs::get_singleton()->tag_register[tag.hash()];
+		entities_approved.intersect(entities_assigned_to_tag);
+	}
+
+}
+
 void Ability::update() {
 	print("updating ability");
 	/*
