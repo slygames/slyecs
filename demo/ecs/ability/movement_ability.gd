@@ -1,6 +1,5 @@
 extends Ability
 
-##todo:need to pass entities_affected into this so that their components can be fetched
 func _update():
 	print("_update for movement system called from gdscript")
 	set_attribute_val("velocity", 500)

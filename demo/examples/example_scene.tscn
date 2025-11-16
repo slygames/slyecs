@@ -1,10 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://ef1q1crihevn"]
+[gd_scene load_steps=7 format=3 uid="uid://ef1q1crihevn"]
 
 [ext_resource type="Script" uid="uid://bkwk40ybs8kgm" path="res://examples/example_scene.gd" id="1_qleqb"]
 [ext_resource type="Texture2D" uid="uid://dbx66sovxd1" path="res://icon.svg" id="2_fighv"]
-[ext_resource type="Attribute" uid="uid://bgw7ltkxsg524" path="res://ecs/attribute/position_attribute.tres" id="3_qqekj"]
+[ext_resource type="Attribute" uid="uid://ciio3eq8qj8jg" path="res://ecs/attribute/velocity_attribute.tres" id="3_bbie7"]
 [ext_resource type="Ability" uid="uid://c825g6fg3fbma" path="res://ecs/ability/damage_ability.tres" id="4_bbie7"]
-[ext_resource type="Ability" uid="uid://blgahpsvsrbgk" path="res://ecs/ability/movement_ability.tres" id="5_sngt6"]
+[ext_resource type="Script" uid="uid://crtrx1572l2yi" path="res://ecs/ability/movement_ability.gd" id="4_sngt6"]
+
+[sub_resource type="Ability" id="Ability_7jamt"]
+attributes_required = Array[Attribute]([ExtResource("3_bbie7")])
+ability_name = &"movement_ability"
+script = ExtResource("4_sngt6")
 
 [node name="example_scene" type="Node"]
 script = ExtResource("1_qleqb")
@@ -15,7 +20,7 @@ script = ExtResource("1_qleqb")
 texture = ExtResource("2_fighv")
 
 [node name="NodeECS2" type="NodeECS" parent="player/Sprite2D"]
-attributes = Array[Attribute]([ExtResource("3_qqekj")])
+abilities = Array[Ability]([SubResource("Ability_7jamt")])
 
 [node name="sword" type="Node2D" parent="player"]
 
@@ -64,4 +69,4 @@ texture = ExtResource("2_fighv")
 [node name="NodeECS" type="NodeECS" parent="tree_01"]
 
 [node name="Ecs" type="Ecs" parent="."]
-abilities = Array[Ability]([ExtResource("4_bbie7"), ExtResource("5_sngt6")])
+abilities = Array[Ability]([ExtResource("4_bbie7"), SubResource("Ability_7jamt")])

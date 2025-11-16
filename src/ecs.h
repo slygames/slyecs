@@ -389,8 +389,9 @@ GDCLASS(NodeECS, Node);
 
 	Entity* entity;
 
-	TypedArray<Archetype> archetypes;
-	TypedArray<Attribute> attributes;
+	TypedArray<Ability> abilities;
+	//TypedArray<Archetype> archetypes; //todo: remove or replace with system archetypes
+	//TypedArray<Attribute> attributes; //todo:remove?
 	TypedArray<StringName> tags;
 	
 protected:
@@ -438,12 +439,15 @@ public:
 	*/
 
 	// setters and getters
+	void set_abilities(TypedArray<Ability> p_abilities_required) { abilities = p_abilities_required; }
+    TypedArray<Ability> get_abilities() const { return abilities; }
+/*
 	void set_archetypes(const TypedArray<Archetype>& p_archetypes) { archetypes = p_archetypes; }
 	TypedArray<Archetype> get_archetypes() const { return archetypes; };
 
 	void set_attributes(const TypedArray<Attribute>& p_attributes) { attributes = p_attributes; }
 	TypedArray<Attribute> get_attributes() const { return attributes; };
-
+*/
 	void set_tags(TypedArray<StringName> p_tags_required) { tags = p_tags_required; }
     TypedArray<StringName> get_tags() const { return tags; }
 };
@@ -616,7 +620,7 @@ class Entity : public RefCounted {
 
 	int64_t object_id;
 
-	map<Attribute*> attributes;
+	//map<Attribute*> attributes;
 	map<Ability*> abilities;
 	map<Effect*> effects;
 	map<StringName> tags;

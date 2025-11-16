@@ -46,6 +46,11 @@ void NodeECS::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(godot::Variant::OBJECT, "archetype", godot::PROPERTY_HINT_RESOURCE_TYPE, "Archetype"), "set_archetype", "get_archetype");
 */
 
+	ClassDB::bind_method(D_METHOD("set_abilities", "abilities"), &NodeECS::set_abilities);
+	ClassDB::bind_method(D_METHOD("get_abilities"), &NodeECS::get_abilities);
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Ability"), "set_abilities", "get_abilities" );
+
+	/*
 	ClassDB::bind_method(D_METHOD("set_attributes", "p_attributes"), &NodeECS::set_attributes);
 	ClassDB::bind_method(D_METHOD("get_attributes"), &NodeECS::get_attributes);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes", "get_attributes");
@@ -53,6 +58,7 @@ void NodeECS::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_archetypes", "p_archetypes"), &NodeECS::set_archetypes);
 	ClassDB::bind_method(D_METHOD("get_archetypes"), &NodeECS::get_archetypes);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "archetypes", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Archetype"), "set_archetypes", "get_archetypes");
+	*/
 /*
 	ClassDB::bind_method(D_METHOD("set_attributes", "p_attributes"), &NodeEcs::set_attributes);
 	ClassDB::bind_method(D_METHOD("get_attributes"), &NodeEcs::get_attributes);
@@ -666,7 +672,7 @@ void Ecs::unregister_attribute(Attribute *attribute) {
 */
 
 void Ability::update() {
-	//print("updating ability");
+	print("updating ability");
 	/*
 	print("updating ability : ", Ecs::ability_map.find[this]);
 
@@ -682,7 +688,9 @@ void Ability::update() {
 
 	}*/
 
-	GDVIRTUAL_CALL(_update);
+	if(GDVIRTUAL_CALL(_update)) {
+		print("virtual function called");
+	}
 }
 /*
 // loads callables from gdscript
