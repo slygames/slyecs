@@ -67,13 +67,13 @@ public:
     }
 
 	// removes any entries which aren't also present in the other array
-	map& intersect(const map& other) {
-
+	map& intersect(map& other) {
 		for(int i=0;i<array<T>::size();i++) {
 			if(!other.find[array<T>::value[i]]) {
 				remove_key(i);
 			}
 		}
+        return *this;
 	}
 
     /*
