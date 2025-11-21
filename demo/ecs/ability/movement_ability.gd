@@ -1,10 +1,10 @@
 extends Ability
 
 func _update():
-	print("_update for movement system called from gdscript")
+	#print("_update for movement system called from gdscript")
 	set_attribute_val("velocity", 500)
 	#set_attribute_val("position", "velocity", "*","position")
-	#
+
 	#var velocity_attr : Attribute = get_attribute("velocity")
 	#velocity_attr.set_var(entity_list)
 	

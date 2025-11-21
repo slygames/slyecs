@@ -234,6 +234,10 @@ public:
 		lookup.shrink_to_fit();
 	}
 
+	bool empty() const {
+		return value.empty();
+	}
+
 	/*
 	// regular vector::find(), so its linear O(n) but this array class is optimized for lookup by key and fast iteration, rather than lookup by value, so that's okay.
 	int find(T val) {

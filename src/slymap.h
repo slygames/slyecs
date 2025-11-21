@@ -56,6 +56,11 @@ public:
         remove_key(key);
     }
 
+    /*
+    findget(T& val) {
+
+    }*/
+
     virtual void clear() {  
         array<T>::clear();
         find.clear();

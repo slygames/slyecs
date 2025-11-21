@@ -60,7 +60,7 @@ class Ecs : public Node {
 
 	//Dictionary tag_entity_register; // dictionary of tags and entities they're assigned to <StringName tag, array<int64_t> entity_id>
 
-	std::unordered_map<int, map<int64_t>> tag_register; // unordered map of tags and entities they're assigned to <StringName tag, array<int64_t> entity_id>
+	std::unordered_map<int64_t, map<int64_t>> tag_register; // unordered map of tags and entities they're assigned to <StringName tag, array<int64_t> entity_id>
 
 protected:
 	static void _bind_methods();
@@ -98,6 +98,8 @@ public:
 	int create_entity(Object* object);
 	void remove_entity(Object* object);
 
+	void tag_add(Object *object, StringName tag);
+	void tag_remove(Object *object, StringName tag);
 
 	void set_abilities(const TypedArray<Ability>& p_abilities) { abilities = p_abilities; }
 	TypedArray<Ability> get_abilities() const { return abilities; };

@@ -231,6 +231,7 @@ Ability::Ability() : is_enabled(true) {
 }
 
 void Ability::set_attribute_val(StringName attribute_name, Variant value) {
+	print("set_attribute_val() : ", entities_affected.size());
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
 	for(int entity_id : entities_affected) {
@@ -486,6 +487,23 @@ void Ecs::remove_entity(Object *object) {
 	entity_register.remove(object->get_instance_id());
 }
 
+/**
+ * add tag to entity, this adds the tag, entity pair to the tag_register
+ */
+void Ecs::tag_add(Object* object, StringName tag) {
+	tag_register[tag.hash()].insert(object->get_instance_id());	// insert entity into register (this will insert the object id into the entities whether the key exists or not)
+}
+
+/**
+ * remove tag from entity, removes tag, entity pair from tag register
+ */
+void Ecs::tag_remove(Object* object, StringName tag) {
+	tag_register[tag.hash()].remove(object->get_instance_id());
+	// remove the tag from tag register if it has no entities (this isn't really necessary but just to keep things tidy as tag_add adds tag keys to the register)
+	if(tag_register[tag.hash()].empty()) { tag_register.erase(tag.hash()); }
+}
+
+
 /*
 Entity* Ecs::create_entity(Object* object) {
 	Entity* new_entity = memnew(Entity); // reserve memory
@@ -699,7 +717,7 @@ void Ability::update_entities_approved() {
 }
 
 void Ability::update() {
-	print("updating ability");
+	// print("updating ability");
 	/*
 	print("updating ability : ", Ecs::ability_map.find[this]);
 
@@ -715,9 +733,7 @@ void Ability::update() {
 
 	}*/
 
-	if(GDVIRTUAL_CALL(_update)) {
-		print("virtual function called");
-	}
+	GDVIRTUAL_CALL(_update);
 }
 /*
 // loads callables from gdscript
