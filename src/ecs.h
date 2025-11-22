@@ -565,8 +565,30 @@ public:
         return data_var;
     }*/
 
-	void set_var(int entity_id, Variant& value) {}; // sets value from variant (does conversion from_var())
-	const Variant get_var(int entity_id) const { return 0; }; // get value (does conversion to_var())
+	 // sets value from variant (does conversion from_var())
+	void set_var(int entity_id, Variant& value) {
+		switch(value.get_type()) {
+			case Variant::BOOL:
+				set_value<int64_t>(entity_id, value);
+				break;
+			case Variant::INT:
+				set_value<int64_t>(entity_id, value);
+				break;
+			case Variant::FLOAT:
+				set_value<float>(entity_id, value);
+				break;
+			case Variant::STRING:
+				set_value<String>(entity_id, value);
+				break;
+			case Variant::STRING_NAME:
+				set_value<String>(entity_id, value);
+				break;
+			default:
+				set_value<Variant>(entity_id, value);
+		}
+
+	};
+	const Variant get_var(int64_t entity_id) const { return 0; }; // get value (does conversion to_var())
 
 	template <typename T>
 	Variant to_var(T val) { return Variant(val); }; // convert actual type to variant for editor
@@ -575,10 +597,13 @@ public:
 	T from_var(Variant var) { return cast_to<T>(var); };	// convert variant from editor to actual type
 
 	template <typename T>
-	const T get_value(int entity_id) { return T(); }; // get value directly (no conversion)
+	const T get_value(int64_t entity_id) { return T(); }; // get value directly (no conversion)
 
+	// sets value directly (no conversion)
 	template <typename T>
-	void set_value(int entity_id, T& value) {}; // sets value directly (no conversion)
+	void set_value(int64_t entity_id, T value) { 
+		//todo:
+	};
 
 	void set_attribute_name(StringName p_attribute_name) { attribute_name = p_attribute_name; }
 	StringName get_attribute_name() { return attribute_name; }
