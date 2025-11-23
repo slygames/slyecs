@@ -651,23 +651,23 @@ void Ecs::register_object(Object *object) {
 void Attribute::create_attribute_data_entry() {
 	switch(data_var.get_type()) {
 		case Variant::BOOL:
-			attribute_data.get_data<bool>().insert(data_var);
+			attribute_data->get_data<bool>().insert(data_var);
 			break;
 		case Variant::INT:
-			attribute_data.get_data<int64_t>().insert(data_var);
+			attribute_data->get_data<int64_t>().insert(data_var);
 			break;
 		case Variant::FLOAT:
-			attribute_data.get_data<float>().insert(data_var);
+			attribute_data->get_data<float>().insert(data_var);
 			break;
 		case Variant::STRING:
-			attribute_data.get_data<String>().insert(data_var);
+			attribute_data->get_data<String>().insert(data_var);
 			break;
 		case Variant::STRING_NAME:
-			attribute_data.get_data<StringName>().insert(data_var);
+			attribute_data->get_data<StringName>().insert(data_var);
 			break;
 		//todo: add other cases for primitive types
 		default:
-			attribute_data.get_data<Variant>().insert(data_var);
+			attribute_data->get_data<Variant>().insert(data_var);
 	}
 }
 

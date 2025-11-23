@@ -652,13 +652,15 @@ class Attribute : public Resource { // Attribute
 GDCLASS(Attribute, Resource);
 
 	StringName attribute_name;
-	AttributeData attribute_data;
+	AttributeData* attribute_data;
 
 protected:
 	static void _bind_methods();
 
 public:
-	Attribute() = default;
+	Attribute() {
+		 attribute_data = memnew(AttributeData);
+	};
 	//~Attribute() override = default;
 	//Attribute(Variant p_data_var) { data_var = p_data_var; }
 
@@ -672,7 +674,7 @@ public:
 	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
 
 	AttributeData* get_attribute_data() {
-		return &attribute_data;
+		return attribute_data;
 	}
 
 /*
