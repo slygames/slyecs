@@ -526,13 +526,13 @@ public:
 	AttributeData() = default;
 
 	template <typename T>
-	const array<T>* get_data() const {
-		return &std::get<array<T>>(data_array);
+	const array<T>& get_data() const {
+		return std::get<array<T>>(data_array);
 	}
 
 	template <typename T>
-	array<T>* get_data() {
-		return &std::get<array<T>>(data_array);
+	array<T>& get_data() {
+		return std::get<array<T>>(data_array);
 	}
 
 /*
@@ -545,7 +545,7 @@ public:
 	void set_var(int entity_id, Variant& value) {
 		switch(value.get_type()) {
 			case Variant::BOOL:
-				set_value<int64_t>(entity_id, value);
+				set_value<bool>(entity_id, value);
 				break;
 			case Variant::INT:
 				set_value<int64_t>(entity_id, value);
@@ -567,10 +567,13 @@ public:
 
 	// get value directly (no conversion)
 	template <typename T>
-	T get_value(int64_t entity_id) const { 
+	T get_value(int64_t entity_id) const {
 		int index = data_array_lookup.at(entity_id);
+		/*
 		array<T> data = *get_data<T>();
 		T value = data[index];
+		*/
+		T value = get_data<T>()[index];
 		//T value = get_data<T>().at(index);
 		return value; 
 	}
@@ -602,8 +605,11 @@ public:
 	template <typename T>
 	void set_value(int64_t entity_id, T value) { 
 		//todo: need to get index for this entity to update the value if it already exists, how to keep consistency with entity_register?!
+		/*
 		array<T> data = *get_data<T>();
 		int new_index = data.insert(value);
+		*/
+		int new_index = get_data<T>().insert(value);
 	 	data_array_lookup[entity_id] = new_index;
 	}
 

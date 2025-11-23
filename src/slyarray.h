@@ -181,14 +181,23 @@ public:
 */
 
 	const T& operator[](int key) const & {
-		const T val = value.at(lookup.at(key)); //todo: check if it works with [] instead of .at
+		const T& val = value[lookup[key]]; //todo: check if it works with [] instead of .at
 		return val;
+
+		//return value[lookup[key]];
 	}
 
 	T& operator[](int key) & {
+		T& val = value[lookup[key]];
+		return val;
+		//return value[lookup[key]];
+	}
+
+	/*
+	T operator[](int key) {
 		T val = value.at(lookup.at(key));
 		return val;
-	}
+	}*/
 /*
 	// this doesn't work, so can't do []= to assign values
 	T&& operator[](int key) && {
