@@ -515,7 +515,7 @@ class AttributeData : public RefCounted {
 GDCLASS(AttributeData, RefCounted);	
 
 	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer for ints or floats etc. as a Variant is always 20 bytes.
-    using Variant_Array = std::variant<array<Variant>, array<bool>, array<int>, array<float>, array<String>, array<StringName>>;
+    using Variant_Array = std::variant<array<Variant>, array<bool>, array<int64_t>, array<float>, array<String>, array<StringName>>;
 	Variant_Array data_array;
 	std::unordered_map<int64_t, int> data_array_lookup; // entity_id, index of value in data_array
 
@@ -535,6 +535,12 @@ public:
 		return std::get<array<T>>(data_array);
 	}
 
+	array<Variant>& get_data() {
+		return std::get<array<Variant>>(data_array);
+	}
+
+	Variant::Type var_type;
+
 /*
 	template <typename T>
 	T data_value(int index) {
@@ -546,21 +552,27 @@ public:
 		switch(value.get_type()) {
 			case Variant::BOOL:
 				set_value<bool>(entity_id, value);
+				var_type = Variant::BOOL;
 				break;
 			case Variant::INT:
 				set_value<int64_t>(entity_id, value);
+				var_type = Variant::BOOL;
 				break;
 			case Variant::FLOAT:
 				set_value<float>(entity_id, value);
+				var_type = Variant::BOOL;
 				break;
 			case Variant::STRING:
 				set_value<String>(entity_id, value);
+				var_type = Variant::BOOL;
 				break;
 			case Variant::STRING_NAME:
 				set_value<StringName>(entity_id, value);
+				var_type = Variant::BOOL;
 				break;
 			default:
 				set_value<Variant>(entity_id, value);
+				var_type = Variant::NIL;
 		}
 
 	}
@@ -578,15 +590,16 @@ public:
 		return value; 
 	}
 
+	//todo:need to put this variant argument as a member variable var_type
 	// get value for an entity and convert it to variant (maybe useful for gdscript)
-	Variant get_var(int64_t entity_id, Variant::Type var_type) const { 
+	Variant get_var(int64_t entity_id) const { 
 		Variant value;
 		switch(var_type) {
 			case Variant::BOOL:
 				value = Variant(get_value<bool>(entity_id));
 				break;
 			case Variant::INT:
-				value = Variant(get_value<int>(entity_id));
+				value = Variant(get_value<int64_t>(entity_id));
 				break;
 			case Variant::FLOAT:
 				value = Variant(get_value<float>(entity_id));
@@ -596,6 +609,9 @@ public:
 				break;
 			case Variant::STRING_NAME:
 				value = Variant(get_value<StringName>(entity_id));
+				break;
+			case Variant::NIL:
+				value = get_value<Variant>(entity_id);
 				break;
 		}		
 		return value; 
@@ -613,6 +629,12 @@ public:
 	 	data_array_lookup[entity_id] = new_index;
 	}
 
+/*
+	void set_value(int64_t entity_id, Variant value) { 
+		int new_index = get_data().insert(value);
+	 	data_array_lookup[entity_id] = new_index;
+	}
+*/
 
 	/*
 	//todo:remove if to_var and from_var are unused.
