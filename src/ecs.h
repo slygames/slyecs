@@ -529,12 +529,12 @@ public:
 	array<T>& get_data() {
 		return std::get<array<T>>(data_array);
 	}
-
+/*
 	template <typename T>
 	T data_value(int index) {
 		return std::get<array<T>>(data_array).at(index);	// using at instead of []
 	}
-
+*/
 	// sets value from variant (does conversion from_var())
 	void set_var(int entity_id, Variant& value) {
 		switch(value.get_type()) {
@@ -562,8 +562,8 @@ public:
 	// get value directly (no conversion)
 	template <typename T>
 	T get_value(int64_t entity_id) const { 
-		int index = data_array_lookup[entity_id];
-		T value = data_value<T>(index);
+		int index = data_array_lookup.at(entity_id);
+		T value = get_data<T>().at(index);
 		return value; 
 	}
 
@@ -572,12 +572,19 @@ public:
 		Variant value;
 		switch(var_type) {
 			case Variant::BOOL:
-				bool val_bool = get_value<bool>(entity_id);
-				value = Variant(val_bool);
+				value = Variant(get_value<bool>(entity_id));
 				break;
 			case Variant::INT:
+				value = Variant(get_value<int>(entity_id));
 				break;
 			case Variant::FLOAT:
+				value = Variant(get_value<float>(entity_id));
+				break;
+			case Variant::STRING:
+				value = Variant(get_value<String>(entity_id));
+				break;
+			case Variant::STRING_NAME:
+				value = Variant(get_value<StringName>(entity_id));
 				break;
 		}		
 		return value; 
