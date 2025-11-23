@@ -181,18 +181,20 @@ public:
 */
 
 	const T& operator[](int key) const & {
-		return value[lookup[key]];
+		const T val = value.at(lookup.at(key)); //todo: check if it works with [] instead of .at
+		return val;
 	}
 
 	T& operator[](int key) & {
-		return value[lookup[key]];
+		T val = value.at(lookup.at(key));
+		return val;
 	}
-
+/*
 	// this doesn't work, so can't do []= to assign values
 	T&& operator[](int key) && {
         return std::move(value[lookup[key]]);
     }
-
+*/
 	// get the value array
 	std::vector<T> get_data() {
 		return value;
