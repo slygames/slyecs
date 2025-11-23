@@ -526,7 +526,7 @@ public:
 	AttributeData() = default;
 
 	template <typename T>
-	array<T>& get_data() {
+	const array<T>* get_data() const {
 		return std::get<array<T>>(data_array);
 	}
 /*
@@ -563,7 +563,9 @@ public:
 	template <typename T>
 	T get_value(int64_t entity_id) const { 
 		int index = data_array_lookup.at(entity_id);
-		T value = get_data<T>().at(index);
+		sly::array<T> data = *get_data<T>();
+		T value = data[index];
+		//T value = get_data<T>().at(index);
 		return value; 
 	}
 
@@ -594,7 +596,8 @@ public:
 	template <typename T>
 	void set_value(int64_t entity_id, T value) { 
 		//todo: need to get index for this entity to update the value if it already exists, how to keep consistency with entity_register?!
-		int new_index = get_data<T>().insert(value);
+		sly::array<T> data = *get_data<T>();
+		int new_index = data.insert(value);
 	 	data_array_lookup[entity_id] = new_index;
 	}
 
