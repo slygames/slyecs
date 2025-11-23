@@ -26,7 +26,8 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	GDREGISTER_RUNTIME_CLASS(Effect);
 	GDREGISTER_RUNTIME_CLASS(Ability);
 	GDREGISTER_CLASS(Attribute); // not runtime class because data_var setter needs to be called in editor
-
+	GDREGISTER_CLASS(AttributeData);
+	
 	//GDREGISTER_RUNTIME_CLASS(Tags);
 	//GDREGISTER_RUNTIME_CLASS(Actor);
 	//GDREGISTER_RUNTIME_CLASS(Tag);

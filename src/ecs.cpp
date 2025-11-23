@@ -174,20 +174,20 @@ Archetype::Archetype() {
 }
 #endif
 
+/*
 Attribute::Attribute() {
-	/*
 	print("CONSTRUCT attribute");
 	Ecs::attribute_map.insert(this);
 	print("comp map size A: ", Ecs::attribute_map.size());
-	*/
 }
+*/
 
 void Attribute::set_data_var(const Variant &p_data_var) {
-		data_var = p_data_var; 
-		if(&p_data_var==nullptr) {
-			return;
+		if(&p_data_var!=nullptr) { 
+			data_var = p_data_var;
 		}
 
+/*
 		switch(data_var.get_type()) {
 			case Variant::BOOL:
 				data_array = sly::array<bool>();
@@ -208,6 +208,7 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 			default:
 				data_array = sly::array<Variant>();
 		}
+*/	
 		emit_changed(); // for Resources to notify the editor/users of changes
 }
 
@@ -235,8 +236,8 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
 	for(int entity_id : entities_affected) {
-		attribute->set_var(entity_id, value);
-		print("set attribute ",attribute_name," to ", attribute->get_var(entity_id));
+		attribute->get_attribute_data()->set_var(entity_id, value);
+		print("set attribute ",attribute_name," to ", attribute->get_attribute_data()->get_var(entity_id));
 	}
 }
 
@@ -646,26 +647,27 @@ void Ecs::register_object(Object *object) {
 */
 //}
 
+//todo:remove if unused, seems unnecessary
 void Attribute::create_attribute_data_entry() {
 	switch(data_var.get_type()) {
 		case Variant::BOOL:
-			get_data<bool>().insert(data_var);
+			attribute_data.get_data<bool>().insert(data_var);
 			break;
 		case Variant::INT:
-			get_data<int>().insert(data_var);
+			attribute_data.get_data<int>().insert(data_var);
 			break;
 		case Variant::FLOAT:
-			get_data<float>().insert(data_var);
+			attribute_data.get_data<float>().insert(data_var);
 			break;
 		case Variant::STRING:
-			get_data<String>().insert(data_var);
+			attribute_data.get_data<String>().insert(data_var);
 			break;
 		case Variant::STRING_NAME:
-			get_data<StringName>().insert(data_var);
+			attribute_data.get_data<StringName>().insert(data_var);
 			break;
 		//todo: add other cases for primitive types
 		default:
-			get_data<Variant>().insert(data_var);
+			attribute_data.get_data<Variant>().insert(data_var);
 	}
 }
 

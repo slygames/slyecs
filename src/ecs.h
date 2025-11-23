@@ -511,40 +511,125 @@ union Union_Array {
 };
 */
 
-//template <typename T>
-class Attribute : public Resource { // Attribute
-GDCLASS(Attribute, Resource);
-
-	StringName attribute_name;
-
-protected:
-	static void _bind_methods();
-
-public:
-	Attribute();
-	~Attribute() override = default;
-	//Attribute(Variant p_data_var) { data_var = p_data_var; }
-
-	void create_attribute_data_entry(); //todo:use or remove
-
-	//Union_Array union_array;
+class AttributeData : public RefCounted {
+GDCLASS(AttributeData, RefCounted);	
 
 	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer for ints or floats etc. as a Variant is always 20 bytes.
     using Variant_Array = std::variant<array<Variant>, array<bool>, array<int>, array<float>, array<String>, array<StringName>>;
-
 	Variant_Array data_array;
+	std::unordered_map<int64_t, int> data_array_lookup; // entity_id, index of value in data_array
 
-	Variant data_var;	// default value
+protected:
+	static void _bind_methods(){};
 
-	void set_data_var(const Variant& p_data_var);
-	// sets value from variant (does conversion from_var())
-	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
+public:
+	AttributeData() = default;
 
 	template <typename T>
 	array<T>& get_data() {
 		return std::get<array<T>>(data_array);
 	}
 
+	template <typename T>
+	T data_value(int index) {
+		return std::get<array<T>>(data_array).at(index);	// using at instead of []
+	}
+
+	// sets value from variant (does conversion from_var())
+	void set_var(int entity_id, Variant& value) {
+		switch(value.get_type()) {
+			case Variant::BOOL:
+				set_value<int64_t>(entity_id, value);
+				break;
+			case Variant::INT:
+				set_value<int64_t>(entity_id, value);
+				break;
+			case Variant::FLOAT:
+				set_value<float>(entity_id, value);
+				break;
+			case Variant::STRING:
+				set_value<String>(entity_id, value);
+				break;
+			case Variant::STRING_NAME:
+				set_value<StringName>(entity_id, value);
+				break;
+			default:
+				set_value<Variant>(entity_id, value);
+		}
+
+	}
+
+	// get value directly (no conversion)
+	template <typename T>
+	T get_value(int64_t entity_id) const { 
+		int index = data_array_lookup[entity_id];
+		T value = data_value<T>(index);
+		return value; 
+	}
+
+	// get value for an entity and convert it to variant (maybe useful for gdscript)
+	Variant get_var(int64_t entity_id, Variant::Type var_type) const { 
+		Variant value;
+		switch(var_type) {
+			case Variant::BOOL:
+				bool val_bool = get_value<bool>(entity_id);
+				value = Variant(val_bool);
+				break;
+			case Variant::INT:
+				break;
+			case Variant::FLOAT:
+				break;
+		}		
+		return value; 
+	} // get value (does conversion to_var())
+
+	// sets value directly (no conversion)
+	template <typename T>
+	void set_value(int64_t entity_id, T value) { 
+		//todo: need to get index for this entity to update the value if it already exists, how to keep consistency with entity_register?!
+		int new_index = get_data<T>().insert(value);
+	 	data_array_lookup[entity_id] = new_index;
+	}
+
+
+	/*
+	//todo:remove if to_var and from_var are unused.
+	template <typename T>
+	Variant to_var(T val) { return Variant(val); }; // convert actual type to variant for editor
+
+	template <typename T>
+	T from_var(Variant var) { return cast_to<T>(var); };	// convert variant from editor to actual type
+	*/
+};
+
+
+//template <typename T>
+class Attribute : public Resource { // Attribute
+GDCLASS(Attribute, Resource);
+
+	StringName attribute_name;
+	AttributeData attribute_data;
+
+protected:
+	static void _bind_methods();
+
+public:
+	Attribute() = default;
+	//~Attribute() override = default;
+	//Attribute(Variant p_data_var) { data_var = p_data_var; }
+
+	void create_attribute_data_entry(); //todo:use or remove
+
+	//Union_Array union_array;
+
+	Variant data_var;	// default value
+
+	void set_data_var(const Variant& p_data_var); // sets value from variant (does conversion from_var())
+	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
+
+	AttributeData* get_attribute_data() {
+		return &attribute_data;
+	}
 
 /*
 	void set_data_var(const Array& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
@@ -564,46 +649,6 @@ public:
     TypedArray<Variant> get_data_var() const {
         return data_var;
     }*/
-
-	 // sets value from variant (does conversion from_var())
-	void set_var(int entity_id, Variant& value) {
-		switch(value.get_type()) {
-			case Variant::BOOL:
-				set_value<int64_t>(entity_id, value);
-				break;
-			case Variant::INT:
-				set_value<int64_t>(entity_id, value);
-				break;
-			case Variant::FLOAT:
-				set_value<float>(entity_id, value);
-				break;
-			case Variant::STRING:
-				set_value<String>(entity_id, value);
-				break;
-			case Variant::STRING_NAME:
-				set_value<String>(entity_id, value);
-				break;
-			default:
-				set_value<Variant>(entity_id, value);
-		}
-
-	};
-	const Variant get_var(int64_t entity_id) const { return 0; }; // get value (does conversion to_var())
-
-	template <typename T>
-	Variant to_var(T val) { return Variant(val); }; // convert actual type to variant for editor
-
-	template <typename T>
-	T from_var(Variant var) { return cast_to<T>(var); };	// convert variant from editor to actual type
-
-	template <typename T>
-	const T get_value(int64_t entity_id) { return T(); }; // get value directly (no conversion)
-
-	// sets value directly (no conversion)
-	template <typename T>
-	void set_value(int64_t entity_id, T value) { 
-		//todo:
-	};
 
 	void set_attribute_name(StringName p_attribute_name) { attribute_name = p_attribute_name; }
 	StringName get_attribute_name() { return attribute_name; }
