@@ -654,7 +654,7 @@ void Attribute::create_attribute_data_entry() {
 			attribute_data.get_data<bool>().insert(data_var);
 			break;
 		case Variant::INT:
-			attribute_data.get_data<int>().insert(data_var);
+			attribute_data.get_data<int64_t>().insert(data_var);
 			break;
 		case Variant::FLOAT:
 			attribute_data.get_data<float>().insert(data_var);
