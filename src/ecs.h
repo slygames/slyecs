@@ -73,12 +73,9 @@ public:
 	Ecs() = default;
 	~Ecs() override = default;
 
-	map<Ability*> abilities;	// all abilities added to the Ecs
-
+	map<Ability*> ability_register;			// all abilities added to the Ecs
 	map<Attribute*> attribute_register;			// all attributes listed in an ability are added here when Ability is initialized
 	map<StringName> attribute_name_register;	// names of attributes are on the same index as the attribute in attribute_register, this allows for retrieval of attributes by name
-
-
 	
 /*
 	int testint = 0; //todo:remove
@@ -559,30 +556,27 @@ public:
 */
 	// sets value from variant (does conversion from_var())
 	void set_var(int entity_id, Variant& value) {
-		switch(value.get_type()) {
+		print("set_var() ", value.get_type());
+		var_type = value.get_type();
+		switch(var_type) {
 			case Variant::BOOL:
 				set_value<bool>(entity_id, value);
-				var_type = Variant::BOOL;
 				break;
 			case Variant::INT:
 				set_value<int64_t>(entity_id, value);
-				var_type = Variant::BOOL;
 				break;
 			case Variant::FLOAT:
 				set_value<float>(entity_id, value);
-				var_type = Variant::BOOL;
 				break;
 			case Variant::STRING:
 				set_value<String>(entity_id, value);
-				var_type = Variant::BOOL;
 				break;
 			case Variant::STRING_NAME:
 				set_value<StringName>(entity_id, value);
-				var_type = Variant::BOOL;
 				break;
 			default:
 				set_value<Variant>(entity_id, value);
-				var_type = Variant::NIL;
+				var_type = Variant::NIL;	// to use Variant type setting to NIL as there isn't any Variant::Variant, so AttributeData treats Variant::NIL as a regular Variant
 		}
 
 	}

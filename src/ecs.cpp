@@ -104,10 +104,17 @@ void NodeECS::_notification(int p_what) {
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
 				// add to Ecs abilities if not registered yet
-				if(!Ecs::get_singleton()->abilities.has(ability)) {
-					Ecs::get_singleton()->abilities.insert(ability);	// all abilities added to the Ecs
+				if(!Ecs::get_singleton()->ability_register.has(ability)) {
+					Ecs::get_singleton()->ability_register.insert(ability);	// all abilities added to the Ecs
+					// insert attributes for this ability
+					const TypedArray<Attribute>& attributes = ability->get_attributes_required();
+					for(int j=0;j<attributes.size();j++) {
+						Attribute* attribute = cast_to<Attribute>(attributes[i]);
+						Ecs::get_singleton()->attribute_register.insert(attribute);
+						Ecs::get_singleton()->attribute_name_register.insert(attribute->get_attribute_name());
+					}
 				}
-				print("Ecs Abilities Size : ", Ecs::get_singleton()->abilities.size());
+				print("Ecs Abilities Size : ", Ecs::get_singleton()->ability_register.size());
 				Ecs::get_singleton()->grant_abliity(entity, ability);
 				print("path ", ability->get_path(), "ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
@@ -120,6 +127,15 @@ void NodeECS::_notification(int p_what) {
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
 				Ecs::get_singleton()->revoke_ability(entity, ability);
+				//todo:bug these shouldn't be removed if there's any entities using this, may need a count or simplify this.
+				// remove attributes for this ability
+				const TypedArray<Attribute>& attributes = ability->get_attributes_required();
+				for(int j=0;j<attributes.size();j++) {
+					Attribute* attribute = cast_to<Attribute>(attributes[i]);
+					Ecs::get_singleton()->attribute_register.remove(attribute);
+					Ecs::get_singleton()->attribute_name_register.insert(attribute->get_attribute_name());
+				}
+
 			}
 			// remove entity
 			Ecs::get_singleton()->remove_entity(entity);
@@ -267,6 +283,7 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
 	print("2b");
 	for(int entity_id : entities_approved) {
+		print("2bb");
 		attribute->get_attribute_data()->set_var(entity_id, value);
 		print("ability_id ", get_instance_id(), "ability ", get_ability_name(), "set attribute ", attribute_name, " to ", attribute->get_attribute_data()->get_var(entity_id));
 		print("2c");
@@ -462,7 +479,7 @@ void Ecs::_notification(int _what) {
 		case NOTIFICATION_READY:
 			print("Ecs READY!! ", Ecs::get_singleton()->get_instance_id());
 			//print("Ecs Ready ability register size : ", abilities.size());
-			print("Ecs Ready2 ability register size : ", Ecs::get_singleton()->abilities.size());
+			print("Ecs Ready2 ability register size : ", Ecs::get_singleton()->ability_register.size());
 /*
 			// initialize abilities
 			for(int i=0; i<abilities.size();i++) {
@@ -506,10 +523,10 @@ void Ecs::process_ecs() {
 	//print("ability register size : ", ability_register.size());
 
 	print("HERE1");
-	print("ability register size : ", Ecs::get_singleton()->abilities.size());
+	print("ability register size : ", Ecs::get_singleton()->ability_register.size());
 	print("HERE2");
 
-	for(Ability* ability : Ecs::get_singleton()->abilities) {
+	for(Ability* ability : Ecs::get_singleton()->ability_register) {
 	/*
 	for(int i=0;i<abilities.size();i++) {
 		Ability* ability = cast_to<Ability>(abilities[i]);
