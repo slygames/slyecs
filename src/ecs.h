@@ -826,8 +826,6 @@ enum : unsigned char {
 
 	StringName ability_name;
 
-	map<int64_t> entities_assigned;
-
 	TypedArray<Attribute> attributes_required;
 	TypedArray<Attribute> attributes_forbidden; //todo:remove? maybe useful
 	/*
@@ -843,7 +841,7 @@ enum : unsigned char {
 	effect_type : on_off; / periodic
 	*/
 
-	array<int64_t> entities_affected;
+	//array<int64_t> entities_affected;
 
 protected:
 	static void _bind_methods();
@@ -871,7 +869,8 @@ public:
 	
 	//static map<Ability*> abilities;	// ability registry
 
-	map<int64_t> entities_approved;	// recalculated for each update(), filtered entities after checking tags, update operations only run for these
+	map<int64_t> entities_assigned; // entities granted this ability
+	map<int64_t> entities_approved;	// entities approved for update(), these are recalculated before each update(), contains filtered entities after checking tags, update operations only run for these
 
 	void set_attribute_val(StringName attribute_name, Variant value);
 

@@ -93,6 +93,7 @@ void NodeECS::_notification(int p_what) {
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
 				Ecs::get_singleton()->grant_abliity(entity, ability);
+				print("ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned);
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
@@ -240,10 +241,10 @@ Ability::Ability() : is_enabled(true) {
 }
 
 void Ability::set_attribute_val(StringName attribute_name, Variant value) {
-	print("set_attribute_val() : entities affected size: ", entities_affected.size());
+	print("set_attribute_val() : entities affected size: ", entities_assigned.size());
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
-	for(int entity_id : entities_affected) {
+	for(int entity_id : entities_assigned) {
 		attribute->get_attribute_data()->set_var(entity_id, value);
 		print("set attribute ",attribute_name," to ", attribute->get_attribute_data()->get_var(entity_id));
 	}
@@ -497,11 +498,11 @@ void Ecs::remove_entity(Object *object) {
 }
 
 void Ecs::grant_abliity(Object *object, Ability *ability) {
-	ability->entities_approved.insert(object->get_instance_id());
+	ability->entities_assigned.insert(object->get_instance_id());
 }
 
 void Ecs::revoke_ability(Object *object, Ability *ability) {
-	ability->entities_approved.remove(object->get_instance_id());
+	ability->entities_assigned.remove(object->get_instance_id());
 }
 
 /**
