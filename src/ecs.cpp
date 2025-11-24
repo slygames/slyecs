@@ -186,7 +186,6 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 		if(&p_data_var!=nullptr) { 
 			data_var = p_data_var;
 		}
-
 /*
 		switch(data_var.get_type()) {
 			case Variant::BOOL:
@@ -232,7 +231,7 @@ Ability::Ability() : is_enabled(true) {
 }
 
 void Ability::set_attribute_val(StringName attribute_name, Variant value) {
-	print("set_attribute_val() : ", entities_affected.size());
+	print("set_attribute_val() : entities affected size: ", entities_affected.size());
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
 	for(int entity_id : entities_affected) {

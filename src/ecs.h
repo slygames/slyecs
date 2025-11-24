@@ -587,6 +587,7 @@ public:
 		*/
 		T value = get_data<T>()[index];
 		//T value = get_data<T>().at(index);
+		print("get_value() entity ", entity_id, " getting value for ", value);
 		return value; 
 	}
 
@@ -626,6 +627,7 @@ public:
 		int new_index = data.insert(value);
 		*/
 		int new_index = get_data<T>().insert(value);
+		print("set_value() entity ", entity_id, " inserting ", value);
 	 	data_array_lookup[entity_id] = new_index;
 	}
 
