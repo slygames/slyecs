@@ -85,17 +85,26 @@ void NodeECS::_notification(int p_what) {
 			Entity* new_entity = Ecs::get_singleton()->create_entity(this->get_parent());
 			break;
 		*/
-		case NOTIFICATION_ENTER_TREE:
+		case NOTIFICATION_ENTER_TREE: {
 			// create entity
-			Ecs::get_singleton()->create_entity(this->get_parent());
-			//print("Entity created");
-			break;
-		case NOTIFICATION_EXIT_TREE:
-			// create entity
-			Ecs::get_singleton()->remove_entity(this->get_parent());
-			//entity = nullptr;
-			//print("Entity removed");
-			break;
+			Object* entity = this->get_parent();
+			Ecs::get_singleton()->create_entity(entity);
+			// grant default abilities
+			for(int i=0; i<abilities.size();i++) {
+				Ability* ability = cast_to<Ability>(abilities[i]);
+				Ecs::get_singleton()->grant_abliity(entity, ability);
+			}
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			Object* entity = this->get_parent();
+			// revoke default abilities
+			for(int i=0; i<abilities.size();i++) {
+				Ability* ability = cast_to<Ability>(abilities[i]);
+				Ecs::get_singleton()->revoke_ability(entity, ability);
+			}
+			// remove entity
+			Ecs::get_singleton()->remove_entity(entity);
+		} break;
 
 		/*
 			// register parent of NodeEcs as the game object
@@ -479,12 +488,20 @@ void Ecs::process_ecs() {
 	}
 }
 
-int Ecs::create_entity(Object *object) {
+int64_t Ecs::create_entity(Object *object) {
 	return entity_register.insert(object->get_instance_id());
 }
 
 void Ecs::remove_entity(Object *object) {
 	entity_register.remove(object->get_instance_id());
+}
+
+void Ecs::grant_abliity(Object *object, Ability *ability) {
+	ability->entities_approved.insert(object->get_instance_id());
+}
+
+void Ecs::revoke_ability(Object *object, Ability *ability) {
+	ability->entities_approved.remove(object->get_instance_id());
 }
 
 /**

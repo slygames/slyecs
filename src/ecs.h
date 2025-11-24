@@ -95,8 +95,11 @@ public:
 	void remove_entity(Entity* entity);
 */
 	// create an Entity for a godot game object
-	int create_entity(Object* object);
+	int64_t create_entity(Object* object);
 	void remove_entity(Object* object);
+
+	void grant_abliity(Object* object, Ability* ability);
+	void revoke_ability(Object* object, Ability* ability);
 
 	void tag_add(Object *object, StringName tag);
 	void tag_remove(Object *object, StringName tag);
@@ -853,6 +856,7 @@ protected:
 	void load_callable_script();
 	*/
 
+	//todo:remove if unused.
 	static const void get_affected_archetypes(TypedArray<int>& archetypes) {};
 
 	/*

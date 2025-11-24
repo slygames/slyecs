@@ -1,9 +1,11 @@
-[gd_resource type="Ability" load_steps=3 format=3 uid="uid://blgahpsvsrbgk"]
+[gd_resource type="Ability" load_steps=5 format=3 uid="uid://blgahpsvsrbgk"]
 
 [ext_resource type="Attribute" uid="uid://ciio3eq8qj8jg" path="res://ecs/attribute/velocity_attribute.tres" id="1_y1lx0"]
+[ext_resource type="Attribute" uid="uid://b0gfvqe0ufsno" path="res://ecs/attribute/rotation_attribute.tres" id="2_tpd21"]
 [ext_resource type="Script" uid="uid://crtrx1572l2yi" path="res://ecs/ability/movement_ability.gd" id="2_votyo"]
+[ext_resource type="Attribute" uid="uid://bgw7ltkxsg524" path="res://ecs/attribute/position_attribute.tres" id="3_1s1ia"]
 
 [resource]
-attributes_required = Array[Attribute]([ExtResource("1_y1lx0")])
+attributes_required = Array[Attribute]([ExtResource("1_y1lx0"), ExtResource("2_tpd21"), ExtResource("3_1s1ia")])
 ability_name = &"movement_ability"
 script = ExtResource("2_votyo")
