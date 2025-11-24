@@ -8,4 +8,5 @@
 [resource]
 attributes_required = Array[Attribute]([ExtResource("1_y1lx0"), ExtResource("2_tpd21"), ExtResource("3_1s1ia")])
 ability_name = &"movement_ability"
+resource_local_to_scene = true
 script = ExtResource("2_votyo")

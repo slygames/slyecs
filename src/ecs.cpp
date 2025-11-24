@@ -77,7 +77,7 @@ void NodeECS::_bind_methods() {
 }
 
 void NodeECS::_notification(int p_what) {
-	print("what", p_what);
+	//print("what", p_what);
 	switch(p_what) {
 		/*
 		case NOTIFICATION_READY:
@@ -88,7 +88,7 @@ void NodeECS::_notification(int p_what) {
 		//case NOTIFICATION_READY: {
 
 		case NOTIFICATION_ENTER_TREE: {
-			print("NOTIFICATION_READY");
+			print("NOTIFICATION_ENTER_TREE");
 			// create entity
 			Object* entity = this->get_parent();
 			int64_t entity_id = Ecs::get_singleton()->create_entity(entity);
@@ -97,13 +97,14 @@ void NodeECS::_notification(int p_what) {
 			// grant default abilities
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
+				ability->set_ability_name("ABC ability");
 				Ecs::get_singleton()->grant_abliity(entity, ability);
-				print("ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
+				print("path ", ability->get_path(), "ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
 		} break;
 		//case NOTIFICATION_WM_CLOSE_REQUEST: {
 		case NOTIFICATION_EXIT_TREE: {
-			print("NOTIFICATION_WM_CLOSE_REQUEST");
+			print("NOTIFICATION_EXIT_TREE");
 			Object* entity = this->get_parent();
 			// revoke default abilities
 			for(int i=0; i<abilities.size();i++) {
@@ -248,13 +249,13 @@ Ability::Ability() : is_enabled(true) {
 }
 
 void Ability::set_attribute_val(StringName attribute_name, Variant value) {
-	print(ability_name, "set_attribute_val() : entities assigned size: ", entities_assigned.size());
-	print(ability_name, "set_attribute_val() : entities approved size: ", entities_approved.size());
+	print("path ", get_path(), "ability ", get_ability_name(), "set_attribute_val() : entities assigned size: ", entities_assigned.size());
+	print("path ", get_path(), "ability ", get_ability_name(), "set_attribute_val() : entities approved size: ", entities_approved.size());
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
 	for(int entity_id : entities_approved) {
 		attribute->get_attribute_data()->set_var(entity_id, value);
-		print("set attribute ",attribute_name," to ", attribute->get_attribute_data()->get_var(entity_id));
+		print("ability_id ", get_instance_id(), "ability ", get_ability_name(), "set attribute ", attribute_name, " to ", attribute->get_attribute_data()->get_var(entity_id));
 	}
 }
 
@@ -445,13 +446,13 @@ void Ecs::_notification(int _what) {
 	switch(_what) {
 		case NOTIFICATION_READY:
 			//print("READY!!");
-
+/*
 			// initialize abilities
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
 				ability->initialize();
 			}
-
+*/
 			if (!Engine::get_singleton()->is_editor_hint()) {
 				this->set_physics_process(true);
 			}

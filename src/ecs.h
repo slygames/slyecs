@@ -50,6 +50,7 @@ class Ecs : public Node {
 	*/
 	static Ecs* singleton;
 
+	//todo:remove and populate an array<Ability> instead
 	TypedArray<Ability> abilities;	// all abilities added to the Ecs
 
 	// registers containing all existing items not just enabled ones
