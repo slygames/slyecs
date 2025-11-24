@@ -20,8 +20,8 @@ public:
     map& operator=(const map& other) {
         array<T>::operator=(other); // parent =
         if (this!=&other) {	// if not assigning to self
-            for(int i=0; i<other; i++) {
-                set(i, other);
+            for(int i=0; i<other.size(); i++) {
+                set(i, other[i]);
             }
         }
         return *this;

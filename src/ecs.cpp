@@ -77,7 +77,7 @@ void NodeECS::_bind_methods() {
 }
 
 void NodeECS::_notification(int p_what) {
-	//print(p_what);
+	print("what", p_what);
 	switch(p_what) {
 		/*
 		case NOTIFICATION_READY:
@@ -85,10 +85,15 @@ void NodeECS::_notification(int p_what) {
 			Entity* new_entity = Ecs::get_singleton()->create_entity(this->get_parent());
 			break;
 		*/
-		case NOTIFICATION_ENTER_TREE: {
+		//case NOTIFICATION_ENTER_TREE: {
+
+		case NOTIFICATION_READY: {
+			print("NOTIFICATION_READY");
 			// create entity
 			Object* entity = this->get_parent();
-			Ecs::get_singleton()->create_entity(entity);
+			int64_t entity_id = Ecs::get_singleton()->create_entity(entity);
+			print("created entity ", entity_id);
+			print("abilities size ", abilities.size());
 			// grant default abilities
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
@@ -96,7 +101,16 @@ void NodeECS::_notification(int p_what) {
 				print("ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
 		} break;
+		case NOTIFICATION_ENTER_TREE: {
+			print("NOTIFICATION_ENTER_TREE");
+		}
+		break;
 		case NOTIFICATION_EXIT_TREE: {
+			print("NOTIFICATION_EXIT_TREE");
+		}
+		break;
+		case NOTIFICATION_WM_CLOSE_REQUEST: {
+			print("NOTIFICATION_WM_CLOSE_REQUEST");
 			Object* entity = this->get_parent();
 			// revoke default abilities
 			for(int i=0; i<abilities.size();i++) {
