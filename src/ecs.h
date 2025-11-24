@@ -556,6 +556,7 @@ public:
 */
 	// sets value from variant (does conversion from_var())
 	void set_var(int entity_id, Variant& value) {
+		//todo:need to determine default type from data_var in attribute
 		print("set_var() ", value.get_type());
 		var_type = value.get_type();
 		switch(var_type) {
