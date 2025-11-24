@@ -85,9 +85,9 @@ void NodeECS::_notification(int p_what) {
 			Entity* new_entity = Ecs::get_singleton()->create_entity(this->get_parent());
 			break;
 		*/
-		//case NOTIFICATION_ENTER_TREE: {
+		//case NOTIFICATION_READY: {
 
-		case NOTIFICATION_READY: {
+		case NOTIFICATION_ENTER_TREE: {
 			print("NOTIFICATION_READY");
 			// create entity
 			Object* entity = this->get_parent();
@@ -101,16 +101,8 @@ void NodeECS::_notification(int p_what) {
 				print("ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
 		} break;
-		// for testing, use these instead of ready and wm_close but right now it doesn't work properly with these as enter tree doesn't seem to be called on play.
-		case NOTIFICATION_ENTER_TREE: {
-			print("NOTIFICATION_ENTER_TREE");
-		}
-		break;
+		//case NOTIFICATION_WM_CLOSE_REQUEST: {
 		case NOTIFICATION_EXIT_TREE: {
-			print("NOTIFICATION_EXIT_TREE");
-		}
-		break;
-		case NOTIFICATION_WM_CLOSE_REQUEST: {
 			print("NOTIFICATION_WM_CLOSE_REQUEST");
 			Object* entity = this->get_parent();
 			// revoke default abilities
@@ -741,7 +733,8 @@ void Ecs::unregister_attribute(Attribute *attribute) {
 
 void Ability::update_entities_approved() {
 	// set to entities_assigned
-	print("update_entities_approved() Assigned1 ", entities_assigned.size());
+	print(ability_name," update_entities_approved() Assigned1 ", entities_assigned.size());
+	print(ability_name," update_entities_approved() Assigned1 ", this->entities_assigned.size());
 	entities_approved = entities_assigned;	// makes a copy of this 'cos need a copy, not a reference as this will be modified
 	print("update_entities_approved() Approved1 ", entities_approved.size());
 	// approve entities based on tags
