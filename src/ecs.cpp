@@ -20,6 +20,10 @@ map<Attribute*> Ecs::attribute_map;
 // initialize static variables
 Ecs* Ecs::singleton = nullptr;
 
+//map<Ability*> Ecs::abilities;
+//map<Attribute*> Ecs::attribute_register;
+//map<StringName> Ecs::attribute_name_register;
+
 void Ecs:: _bind_methods() {
 	//ClassDB::bind_static_method("Ecs", D_METHOD("get_singleton"), &Ecs::get_singleton);
 	ClassDB::bind_method(D_METHOD("connect", "scene_tree"), &Ecs::connect);
@@ -31,9 +35,11 @@ void Ecs:: _bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_archetype", "archetype"), &Ecs::unregister_object);
 	*/
 
+	/*
 	ClassDB::bind_method(D_METHOD("set_abilities", "p_abilities"), &Ecs::set_abilities);
 	ClassDB::bind_method(D_METHOD("get_abilities"), &Ecs::get_abilities);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Ability"), "set_abilities", "get_abilities");
+	*/
 
 	//ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "abilities", PROPERTY_HINT_ARRAY_TYPE, "Ability"), "set_abilities", "get_abilities");
 
@@ -97,7 +103,11 @@ void NodeECS::_notification(int p_what) {
 			// grant default abilities
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
-				ability->set_ability_name("ABC ability");
+				// add to Ecs abilities if not registered yet
+				if(!Ecs::get_singleton()->abilities.has(ability)) {
+					Ecs::get_singleton()->abilities.insert(ability);	// all abilities added to the Ecs
+				}
+				print("Ecs Abilities Size : ", Ecs::get_singleton()->abilities.size());
 				Ecs::get_singleton()->grant_abliity(entity, ability);
 				print("path ", ability->get_path(), "ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
@@ -252,11 +262,16 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	print("path ", get_path(), "ability ", get_ability_name(), "set_attribute_val() : entities assigned size: ", entities_assigned.size());
 	print("path ", get_path(), "ability ", get_ability_name(), "set_attribute_val() : entities approved size: ", entities_approved.size());
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
+	print("2aa ", Ecs::get_singleton()->attribute_register.size(), " : ", Ecs::get_singleton()->attribute_name_register.size());
+	print("2a ", attr_key);
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
+	print("2b");
 	for(int entity_id : entities_approved) {
 		attribute->get_attribute_data()->set_var(entity_id, value);
 		print("ability_id ", get_instance_id(), "ability ", get_ability_name(), "set attribute ", attribute_name, " to ", attribute->get_attribute_data()->get_var(entity_id));
+		print("2c");
 	}
+	print("2d");
 }
 
 /**
@@ -445,7 +460,9 @@ void Actor::_bind_methods() {
 void Ecs::_notification(int _what) {
 	switch(_what) {
 		case NOTIFICATION_READY:
-			//print("READY!!");
+			print("Ecs READY!! ", Ecs::get_singleton()->get_instance_id());
+			//print("Ecs Ready ability register size : ", abilities.size());
+			print("Ecs Ready2 ability register size : ", Ecs::get_singleton()->abilities.size());
 /*
 			// initialize abilities
 			for(int i=0; i<abilities.size();i++) {
@@ -453,12 +470,14 @@ void Ecs::_notification(int _what) {
 				ability->initialize();
 			}
 */
+
 			if (!Engine::get_singleton()->is_editor_hint()) {
-				this->set_physics_process(true);
+				set_physics_process(true);
+				print("enabled physics process");
 			}
 			break;
 		case NOTIFICATION_PHYSICS_PROCESS:
-			//print("PHYSICS_PROCESS!!");
+			print("PHYSICS_PROCESS!!");
 			process_ecs();
 			break;
 	}
@@ -486,16 +505,25 @@ void Ecs::process_ecs() {
 	//todo: maybe make this multithreaded and also the actual array and map operations like * / etc. or the operations in effects, however this is done
 	//print("ability register size : ", ability_register.size());
 
-	//print("ability register size : ", Ability::abilities.size());
+	print("HERE1");
+	print("ability register size : ", Ecs::get_singleton()->abilities.size());
+	print("HERE2");
 
-	//for(Ability* ability : ability_register) {
+	for(Ability* ability : Ecs::get_singleton()->abilities) {
+	/*
 	for(int i=0;i<abilities.size();i++) {
 		Ability* ability = cast_to<Ability>(abilities[i]);
+	*/	
+		print("PRocesing ", ability->get_ability_name());
 		if(ability->get_is_enabled()) { 
+			print("1");
 			ability->update_entities_approved(); // filter out entities without the necessary tags
+			print("2");
 			ability->update(); // update approved entities
+			print("3");
 		}
 	}
+	print("HERE3");
 }
 
 int64_t Ecs::create_entity(Object *object) {
@@ -749,7 +777,7 @@ void Ability::update_entities_approved() {
 }
 
 void Ability::update() {
-	// print("updating ability");
+	print("updating ability ", get_name());
 	/*
 	print("updating ability : ", Ecs::ability_map.find[this]);
 

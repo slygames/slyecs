@@ -50,8 +50,9 @@ class Ecs : public Node {
 	*/
 	static Ecs* singleton;
 
-	//todo:remove and populate an array<Ability> instead
-	TypedArray<Ability> abilities;	// all abilities added to the Ecs
+	//TypedArray<Ability> abilities;	// all abilities added to the Ecs	
+	
+	//TypedArray<Ability> abilities;	// all abilities added to the Ecs
 
 	// registers containing all existing items not just enabled ones
 	//map<Ability*> ability_register; //todo:remove
@@ -72,9 +73,13 @@ public:
 	Ecs() = default;
 	~Ecs() override = default;
 
+	map<Ability*> abilities;	// all abilities added to the Ecs
+
 	map<Attribute*> attribute_register;			// all attributes listed in an ability are added here when Ability is initialized
 	map<StringName> attribute_name_register;	// names of attributes are on the same index as the attribute in attribute_register, this allows for retrieval of attributes by name
 
+
+	
 /*
 	int testint = 0; //todo:remove
 	void increment_testint(StringName name) { 
@@ -104,10 +109,10 @@ public:
 
 	void tag_add(Object *object, StringName tag);
 	void tag_remove(Object *object, StringName tag);
-
+/*
 	void set_abilities(const TypedArray<Ability>& p_abilities) { abilities = p_abilities; }
 	TypedArray<Ability> get_abilities() const { return abilities; };
-
+*/
 	//void create_entity(Object* object);
 
 	//void register_archetype(Object* object, const TypedArray<Attribute>& attributes = TypedArray<Attribute>()); // todo: add
@@ -409,6 +414,7 @@ GDCLASS(NodeECS, Node);
 	int64_t entity_id;
 
 	TypedArray<Ability> abilities;
+
 	//TypedArray<Archetype> archetypes; //todo: remove or replace with system archetypes
 	//TypedArray<Attribute> attributes; //todo:remove?
 	TypedArray<StringName> tags;

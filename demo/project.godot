@@ -17,4 +17,4 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GlobalEcs="res://autoload/ecs.tscn"
+GlobalEcs="*res://autoload/ecs.tscn"
