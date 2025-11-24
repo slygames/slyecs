@@ -93,7 +93,7 @@ void NodeECS::_notification(int p_what) {
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
 				Ecs::get_singleton()->grant_abliity(entity, ability);
-				print("ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned);
+				print("ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
@@ -241,10 +241,10 @@ Ability::Ability() : is_enabled(true) {
 }
 
 void Ability::set_attribute_val(StringName attribute_name, Variant value) {
-	print("set_attribute_val() : entities affected size: ", entities_assigned.size());
+	print("set_attribute_val() : entities assigned size: ", entities_approved.size());
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
-	for(int entity_id : entities_assigned) {
+	for(int entity_id : entities_approved) {
 		attribute->get_attribute_data()->set_var(entity_id, value);
 		print("set attribute ",attribute_name," to ", attribute->get_attribute_data()->get_var(entity_id));
 	}
@@ -724,9 +724,9 @@ void Ecs::unregister_attribute(Attribute *attribute) {
 
 
 void Ability::update_entities_approved() {
-	// clear to repopulate with newly calculated entities
-	entities_approved.clear();
-
+	// set to entities_assigned
+	entities_approved = entities_assigned;
+	// approve entities based on tags
 	for(int i=0;i<tags_required.size();i++) {
 		StringName tag = tags_required[i];
 		map<int64_t> entities_assigned_to_tag = Ecs::get_singleton()->tag_register[tag.hash()];
