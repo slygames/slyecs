@@ -101,6 +101,7 @@ void NodeECS::_notification(int p_what) {
 				print("ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
 		} break;
+		// for testing, use these instead of ready and wm_close but right now it doesn't work properly with these as enter tree doesn't seem to be called on play.
 		case NOTIFICATION_ENTER_TREE: {
 			print("NOTIFICATION_ENTER_TREE");
 		}
@@ -255,7 +256,8 @@ Ability::Ability() : is_enabled(true) {
 }
 
 void Ability::set_attribute_val(StringName attribute_name, Variant value) {
-	print("set_attribute_val() : entities assigned size: ", entities_approved.size());
+	print(ability_name, "set_attribute_val() : entities assigned size: ", entities_assigned.size());
+	print(ability_name, "set_attribute_val() : entities approved size: ", entities_approved.size());
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
 	for(int entity_id : entities_approved) {
@@ -739,14 +741,17 @@ void Ecs::unregister_attribute(Attribute *attribute) {
 
 void Ability::update_entities_approved() {
 	// set to entities_assigned
-	entities_approved = entities_assigned;
+	print("update_entities_approved() Assigned1 ", entities_assigned.size());
+	entities_approved = entities_assigned;	// makes a copy of this 'cos need a copy, not a reference as this will be modified
+	print("update_entities_approved() Approved1 ", entities_approved.size());
 	// approve entities based on tags
 	for(int i=0;i<tags_required.size();i++) {
 		StringName tag = tags_required[i];
 		map<int64_t> entities_assigned_to_tag = Ecs::get_singleton()->tag_register[tag.hash()];
 		entities_approved.intersect(entities_assigned_to_tag);
 	}
-
+	print("update_entities_approved() Assigned2 ", entities_assigned.size());
+	print("update_entities_approved() Approved2 ", entities_approved.size());
 }
 
 void Ability::update() {
