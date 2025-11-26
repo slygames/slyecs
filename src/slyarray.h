@@ -224,9 +224,13 @@ public:
 	}
 
 	virtual int insert(const T& val) {
+		print("INSERT 1");
 		value.push_back(val);
+		print("INSERT 2");
 		int new_index = size()-1;
+		print("INSERT 3");
 		lookup.push_back(new_index);
+		print("INSERT 4");
 		return new_index; // return index of added element
 	}
 

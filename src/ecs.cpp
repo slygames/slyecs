@@ -112,6 +112,9 @@ void NodeECS::_notification(int p_what) {
 						Attribute* attribute = cast_to<Attribute>(attributes[i]);
 						Ecs::get_singleton()->attribute_register.insert(attribute);
 						Ecs::get_singleton()->attribute_name_register.insert(attribute->get_attribute_name());
+						//todo:set_attribute_val() should proabbly be part of Ecs class? but then how to call this from update?! an attribute isn't stricly part of an ability, multiple abilties can share the smae attribute, so this doesn't make sense in ability.
+						// set attribute default value
+						ability->set_attribute_val(attribute->get_attribute_name(), attribute->data_var);
 					}
 				}
 				print("Ecs Abilities Size : ", Ecs::get_singleton()->ability_register.size());
@@ -282,8 +285,13 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	print("2a ", attr_key);
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
 	print("2b");
+	// if decimals not entered a float value it may be considered an int, so to resolve this
+	if(attribute->get_data_var().get_type()==Variant::FLOAT && value.get_type()!=Variant::FLOAT) {
+		value =  (float)value;	// casting explicitly to float incase an int was passed into a float var
+	}
+	// set value on all entities
 	for(int entity_id : entities_approved) {
-		print("2bb");
+		print("2bb ", attribute->get_attribute_name());
 		attribute->get_attribute_data()->set_var(entity_id, value);
 		print("ability_id ", get_instance_id(), "ability ", get_ability_name(), "set attribute ", attribute_name, " to ", attribute->get_attribute_data()->get_var(entity_id));
 		print("2c");
@@ -722,23 +730,23 @@ void Ecs::register_object(Object *object) {
 void Attribute::create_attribute_data_entry() {
 	switch(data_var.get_type()) {
 		case Variant::BOOL:
-			attribute_data->get_data<bool>().insert(data_var);
+			attribute_data->get_data<bool>()->insert(data_var);
 			break;
 		case Variant::INT:
-			attribute_data->get_data<int64_t>().insert(data_var);
+			attribute_data->get_data<int64_t>()->insert(data_var);
 			break;
 		case Variant::FLOAT:
-			attribute_data->get_data<float>().insert(data_var);
+			attribute_data->get_data<float>()->insert(data_var);
 			break;
 		case Variant::STRING:
-			attribute_data->get_data<String>().insert(data_var);
+			attribute_data->get_data<String>()->insert(data_var);
 			break;
 		case Variant::STRING_NAME:
-			attribute_data->get_data<StringName>().insert(data_var);
+			attribute_data->get_data<StringName>()->insert(data_var);
 			break;
 		//todo: add other cases for primitive types
 		default:
-			attribute_data->get_data<Variant>().insert(data_var);
+			attribute_data->get_data<Variant>()->insert(data_var);
 	}
 }
 

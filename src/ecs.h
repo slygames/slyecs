@@ -538,12 +538,18 @@ public:
 	}
 
 	template <typename T>
-	array<T>& get_data() {
-		return std::get<array<T>>(data_array);
+	array<T>* get_data() {
+		print("yo");
+		/*
+		print("yo");
+		array<T>& datatest = std::get<array<T>>(data_array);
+		print("data1: ", datatest);
+		*/
+		return &std::get<array<T>>(data_array);
 	}
 
-	array<Variant>& get_data() {
-		return std::get<array<Variant>>(data_array);
+	array<Variant>* get_data() {
+		return &std::get<array<Variant>>(data_array);
 	}
 
 	Variant::Type var_type;
@@ -557,16 +563,19 @@ public:
 	// sets value from variant (does conversion from_var())
 	void set_var(int entity_id, Variant& value) {
 		//todo:need to determine default type from data_var in attribute
-		print("set_var() ", value.get_type());
+		print("set_var() ", value.get_type(), " value : ", value);
 		var_type = value.get_type();
 		switch(var_type) {
 			case Variant::BOOL:
 				set_value<bool>(entity_id, value);
 				break;
 			case Variant::INT:
+				print("INT 1");
 				set_value<int64_t>(entity_id, value);
+				print("INT 2");
 				break;
 			case Variant::FLOAT:
+				print("FLOAT"); 
 				set_value<float>(entity_id, value);
 				break;
 			case Variant::STRING:
@@ -579,7 +588,7 @@ public:
 				set_value<Variant>(entity_id, value);
 				var_type = Variant::NIL;	// to use Variant type setting to NIL as there isn't any Variant::Variant, so AttributeData treats Variant::NIL as a regular Variant
 		}
-
+		print("set_var() done");
 	}
 
 	// get value directly (no conversion)
@@ -626,15 +635,27 @@ public:
 	// sets value directly (no conversion)
 	template <typename T>
 	void set_value(int64_t entity_id, T value) { 
-		//todo: need to get index for this entity to update the value if it already exists, how to keep consistency with entity_register?!
-		/*
-		array<T> data = *get_data<T>();
-		int new_index = data.insert(value);
-		*/
-		int new_index = get_data<T>().insert(value);
-		print("set_value() entity ", entity_id, " inserting ", value);
-	 	data_array_lookup[entity_id] = new_index;
+		print("1 : ", entity_id, " : ", value);
+		int new_index = data_array_lookup[entity_id];	// new index is 0 if entity doesn't exist yet
+		print("1.1 ", new_index);
+		array<T>* data = get_data<T>();
+		print("abc");
+		print("data ", data);
+		if(new_index>0) { // entity index exists in data
+			print("A");
+			print("assign value ", value," at index ", new_index);
+			data->set(new_index, value);	// assign value at index
+			print("2");
+		} else {
+			print("B ", data->size());
+			new_index = data->insert(value);	// entity value doesn't exist, insert value
+			print("set_value() entity ", entity_id, " inserting ", value);
+			data_array_lookup[entity_id] = new_index;
+			print("3");
+		}
+		print("4");
 	}
+
 
 /*
 	void set_value(int64_t entity_id, Variant value) { 
@@ -856,9 +877,10 @@ protected:
 	void load_callable_script();
 	*/
 
+	/*
 	//todo:remove if unused.
 	static const void get_affected_archetypes(TypedArray<int>& archetypes) {};
-
+	*/
 	/*
 	void _notification(int p_what);
 	*/
