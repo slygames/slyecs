@@ -728,6 +728,9 @@ void Ecs::register_object(Object *object) {
 
 //todo:remove if unused, seems unnecessary
 void Attribute::create_attribute_data_entry() {
+
+	print("create_attribute_data_entry()");
+
 	switch(data_var.get_type()) {
 		case Variant::BOOL:
 			attribute_data->get_data<bool>()->insert(data_var);
