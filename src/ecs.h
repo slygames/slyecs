@@ -897,6 +897,10 @@ public:
 	map<int64_t> entities_approved;	// entities approved for update(), these are recalculated before each update(), contains filtered entities after checking tags, update operations only run for these
 
 	void set_attribute_val(StringName attribute_name, Variant value);
+	
+	//Variant get_attribute_val(StringName attribute_name);
+	
+	Attribute* get_attribute(StringName attribute_name);
 
 	void initialize(); // called by Ecs class so that Ability can post attributes to attribute_register
 

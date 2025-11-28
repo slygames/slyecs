@@ -277,26 +277,49 @@ Ability::Ability() : is_enabled(true) {
 	//Ecs::get_singleton()->increment_testint(this->get_path());
 }
 
+
 void Ability::set_attribute_val(StringName attribute_name, Variant value) {
+	/*
 	print("path ", get_path(), "ability ", get_ability_name(), "set_attribute_val() : entities assigned size: ", entities_assigned.size());
 	print("path ", get_path(), "ability ", get_ability_name(), "set_attribute_val() : entities approved size: ", entities_approved.size());
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	print("2aa ", Ecs::get_singleton()->attribute_register.size(), " : ", Ecs::get_singleton()->attribute_name_register.size());
 	print("2a ", attr_key);
-	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];	//todo:get attribute from an attribute_register which should be an unordered list sorted by stringname, each attribute must register with this.
+	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];
 	print("2b");
+	*/
+	Attribute* attribute = get_attribute(attribute_name);
 	// if decimals not entered a float value it may be considered an int, so to resolve this
 	if(attribute->get_data_var().get_type()==Variant::FLOAT && value.get_type()!=Variant::FLOAT) {
 		value =  (float)value;	// casting explicitly to float incase an int was passed into a float var
 	}
 	// set value on all entities
 	for(int entity_id : entities_approved) {
-		print("2bb ", attribute->get_attribute_name());
+		
+		Variant val = attribute->get_attribute_data()->get_var(entity_id);
+		print(entity_id, " ", attribute->get_attribute_name(), " : val : ", val);
+		
 		attribute->get_attribute_data()->set_var(entity_id, value);
+		/*
+		print("2bb ", attribute->get_attribute_name());
 		print("ability_id ", get_instance_id(), "ability ", get_ability_name(), "set attribute ", attribute_name, " to ", attribute->get_attribute_data()->get_var(entity_id));
 		print("2c");
+		*/
 	}
-	print("2d");
+	//print("2d");
+}
+
+/*
+Variant Ability::get_attribute_val(StringName attribute_name) {
+	Attribute* attribute = get_attribute(attribute_name);
+
+	return val;
+}*/
+
+Attribute* Ability::get_attribute(StringName attribute_name) {
+	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
+	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];
+	return attribute;
 }
 
 /**
