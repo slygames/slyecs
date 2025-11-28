@@ -136,7 +136,7 @@ void NodeECS::_notification(int p_what) {
 				for(int j=0;j<attributes.size();j++) {
 					Attribute* attribute = cast_to<Attribute>(attributes[i]);
 					Ecs::get_singleton()->attribute_register.remove(attribute);
-					Ecs::get_singleton()->attribute_name_register.insert(attribute->get_attribute_name());
+					Ecs::get_singleton()->attribute_name_register.remove(attribute->get_attribute_name());
 				}
 
 			}
@@ -828,7 +828,7 @@ void Ability::update_entities_approved() {
 }
 
 void Ability::update() {
-	print("updating ability ", get_name());
+	print("updating ability ", get_ability_name());
 	/*
 	print("updating ability : ", Ecs::ability_map.find[this]);
 

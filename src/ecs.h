@@ -635,7 +635,7 @@ public:
 	// sets value directly (no conversion)
 	template <typename T>
 	void set_value(int64_t entity_id, T value) { 
-		print("1 : ", entity_id, " : ", value);
+		print("1 : ", entity_id, " : ", value, " data_array_lookup size ", data_array_lookup.size());
 		int new_index = data_array_lookup[entity_id];	// new index is 0 if entity doesn't exist yet
 		print("1.1 ", new_index);
 		array<T>* data = get_data<T>();
