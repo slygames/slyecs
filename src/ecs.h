@@ -558,14 +558,28 @@ public:
 
 	template <typename T>
 	const array<T>* get_data() const {
-		return static_cast<const array<T>*>(data_array);
+		const array<T>* data;
+		for(void* ptr : data_array) {
+			data->insert(static_cast<T>(ptr));
+		}
+		return data;
+		//return static_cast<const array<T>*>(data_array);
 		//return &std::any_cast<const array<T>&>(data_array);
 		//return std::any_cast<const array<T>>(&data_array);
 	}
 
 	template <typename T>
 	array<T>* get_data() {
-		return static_cast<array<T>*>(data_array);
+		array<T>* data = new array<T>();
+		for(void* ptr : data_array) {
+			T* typed_ptr = static_cast<T*>(ptr);
+			//data->insert(reinterpret_cast<T>(ptr));
+		    if (typed_ptr != nullptr) {
+            	data->insert(*typed_ptr);
+        	}
+		}
+		return data;
+		//static_cast<array<T>*>(data_array)
 		//return &std::any_cast<array<T>&>(data_array);
 	}
 /*
