@@ -110,11 +110,14 @@ void NodeECS::_notification(int p_what) {
 					const TypedArray<Attribute>& attributes = ability->get_attributes_required();
 					for(int j=0;j<attributes.size();j++) {
 						Attribute* attribute = cast_to<Attribute>(attributes[i]);
+						attribute->get_attribute_data()->var_type = attribute->data_var.get_type();
 						Ecs::get_singleton()->attribute_register.insert(attribute);
 						Ecs::get_singleton()->attribute_name_register.insert(attribute->get_attribute_name());
+
 						//todo:set_attribute_val() should proabbly be part of Ecs class? but then how to call this from update?! an attribute isn't stricly part of an ability, multiple abilties can share the smae attribute, so this doesn't make sense in ability.
 						// set attribute default value
 						ability->set_attribute_val(attribute->get_attribute_name(), attribute->data_var);
+						attribute->get_attribute_data()->debug_print();
 					}
 				}
 				print("Ecs Abilities Size : ", Ecs::get_singleton()->ability_register.size());

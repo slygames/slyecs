@@ -656,6 +656,28 @@ public:
 		print("4");
 	}
 
+	//template <typename T>
+	void debug_print() {
+		/*
+		array<Variant>* data = get_data();
+		for(auto pair : data_array_lookup) {
+			print("debug_print ", pair.first, " : ", data[pair.second]);
+		}*/
+		print("printing ", var_type);
+		if(var_type==Variant::FLOAT) {
+			print("debug_print getting data");
+			array<float>* data = get_data<float>();
+			print("debug_print got data");
+			for(auto pair : data_array_lookup) {
+				print("inside for loop");
+				print("debug_print ", pair.first, " : ", pair.second);
+				//print("debug_print ", pair.first, " : ", data->get(pair.second));
+				//print("debug_print ", pair.first, " : ", data[pair.second]);
+			}
+		}
+
+	}
+
 
 /*
 	void set_value(int64_t entity_id, Variant value) { 
