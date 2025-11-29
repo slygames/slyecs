@@ -23,6 +23,7 @@
 #include <godot_cpp/classes/scene_tree.hpp> // for Ecs::connect()
 #include <godot_cpp/classes/window.hpp> // for Ecs::connect()
 #include <godot_cpp/core/gdvirtual.gen.inc>
+#include <any>
 //#include <godot_cpp/classes/expression.hpp> // evaluate
 
 using namespace godot;
@@ -522,8 +523,11 @@ class AttributeData : public RefCounted {
 GDCLASS(AttributeData, RefCounted);	
 
 	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer for ints or floats etc. as a Variant is always 20 bytes.
-    using Variant_Array = std::variant<array<Variant>, array<bool>, array<int64_t>, array<float>, array<String>, array<StringName>>;
-	Variant_Array data_array;
+    //using Variant_Array = std::variant<array<Variant>, array<bool>, array<int64_t>, array<float>, array<String>, array<StringName>>;
+	//using Variant_Array = array<std::any>;
+
+	//array<std::any> data_array;
+	array<void*> data_array;
 	std::unordered_map<int64_t, int> data_array_lookup; // entity_id, index of value in data_array
 
 protected:
@@ -531,27 +535,44 @@ protected:
 
 public:
 	AttributeData() = default;
+    
+	bool has_data(int64_t entity_id) {
+		return data_array_lookup.count(entity_id) > 0;
+	}
 
 	template <typename T>
-	const array<T>& get_data() const {
-		return std::get<array<T>>(data_array);
+    void add_data(int64_t entity_id, T value) {
+		if(has_data(entity_id)) {
+			int key = data_array_lookup[entity_id];
+			data_array[key] = value;
+		} else {
+			int index = data_array.insert(value);
+			data_array_lookup[entity_id] = index;
+		}
+    }
+
+	void remove_data(int64_t entity_id) {
+		int index = data_array_lookup[entity_id];
+		data_array.remove_key(index);
+	}
+
+	template <typename T>
+	const array<T>* get_data() const {
+		return static_cast<const array<T>*>(data_array);
+		//return &std::any_cast<const array<T>&>(data_array);
+		//return std::any_cast<const array<T>>(&data_array);
 	}
 
 	template <typename T>
 	array<T>* get_data() {
-		print("yo");
-		/*
-		print("yo");
-		array<T>& datatest = std::get<array<T>>(data_array);
-		print("data1: ", datatest);
-		*/
-		return &std::get<array<T>>(data_array);
+		return static_cast<array<T>*>(data_array);
+		//return &std::any_cast<array<T>&>(data_array);
 	}
-
+/*
 	array<Variant>* get_data() {
-		return &std::get<array<Variant>>(data_array);
+		return std::any_cast<array<Variant>>(&data_array);
 	}
-
+*/
 	Variant::Type var_type;
 
 /*
@@ -560,6 +581,7 @@ public:
 		return std::get<array<T>>(data_array).at(index);	// using at instead of []
 	}
 */
+
 	// sets value from variant (does conversion from_var())
 	void set_var(int entity_id, Variant& value) {
 		//todo:need to determine default type from data_var in attribute
@@ -593,13 +615,15 @@ public:
 
 	// get value directly (no conversion)
 	template <typename T>
-	T get_value(int64_t entity_id) const {
+	T get_value(int64_t entity_id) {
 		int index = data_array_lookup.at(entity_id);
 		/*
 		array<T> data = *get_data<T>();
 		T value = data[index];
 		*/
-		T value = get_data<T>()[index];
+		//array<T>* data = get_data<T>();
+		array<T>* data = get_data<T>();
+		T value = data->get(index);
 		//T value = get_data<T>().at(index);
 		print("get_value() entity ", entity_id, " getting value for ", value);
 		return value; 
@@ -607,7 +631,7 @@ public:
 
 	//todo:need to put this variant argument as a member variable var_type
 	// get value for an entity and convert it to variant (maybe useful for gdscript)
-	Variant get_var(int64_t entity_id) const { 
+	Variant get_var(int64_t entity_id) { 
 		Variant value;
 		switch(var_type) {
 			case Variant::BOOL:

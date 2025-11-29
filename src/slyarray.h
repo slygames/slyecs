@@ -208,12 +208,43 @@ public:
 	std::vector<T> get_data() {
 		return value;
 	}
-
+/*
 	// get a value by key (or use [] operator
+	T get(int key) {
+		return value[lookup[key]];
+	}
+*/
+/*
 	T& get(int key) & {
 		return value[lookup[key]];
 	}
+*/
+
+	T get(int key) {
+		if (key > 0 && key < lookup.size()) {
+			return value[lookup[key]];
+		}
+		return T();
+	}
+
+	const T get(int key) const {
+		if (key > 0 && key < lookup.size()) {
+			return value[lookup[key]];
+		}
+		return T();
+	}
+
 /*
+
+	T get(int key) const {
+		return value[lookup[key]];
+	}
+
+	T& get(int key) & {
+		return value[lookup[key]];
+	}
+
+
 	const T& get(int key) const & {
 		return value[lookup[key]];
 	}
