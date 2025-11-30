@@ -107,6 +107,9 @@ public:
 
 	void tag_add(Object *object, StringName tag);
 	void tag_remove(Object *object, StringName tag);
+
+	void create_attribute(Attribute *attribute);
+	void remove_attribute(Attribute *attribute);
 /*
 	void set_abilities(const TypedArray<Ability>& p_abilities) { abilities = p_abilities; }
 	TypedArray<Ability> get_abilities() const { return abilities; };
@@ -526,8 +529,8 @@ GDCLASS(AttributeData, RefCounted);
     //using Variant_Array = std::variant<array<Variant>, array<bool>, array<int64_t>, array<float>, array<String>, array<StringName>>;
 	//using Variant_Array = array<std::any>;
 
-	//array<std::any> data_array;
-	array<void*> data_array;
+	array<std::any> data_array;
+	//array<void*> data_array;
 	std::unordered_map<int64_t, int> data_array_lookup; // entity_id, index of value in data_array
 
 protected:
@@ -556,32 +559,63 @@ public:
 		data_array.remove_key(index);
 	}
 
+	/*
 	template <typename T>
 	const array<T>* get_data() const {
 		const array<T>* data;
-		for(void* ptr : data_array) {
-			data->insert(static_cast<T>(ptr));
+		for(std::any ptr : data_array) {
+			data->insert(any_cast<T>(ptr));
 		}
 		return data;
 		//return static_cast<const array<T>*>(data_array);
 		//return &std::any_cast<const array<T>&>(data_array);
 		//return std::any_cast<const array<T>>(&data_array);
-	}
-
+	}*/
+/*
 	template <typename T>
-	array<T>* get_data() {
-		array<T>* data = new array<T>();
-		for(void* ptr : data_array) {
-			T* typed_ptr = static_cast<T*>(ptr);
-			//data->insert(reinterpret_cast<T>(ptr));
+	const array<T>* get_data() const {
+		const array<T>* data = new array<T>();
+		for(std::any ptr : data_array) {
+			T typed_ptr = std::any_cast<T>(ptr);
 		    if (typed_ptr != nullptr) {
             	data->insert(*typed_ptr);
         	}
 		}
 		return data;
-		//static_cast<array<T>*>(data_array)
-		//return &std::any_cast<array<T>&>(data_array);
 	}
+*/
+	template <typename T>
+	const array<T>* get_data() const {
+		const array<T>* data = new array<T>();
+		for(std::any ptr : data_array) {
+			T typed_ptr = std::any_cast<T>(ptr);
+         	data->insert(*typed_ptr);
+		}
+		return data;
+	}
+
+	template <typename T>
+	array<T>* get_data() {
+		array<T>* data = new array<T>();
+		for(std::any ptr : data_array) {
+			T typed_ptr = std::any_cast<T>(ptr);
+			data->insert(typed_ptr); 
+		}
+		return data;
+	}
+/*
+	template <typename T>
+	array<T>* get_data() {
+		array<T>* data = new array<T>();
+		for(std::any ptr : data_array) {
+			T typed_ptr = std::any_cast<T>(ptr);
+		    //if (typed_ptr != nullptr) {
+            data->insert(typed_ptr);
+        	//}
+		}
+		return data;
+	}
+	*/
 /*
 	array<Variant>* get_data() {
 		return std::any_cast<array<Variant>>(&data_array);
@@ -638,6 +672,7 @@ public:
 		//array<T>* data = get_data<T>();
 		array<T>* data = get_data<T>();
 		T value = data->get(index);
+		delete data;
 		//T value = get_data<T>().at(index);
 		print("get_value() entity ", entity_id, " getting value for ", value);
 		return value; 
@@ -689,9 +724,11 @@ public:
 			new_index = data->insert(value);	// entity value doesn't exist, insert value
 			print("set_value() entity ", entity_id, " inserting ", value);
 			data_array_lookup[entity_id] = new_index;
+			print("DATA_array_lookup size ", data_array_lookup.size());
 			print("3");
 		}
 		print("4");
+		delete data;
 	}
 
 	//template <typename T>
@@ -701,7 +738,7 @@ public:
 		for(auto pair : data_array_lookup) {
 			print("debug_print ", pair.first, " : ", data[pair.second]);
 		}*/
-		print("printing ", var_type);
+		print("printing ", var_type, "data_array_lookup size ", data_array_lookup.size());
 		if(var_type==Variant::FLOAT) {
 			print("debug_print getting data");
 			array<float>* data = get_data<float>();
@@ -712,6 +749,7 @@ public:
 				//print("debug_print ", pair.first, " : ", data->get(pair.second));
 				//print("debug_print ", pair.first, " : ", data[pair.second]);
 			}
+			delete data;
 		}
 
 	}

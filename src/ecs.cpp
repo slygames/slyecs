@@ -84,6 +84,9 @@ void NodeECS::_bind_methods() {
 
 void NodeECS::_notification(int p_what) {
 	//print("what", p_what);
+	
+	if(godot::Engine::get_singleton()->is_editor_hint()) return; // do nothing in the editor
+
 	switch(p_what) {
 		/*
 		case NOTIFICATION_READY:
@@ -111,8 +114,13 @@ void NodeECS::_notification(int p_what) {
 					for(int j=0;j<attributes.size();j++) {
 						Attribute* attribute = cast_to<Attribute>(attributes[i]);
 						attribute->get_attribute_data()->var_type = attribute->data_var.get_type();
-						Ecs::get_singleton()->attribute_register.insert(attribute);
-						Ecs::get_singleton()->attribute_name_register.insert(attribute->get_attribute_name());
+						//todo:BUG how does this prevent duplicates in these registers?! it doesnlt.. bug
+						if(!Ecs::get_singleton()->attribute_register.has(attribute)) {
+							Ecs::get_singleton()->create_attribute(attribute);
+						}
+						//attribute->create_attribute_data_entry();
+
+						
 
 						//todo:set_attribute_val() should proabbly be part of Ecs class? but then how to call this from update?! an attribute isn't stricly part of an ability, multiple abilties can share the smae attribute, so this doesn't make sense in ability.
 						// set attribute default value
@@ -231,6 +239,23 @@ Attribute::Attribute() {
 	print("comp map size A: ", Ecs::attribute_map.size());
 }
 */
+
+void Ecs::create_attribute(Attribute* attribute) {
+	Ecs* ecs = get_singleton();
+	if(!ecs->attribute_register.has(attribute)) {
+		ecs->attribute_register.insert(attribute);
+		ecs->attribute_name_register.insert(attribute->get_attribute_name());
+	}
+}
+
+void Ecs::remove_attribute(Attribute* attribute) {
+	Ecs* ecs = get_singleton();
+	if(ecs->attribute_register.has(attribute)) {
+		ecs->attribute_name_register.remove(attribute->get_attribute_name());
+		ecs->attribute_register.remove(attribute);
+	}
+}
+
 
 void Attribute::set_data_var(const Variant &p_data_var) {
 		if(&p_data_var!=nullptr) { 
