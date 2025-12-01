@@ -789,34 +789,30 @@ void Ecs::register_object(Object *object) {
 //}
 
 //todo:remove if unused, seems unnecessary
-void Attribute::create_attribute_data_entry(int entity_id) {
+void Attribute::create_attribute_data_entry(int64_t entity_id) {
 
 	print("create_attribute_data_entry()");
 
-	int index;
+	//int index;
 	switch(data_var.get_type()) {
 		case Variant::BOOL:
-			create_default_entry<bool>(entity_id, attribute_data);
+			get_attribute_data()->create_default_entry<bool>(entity_id);
 			break;
 		case Variant::INT:
-			create_default_entry<int64_t>(entity_id, attribute_data);
+			get_attribute_data()->create_default_entry<int64_t>(entity_id);
 			break;
 		case Variant::FLOAT:
-			create_default_entry<float>(entity_id, attribute_data);
-			//attribute_data->get_data<float>()->insert(data_var);
+			get_attribute_data()->create_default_entry<float>(entity_id);
 			break;
 		case Variant::STRING:
-			create_default_entry<String>(entity_id, attribute_data);
-			//attribute_data->get_data<String>()->insert(data_var);
+			get_attribute_data()->create_default_entry<String>(entity_id);
 			break;
 		case Variant::STRING_NAME:
-			create_default_entry<StringName>(entity_id, attribute_data);
-			//attribute_data->get_data<StringName>()->insert(data_var);
+			get_attribute_data()->create_default_entry<StringName>(entity_id);
 			break;
 		//todo: add other cases for primitive types
 		default:
-			create_default_entry<Variant>(entity_id, attribute_data);
-			//attribute_data->get_data<Variant>()->insert(data_var);
+			get_attribute_data()->create_default_entry<Variant>(entity_id);
 	}
 }
 

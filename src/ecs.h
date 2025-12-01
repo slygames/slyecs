@@ -538,7 +538,7 @@ protected:
 
 public:
 	AttributeData() = default;
-    
+/*	
 	bool has_data(int64_t entity_id) {
 		return data_array_lookup.count(entity_id) > 0;
 	}
@@ -558,6 +558,9 @@ public:
 		int index = data_array_lookup[entity_id];
 		data_array.remove_key(index);
 	}
+*/
+	template <typename T>
+	void create_default_entry(int64_t entity_id); //called by create_attribute_data_entry()
 
 	/*
 	template <typename T>
@@ -790,10 +793,7 @@ public:
 	//~Attribute() override = default;
 	//Attribute(Variant p_data_var) { data_var = p_data_var; }
 
-	void create_attribute_data_entry(int entity_id);	// create data entry for entity, this initializes the default values on the attribute for the entity
-
-	template <typename T>
-	void create_default_entry(int entity_id, AttributeData* attribute_data); //called by create_attribute_data_entry()
+	void create_attribute_data_entry(int64_t entity_id);	// create data entry for entity, this initializes the default values on the attribute for the entity
 
 	//Union_Array union_array;
 
@@ -1084,9 +1084,9 @@ public:
 };
 
 template <typename T>
-inline void Attribute::create_default_entry(int entity_id, AttributeData* attribute_data) {
-	int index = attribute_data->get_data<bool>()->insert(data_var);
-	attribute_data->data_array_lookup[entity_id] = index;
+inline void AttributeData::create_default_entry(int64_t entity_id) {
+	int index = get_data<bool>()->insert(data_var);
+	data_array_lookup[entity_id] = index;
 }
 
 } // namespace sly
