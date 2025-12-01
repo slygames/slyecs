@@ -85,7 +85,12 @@ void NodeECS::_bind_methods() {
 void NodeECS::_notification(int p_what) {
 	//print("what", p_what);
 	
-	if(godot::Engine::get_singleton()->is_editor_hint()) return; // do nothing in the editor
+	//todo: this seems to do nothing.
+	print("NodeEcs::_notification is_editor_hint()", godot::Engine::get_singleton()->is_editor_hint());
+	if(godot::Engine::get_singleton()->is_editor_hint()) {
+		print("is_editor_hint() is TRUE");
+		return; // do nothing in the editor
+	}
 
 	switch(p_what) {
 		/*
@@ -106,6 +111,10 @@ void NodeECS::_notification(int p_what) {
 			// grant default abilities
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
+				// assign entity to ability
+				ability->entities_assigned.insert(entity_id);
+				ability->entities_approved.insert(entity_id);
+
 				// add to Ecs abilities if not registered yet
 				if(!Ecs::get_singleton()->ability_register.has(ability)) {
 					Ecs::get_singleton()->ability_register.insert(ability);	// all abilities added to the Ecs
@@ -118,13 +127,13 @@ void NodeECS::_notification(int p_what) {
 						if(!Ecs::get_singleton()->attribute_register.has(attribute)) {
 							Ecs::get_singleton()->create_attribute(attribute);
 						}
-						//attribute->create_attribute_data_entry();
 
-						
+						attribute->create_attribute_data_entry(entity_id);
 
 						//todo:set_attribute_val() should proabbly be part of Ecs class? but then how to call this from update?! an attribute isn't stricly part of an ability, multiple abilties can share the smae attribute, so this doesn't make sense in ability.
 						// set attribute default value
-						ability->set_attribute_val(attribute->get_attribute_name(), attribute->data_var);
+						//ability->set_attribute_val(attribute->get_attribute_name(), attribute->data_var);
+
 						attribute->get_attribute_data()->debug_print();
 					}
 				}
@@ -245,6 +254,7 @@ void Ecs::create_attribute(Attribute* attribute) {
 	if(!ecs->attribute_register.has(attribute)) {
 		ecs->attribute_register.insert(attribute);
 		ecs->attribute_name_register.insert(attribute->get_attribute_name());
+		//attribute->create_attribute_data_entry();
 	}
 }
 
@@ -321,9 +331,10 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	if(attribute->get_data_var().get_type()==Variant::FLOAT && value.get_type()!=Variant::FLOAT) {
 		value =  (float)value;	// casting explicitly to float incase an int was passed into a float var
 	}
+	print("setting attribute value");
 	// set value on all entities
 	for(int entity_id : entities_approved) {
-		
+		print("setting attribute value entity ", entity_id);
 		Variant val = attribute->get_attribute_data()->get_var(entity_id);
 		print(entity_id, " ", attribute->get_attribute_name(), " : val : ", val);
 		
@@ -778,31 +789,37 @@ void Ecs::register_object(Object *object) {
 //}
 
 //todo:remove if unused, seems unnecessary
-void Attribute::create_attribute_data_entry() {
+void Attribute::create_attribute_data_entry(int entity_id) {
 
 	print("create_attribute_data_entry()");
 
+	int index;
 	switch(data_var.get_type()) {
 		case Variant::BOOL:
-			attribute_data->get_data<bool>()->insert(data_var);
+			create_default_entry<bool>(entity_id, attribute_data);
 			break;
 		case Variant::INT:
-			attribute_data->get_data<int64_t>()->insert(data_var);
+			create_default_entry<int64_t>(entity_id, attribute_data);
 			break;
 		case Variant::FLOAT:
-			attribute_data->get_data<float>()->insert(data_var);
+			create_default_entry<float>(entity_id, attribute_data);
+			//attribute_data->get_data<float>()->insert(data_var);
 			break;
 		case Variant::STRING:
-			attribute_data->get_data<String>()->insert(data_var);
+			create_default_entry<String>(entity_id, attribute_data);
+			//attribute_data->get_data<String>()->insert(data_var);
 			break;
 		case Variant::STRING_NAME:
-			attribute_data->get_data<StringName>()->insert(data_var);
+			create_default_entry<StringName>(entity_id, attribute_data);
+			//attribute_data->get_data<StringName>()->insert(data_var);
 			break;
 		//todo: add other cases for primitive types
 		default:
-			attribute_data->get_data<Variant>()->insert(data_var);
+			create_default_entry<Variant>(entity_id, attribute_data);
+			//attribute_data->get_data<Variant>()->insert(data_var);
 	}
 }
+
 
 /*
 void Ecs::unregister_object(Object *object) {

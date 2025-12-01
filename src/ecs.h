@@ -790,7 +790,10 @@ public:
 	//~Attribute() override = default;
 	//Attribute(Variant p_data_var) { data_var = p_data_var; }
 
-	void create_attribute_data_entry(); //todo:use or remove
+	void create_attribute_data_entry(int entity_id);	// create data entry for entity, this initializes the default values on the attribute for the entity
+
+	template <typename T>
+	void create_default_entry(int entity_id, AttributeData* attribute_data); //called by create_attribute_data_entry()
 
 	//Union_Array union_array;
 
@@ -1080,10 +1083,13 @@ public:
 	float get_cooldown() const { return cooldown; }
 };
 
-
+template <typename T>
+inline void Attribute::create_default_entry(int entity_id, AttributeData* attribute_data) {
+	int index = attribute_data->get_data<bool>()->insert(data_var);
+	attribute_data->data_array_lookup[entity_id] = index;
+}
 
 } // namespace sly
-
 
 /**
  * Hash function for reverse lookup hash table, used by sly::map so it can store pointers to any Resource objects i.e. Archetype, Attribute, Ability resources
