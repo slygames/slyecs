@@ -796,23 +796,23 @@ void Attribute::create_attribute_data_entry(int64_t entity_id) {
 	//int index;
 	switch(data_var.get_type()) {
 		case Variant::BOOL:
-			get_attribute_data()->create_default_entry<bool>(entity_id);
+			get_attribute_data()->create_default_entry<bool>(entity_id, this);
 			break;
 		case Variant::INT:
-			get_attribute_data()->create_default_entry<int64_t>(entity_id);
+			get_attribute_data()->create_default_entry<int64_t>(entity_id, this);
 			break;
 		case Variant::FLOAT:
-			get_attribute_data()->create_default_entry<float>(entity_id);
+			get_attribute_data()->create_default_entry<float>(entity_id, this);
 			break;
 		case Variant::STRING:
-			get_attribute_data()->create_default_entry<String>(entity_id);
+			get_attribute_data()->create_default_entry<String>(entity_id, this);
 			break;
 		case Variant::STRING_NAME:
-			get_attribute_data()->create_default_entry<StringName>(entity_id);
+			get_attribute_data()->create_default_entry<StringName>(entity_id, this);
 			break;
 		//todo: add other cases for primitive types
 		default:
-			get_attribute_data()->create_default_entry<Variant>(entity_id);
+			get_attribute_data()->create_default_entry<Variant>(entity_id, this);
 	}
 }
 

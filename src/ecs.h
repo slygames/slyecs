@@ -560,7 +560,7 @@ public:
 	}
 */
 	template <typename T>
-	void create_default_entry(int64_t entity_id); //called by create_attribute_data_entry()
+	void create_default_entry(int64_t entity_id, Attribute* attribute); //called by create_attribute_data_entry()
 
 	/*
 	template <typename T>
@@ -748,8 +748,8 @@ public:
 			print("debug_print got data");
 			for(auto pair : data_array_lookup) {
 				print("inside for loop");
-				print("debug_print ", pair.first, " : ", pair.second);
-				//print("debug_print ", pair.first, " : ", data->get(pair.second));
+				//print("debug_print ", pair.first, " : ", pair.second);
+				print("debug_print Key ", pair.first, " : Data ", data->get(pair.second));
 				//print("debug_print ", pair.first, " : ", data[pair.second]);
 			}
 			delete data;
@@ -1084,8 +1084,9 @@ public:
 };
 
 template <typename T>
-inline void AttributeData::create_default_entry(int64_t entity_id) {
-	int index = get_data<bool>()->insert(data_var);
+inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
+	int index = get_data<T>()->insert(attribute->get_data_var());
+	print("inserted at index ", index, " for entity ", entity_id, " data ", attribute->get_data_var());
 	data_array_lookup[entity_id] = index;
 }
 
