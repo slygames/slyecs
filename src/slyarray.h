@@ -256,7 +256,7 @@ public:
 
 	virtual int insert(const T& val) {
 		print("INSERT 1");
-		print("val ", val);
+		//print("val ", val);
 		print("value size 1", value.size());
 		print("size 1", size());
 		value.push_back(val);

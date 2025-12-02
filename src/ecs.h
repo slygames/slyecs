@@ -747,13 +747,13 @@ public:
 			array<float>* data = get_data<float>();
 			print("debug_print got data size: ", data->size());
 			for(float item : *data) {
-				print("inside for loop");
-				print("debug_print ", item);
+				print("inside for loop1");
+				print("debug_print1 ", item);
 			}
 			for(auto pair : data_array_lookup) {
-				print("inside for loop");
+				print("inside for loop2");
 				//print("debug_print ", pair.first, " : ", pair.second);
-				print("debug_print Key ", pair.first, " : Data ", data->get(pair.second));
+				print("debug_print2 Key ", pair.first, " : Data ", data->get(pair.second));
 				//print("debug_print2 Key ", pair.first, " : Data ", data[pair.second]);
 				//print("debug_print ", pair.first, " : ", data[pair.second]);
 			}
