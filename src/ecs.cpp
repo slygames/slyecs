@@ -105,6 +105,10 @@ void NodeECS::_notification(int p_what) {
 			print("NOTIFICATION_ENTER_TREE");
 			// create entity
 			Object* entity = this->get_parent();
+			if(entity==nullptr) {
+				print("entity is null");
+			}
+			print("object instance id", entity->get_instance_id());
 			int64_t entity_id = Ecs::get_singleton()->create_entity(entity);
 			print("created entity ", entity_id);
 			print("abilities size ", abilities.size());
@@ -127,7 +131,7 @@ void NodeECS::_notification(int p_what) {
 						if(!Ecs::get_singleton()->attribute_register.has(attribute)) {
 							Ecs::get_singleton()->create_attribute(attribute);
 						}
-
+						print("creating attribute data entry for entity id ", entity_id);
 						attribute->create_attribute_data_entry(entity_id);
 
 						//todo:set_attribute_val() should proabbly be part of Ecs class? but then how to call this from update?! an attribute isn't stricly part of an ability, multiple abilties can share the smae attribute, so this doesn't make sense in ability.
@@ -614,7 +618,8 @@ void Ecs::process_ecs() {
 }
 
 int64_t Ecs::create_entity(Object *object) {
-	return entity_register.insert(object->get_instance_id());
+	entity_register.insert(object->get_instance_id());
+	return object->get_instance_id();
 }
 
 void Ecs::remove_entity(Object *object) {
@@ -791,7 +796,7 @@ void Ecs::register_object(Object *object) {
 //todo:remove if unused, seems unnecessary
 void Attribute::create_attribute_data_entry(int64_t entity_id) {
 
-	print("create_attribute_data_entry()");
+	print("create_attribute_data_entry() ", entity_id);
 
 	//int index;
 	switch(data_var.get_type()) {
