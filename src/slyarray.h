@@ -256,11 +256,19 @@ public:
 
 	virtual int insert(const T& val) {
 		print("INSERT 1");
+		print("val ", val);
+		print("value size 1", value.size());
+		print("size 1", size());
 		value.push_back(val);
+		print("value size 2", value.size());
+		print("size 2", size());
 		print("INSERT 2");
 		int new_index = size()-1;
+		print("index ", new_index);
 		print("INSERT 3");
+		print("lookup size 1", lookup.size());
 		lookup.push_back(new_index);
+		print("lookup size 2", lookup.size());
 		print("INSERT 4");
 		return new_index; // return index of added element
 	}

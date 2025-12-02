@@ -1090,7 +1090,11 @@ public:
 
 template <typename T>
 inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
-	int index = get_data<T>()->insert(attribute->get_data_var());
+	print("data size 1 ", get_data<T>()->size());
+	T data = attribute->get_data_var();
+	int index = get_data<T>()->insert(data);	// cast to T
+	print("data size 2 ", get_data<T>()->size());
+	//if(get_data<T>()->size() > 0) print("Inserted item ", *(get_data<T>())[0]);
 	print("inserted at index ", index, " for entity ", entity_id, " data ", attribute->get_data_var());
 	data_array_lookup[entity_id] = index;
 }
