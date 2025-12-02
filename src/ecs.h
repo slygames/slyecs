@@ -587,6 +587,23 @@ public:
 		return data;
 	}
 */
+
+/*
+	template <typename T>
+	const array<T>* get_data() const {
+		return data_array;
+	}
+*/
+
+	const array<std::any>* get_data() const {
+		return &data_array;
+	}
+	
+	template <typename T>
+	const T& get_data_entity(int64_t entity_id) const {
+		return cast_to<T>(data_array[entity_id]);
+	}
+/*
 	template <typename T>
 	const array<T>* get_data() const {
 		const array<T>* data = new array<T>();
@@ -606,6 +623,9 @@ public:
 		}
 		return data;
 	}
+*/
+
+
 /*
 	template <typename T>
 	array<T>* get_data() {
@@ -744,12 +764,14 @@ public:
 		print("printing ", var_type, "data_array_lookup size ", data_array_lookup.size());
 		if(var_type==Variant::FLOAT) {
 			print("debug_print getting data");
-			array<float>* data = get_data<float>();
+			const array<std::any>* data = get_data();
 			print("debug_print got data size: ", data->size());
-			for(float item : *data) {
+			/*
+			for(float item : data) {
 				print("inside for loop1");
 				print("debug_print1 ", item);
 			}
+			*/
 			for(auto pair : data_array_lookup) {
 				print("inside for loop2");
 				//print("debug_print ", pair.first, " : ", pair.second);
@@ -1092,6 +1114,8 @@ template <typename T>
 inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
 	print("data size 1 ", get_data<T>()->size());
 	T data = attribute->get_data_var();
+	godot::Variant var0 = data; // todo:testing only
+	print("var0 ", var0);
 	int index = get_data<T>()->insert(data);	// cast to T
 	print("data size 2 ", get_data<T>()->size());
 	//if(get_data<T>()->size() > 0) print("Inserted item ", *(get_data<T>())[0]);

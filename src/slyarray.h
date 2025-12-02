@@ -3,6 +3,7 @@
 #include <vector>
 #include <type_traits> // For std::is_arithmetic_v
 #include "util.h"
+#include <any> //todo:debugging only
 //#include <algorithm> // for vector.find(), not using this anymore, //todo:remove
 
 /**
@@ -256,19 +257,39 @@ public:
 
 	virtual int insert(const T& val) {
 		print("INSERT 1");
-		//print("val ", val);
-		print("value size 1", value.size());
+		/*
+		auto var0 = val;//todo: testing only
+		godot::Variant var3 = var0;//todo: testing only
+		auto cast_var = std::any_cast<T>(val); //todo: testing only
+		godot::Variant var(cast_var);//todo: testing only
+		*/
+		//godot::Variant var = val;
+		//print("cast_var ", var); 
+		//var = (Variant)cast_var;
+		//var = val; //todo: testing only
+		//print("Inserting variant val ", var);
+		print("value size1 ", value.size());
 		print("size 1", size());
-		value.push_back(val);
-		print("value size 2", value.size());
+		
+		print("value size2 ", value.size());
 		print("size 2", size());
 		print("INSERT 2");
+		
 		int new_index = size()-1;
+		value.push_back(val);
+
+		/*
+		T newval = std::any_cast<T>(value[new_index]); //todo:remove
+		godot::Variant var2(newval);//todo:remove
+		*/
+		print("newval ", Variant(val));
+		//var = newval; //todo:remove
+		//print("Inserted val2 ", var);
 		print("index ", new_index);
 		print("INSERT 3");
-		print("lookup size 1", lookup.size());
+		print("lookup size1 ", lookup.size());
 		lookup.push_back(new_index);
-		print("lookup size 2", lookup.size());
+		print("lookup size2 ", lookup.size());
 		print("INSERT 4");
 		return new_index; // return index of added element
 	}
