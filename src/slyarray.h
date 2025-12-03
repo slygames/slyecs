@@ -193,6 +193,12 @@ public:
 	}
 
 	/*
+	std::vector<bool>::reference operator[](int key) & {
+		int index = lookup[key];
+		T val = value[index];
+		return val;
+	}*/
+	/*
 	T operator[](int key) {
 		T val = value.at(lookup.at(key));
 		return val;

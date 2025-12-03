@@ -619,22 +619,22 @@ public:
 	}
 	*/
 
-	template <typename T>
-	array<T>* get_data() {
-		array<T>* data_ptr = std::any_cast<array<T>>(&data_array);
-		return data_ptr; 
-	}
-
 	/*
 		const array<T>& data = &std::any_cast<array<T>>(data_array);
 		return &data;
 	}*/
 
 	template <typename T>
+	array<T>* get_data() {
+		array<T>* data_ptr = std::any_cast<array<T>>(&data_array);
+		return data_ptr; 
+	}
+
+	template <typename T>
 	T& get_data(int64_t entity_id) {
 		array<T>* data = get_data<T>();
 		int index = data_array_lookup[entity_id];
-		return &data[index];
+		return data[index];
 	}
 
 	/*
@@ -704,9 +704,11 @@ public:
 		print("set_var() ", value.get_type(), " value : ", value);
 		var_type = value.get_type();
 		switch(var_type) {
+			/*
 			case Variant::BOOL:
-				set_value<bool>(entity_id, value);
+				set_value<char>(entity_id, value);
 				break;
+			*/
 			case Variant::INT:
 				print("INT 1");
 				set_value<int64_t>(entity_id, value);
@@ -755,9 +757,11 @@ public:
 	Variant get_var(int64_t entity_id) { 
 		Variant value;
 		switch(var_type) {
+			/*
 			case Variant::BOOL:
-				value = Variant(get_value<bool>(entity_id));
+				value = Variant(get_value<char>(entity_id));
 				break;
+			*/
 			case Variant::INT:
 				value = Variant(get_value<int64_t>(entity_id));
 				break;
@@ -779,7 +783,7 @@ public:
 
 	// sets value directly (no conversion)
 	template <typename T>
-	void set_value(int64_t entity_id, T value) { 
+	void set_value(int64_t entity_id, const T& value) { 
 		print("1 : ", entity_id, " : ", value, " data_array_lookup size ", data_array_lookup.size());
 		int new_index = data_array_lookup[entity_id];	// new index is 0 if entity doesn't exist yet
 		print("1.1 ", new_index);
@@ -790,7 +794,10 @@ public:
 		if(new_index>0) { // entity index exists in data
 			print("A");
 			print("assign value ", value," at index ", new_index);
+			
+			//todo:enable
 			data[new_index] = value;	// assign value at index
+			
 			print("2");
 		} else {
 			print("B ", data.size());
