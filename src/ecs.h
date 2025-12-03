@@ -527,9 +527,9 @@ GDCLASS(AttributeData, RefCounted);
 
 	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer for ints or floats etc. as a Variant is always 20 bytes.
     //using Variant_Array = std::variant<array<Variant>, array<bool>, array<int64_t>, array<float>, array<String>, array<StringName>>;
-	//using Variant_Array = array<std::any>;
+	//using Variant_Array = std::any;
 
-	array<std::any> data_array;
+	std::any data_array;
 	//array<void*> data_array;
 	std::unordered_map<int64_t, int> data_array_lookup; // entity_id, index of value in data_array
 
@@ -595,14 +595,59 @@ public:
 	}
 */
 
-	const array<std::any>* get_data() const {
-		return &data_array;
+	const std::any& get_data() const {
+		return data_array;
+	}
+
+	std::any& get_data() {
+		return data_array;
+	}
+
+	// get value 
+	/*
+	template <typename T>
+	const array<T>& get_data() const {
+		const array<T>& data = std::any_cast<array<T>>(get_data());
+		return data;
+	}
+
+	template <typename T>
+	const T& get_data(int64_t entity_id) const {
+		const array<T>& data = get_data<T>();
+		int index = data_array_lookup.at(entity_id);
+		return data[index];
+	}
+	*/
+
+	template <typename T>
+	array<T>* get_data() {
+		array<T>* data_ptr = std::any_cast<array<T>>(&data_array);
+		return data_ptr; 
+	}
+
+	/*
+		const array<T>& data = &std::any_cast<array<T>>(data_array);
+		return &data;
+	}*/
+
+	template <typename T>
+	T& get_data(int64_t entity_id) {
+		array<T>* data = get_data<T>();
+		int index = data_array_lookup[entity_id];
+		return &data[index];
+	}
+
+	/*
+	template <typename T>
+	const T* get_data() const {
+		return &cast_to<T>(data_array);
 	}
 	
 	template <typename T>
 	const T& get_data_entity(int64_t entity_id) const {
-		return cast_to<T>(data_array[entity_id]);
+		return get_data()[entity_id];
 	}
+	*/
 /*
 	template <typename T>
 	const array<T>* get_data() const {
@@ -693,9 +738,13 @@ public:
 		T value = data[index];
 		*/
 		//array<T>* data = get_data<T>();
-		array<T>* data = get_data<T>();
-		T value = data->get(index);
-		delete data;
+		//array<T>* data = get_data<T>();
+/*
+		const std::any& data_any = get_data();
+		const array<T>& data = std::any_cast<array<T>>(data_any);
+*/
+		const array<T>& data = std::any_cast<array<T>>(get_data());
+		T value = data[index];
 		//T value = get_data<T>().at(index);
 		print("get_value() entity ", entity_id, " getting value for ", value);
 		return value; 
@@ -734,24 +783,24 @@ public:
 		print("1 : ", entity_id, " : ", value, " data_array_lookup size ", data_array_lookup.size());
 		int new_index = data_array_lookup[entity_id];	// new index is 0 if entity doesn't exist yet
 		print("1.1 ", new_index);
-		array<T>* data = get_data<T>();
+		//array<T>& data = &std::any_cast<array<T>>(get_data());
+		array<T>& data = std::any_cast<array<T>&>(get_data());
 		print("abc");
-		print("data ", data);
+		//print("data ", data);
 		if(new_index>0) { // entity index exists in data
 			print("A");
 			print("assign value ", value," at index ", new_index);
-			data->set(new_index, value);	// assign value at index
+			data[new_index] = value;	// assign value at index
 			print("2");
 		} else {
-			print("B ", data->size());
-			new_index = data->insert(value);	// entity value doesn't exist, insert value
+			print("B ", data.size());
+			new_index = data.insert(value);	// entity value doesn't exist, insert value
 			print("set_value() entity ", entity_id, " inserting ", value);
 			data_array_lookup[entity_id] = new_index;
 			print("DATA_array_lookup size ", data_array_lookup.size());
 			print("3");
 		}
 		print("4");
-		delete data;
 	}
 
 	//template <typename T>
@@ -764,8 +813,8 @@ public:
 		print("printing ", var_type, "data_array_lookup size ", data_array_lookup.size());
 		if(var_type==Variant::FLOAT) {
 			print("debug_print getting data");
-			const array<std::any>* data = get_data();
-			print("debug_print got data size: ", data->size());
+			const array<float>& data = std::any_cast<array<float>>(get_data());
+			print("debug_print got data size: ", data.size());
 			/*
 			for(float item : data) {
 				print("inside for loop1");
@@ -775,11 +824,10 @@ public:
 			for(auto pair : data_array_lookup) {
 				print("inside for loop2");
 				//print("debug_print ", pair.first, " : ", pair.second);
-				print("debug_print2 Key ", pair.first, " : Data ", data->get(pair.second));
+				print("debug_print2 Key ", pair.first, " : Data ", data[pair.second]);
 				//print("debug_print2 Key ", pair.first, " : Data ", data[pair.second]);
 				//print("debug_print ", pair.first, " : ", data[pair.second]);
 			}
-			delete data;
 		}
 
 	}
@@ -1114,12 +1162,18 @@ template <typename T>
 inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
 	print("data size 1 ", get_data<T>()->size());
 	T data = attribute->get_data_var();
+	
+	/*
 	godot::Variant var0 = data; // todo:testing only
 	print("var0 ", var0);
+	*/
+
 	int index = get_data<T>()->insert(data);	// cast to T
+	
 	print("data size 2 ", get_data<T>()->size());
 	//if(get_data<T>()->size() > 0) print("Inserted item ", *(get_data<T>())[0]);
 	print("inserted at index ", index, " for entity ", entity_id, " data ", attribute->get_data_var());
+	
 	data_array_lookup[entity_id] = index;
 }
 

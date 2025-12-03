@@ -182,16 +182,14 @@ public:
 */
 
 	const T& operator[](int key) const & {
-		const T& val = value[lookup[key]]; //todo: check if it works with [] instead of .at
+		const T& val = value[lookup[key]];
 		return val;
-
-		//return value[lookup[key]];
 	}
 
 	T& operator[](int key) & {
-		T& val = value[lookup[key]];
+		int index = lookup[key];
+		T& val = value[index];
 		return val;
-		//return value[lookup[key]];
 	}
 
 	/*
@@ -282,10 +280,12 @@ public:
 		T newval = std::any_cast<T>(value[new_index]); //todo:remove
 		godot::Variant var2(newval);//todo:remove
 		*/
-		print("newval ", Variant(val));
+		
+		//print("newval ", Variant(val));
+		
 		//var = newval; //todo:remove
 		//print("Inserted val2 ", var);
-		print("index ", new_index);
+		//print("index ", new_index);
 		print("INSERT 3");
 		print("lookup size1 ", lookup.size());
 		lookup.push_back(new_index);
