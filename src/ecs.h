@@ -1167,17 +1167,21 @@ public:
 
 template <typename T>
 inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
-	print("data size 1 ", get_data<T>()->size());
-	T data = attribute->get_data_var();
+
+	array<T>* data = get_data<T>(); //todo:testing only
+	print("data size 1 ", data->size());//todo:testing only
+
+	T data_var = attribute->get_data_var();
 	
 	/*
 	godot::Variant var0 = data; // todo:testing only
 	print("var0 ", var0);
 	*/
 
-	int index = get_data<T>()->insert(data);	// cast to T
+	int index = get_data<T>()->insert(data_var);	// cast to T
 	
-	print("data size 2 ", get_data<T>()->size());
+	print("data size 2 ", data->size()); //todo:testing only
+
 	//if(get_data<T>()->size() > 0) print("Inserted item ", *(get_data<T>())[0]);
 	print("inserted at index ", index, " for entity ", entity_id, " data ", attribute->get_data_var());
 	

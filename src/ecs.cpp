@@ -108,7 +108,7 @@ void NodeECS::_notification(int p_what) {
 			if(entity==nullptr) {
 				print("entity is null");
 			}
-			print("object instance id", entity->get_instance_id());
+			print("object instance id ", entity->get_instance_id());
 			int64_t entity_id = Ecs::get_singleton()->create_entity(entity);
 			print("created entity ", entity_id);
 			print("abilities size ", abilities.size());
@@ -958,7 +958,7 @@ Array Attribute::create_array_from_variant(const Variant& p_variant) {
 
 	new_array.set_typed(type, Node::get_class_static(), Variant());
 
-	new_array.push_back(p_variant);
+	new_array.emplace_back(p_variant);
 
 	print("array created", new_array.size());
 	print("variant value is :", p_variant);

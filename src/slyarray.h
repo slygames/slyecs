@@ -279,8 +279,12 @@ public:
 		print("size 2", size());
 		print("INSERT 2");
 		
-		int new_index = size()-1;
-		value.push_back(val);
+		int new_index = size();
+		value.emplace_back(val);
+
+		godot::Variant var(val);
+		print("var ", var);
+		print("val ", val);
 
 		/*
 		T newval = std::any_cast<T>(value[new_index]); //todo:remove
@@ -294,7 +298,8 @@ public:
 		//print("index ", new_index);
 		print("INSERT 3");
 		print("lookup size1 ", lookup.size());
-		lookup.push_back(new_index);
+		lookup.emplace_back(new_index);
+		print("new index ", new_index);
 		print("lookup size2 ", lookup.size());
 		print("INSERT 4");
 		return new_index; // return index of added element
