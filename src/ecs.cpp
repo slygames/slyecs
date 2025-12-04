@@ -85,13 +85,6 @@ void NodeECS::_bind_methods() {
 void NodeECS::_notification(int p_what) {
 	//print("what", p_what);
 	
-	//todo: this seems to do nothing.
-	print("NodeEcs::_notification is_editor_hint()", godot::Engine::get_singleton()->is_editor_hint());
-	if(godot::Engine::get_singleton()->is_editor_hint()) {
-		print("is_editor_hint() is TRUE");
-		return; // do nothing in the editor
-	}
-
 	switch(p_what) {
 		/*
 		case NOTIFICATION_READY:
@@ -99,10 +92,17 @@ void NodeECS::_notification(int p_what) {
 			Entity* new_entity = Ecs::get_singleton()->create_entity(this->get_parent());
 			break;
 		*/
-		//case NOTIFICATION_READY: {
+		case NOTIFICATION_READY: {
 
-		case NOTIFICATION_ENTER_TREE: {
-			print("NOTIFICATION_ENTER_TREE");
+		//case NOTIFICATION_ENTER_TREE: {
+			print("NOTIFICATION_READY");
+
+			print("NodeEcs::_notification is_editor_hint()", godot::Engine::get_singleton()->is_editor_hint());
+			if(godot::Engine::get_singleton()->is_editor_hint()) {
+				print("is_editor_hint() is TRUE");
+				return; // do nothing in the editor
+			}
+
 			// create entity
 			Object* entity = this->get_parent();
 			if(entity==nullptr) {
@@ -146,8 +146,8 @@ void NodeECS::_notification(int p_what) {
 				print("path ", ability->get_path(), "ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
 		} break;
-		//case NOTIFICATION_WM_CLOSE_REQUEST: {
-		case NOTIFICATION_EXIT_TREE: {
+		case NOTIFICATION_WM_CLOSE_REQUEST: {
+		//case NOTIFICATION_EXIT_TREE: {
 			print("NOTIFICATION_EXIT_TREE");
 			Object* entity = this->get_parent();
 			// revoke default abilities
