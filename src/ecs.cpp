@@ -258,7 +258,24 @@ void Ecs::create_attribute(Attribute* attribute) {
 	if(!ecs->attribute_register.has(attribute)) {
 		ecs->attribute_register.insert(attribute);
 		ecs->attribute_name_register.insert(attribute->get_attribute_name());
-		//attribute->create_attribute_data_entry();
+		
+		switch(attribute->get_data_var().get_type()) {
+			case Variant::INT:
+				attribute->get_attribute_data()->create_data_array<int>(attribute);
+				break;
+			case Variant::FLOAT:
+				attribute->get_attribute_data()->create_data_array<float>(attribute);
+				break;
+			case Variant::STRING:
+				attribute->get_attribute_data()->create_data_array<String>(attribute);
+				break;
+			case Variant::STRING_NAME:
+				attribute->get_attribute_data()->create_data_array<StringName>(attribute);
+				break;
+				//todo: add other cases for primitive types
+			default:
+				attribute->get_attribute_data()->create_data_array<Variant>(attribute);
+		}
 	}
 }
 

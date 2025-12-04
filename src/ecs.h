@@ -538,27 +538,33 @@ protected:
 
 public:
 	AttributeData() = default;
-/*	
-	bool has_data(int64_t entity_id) {
-		return data_array_lookup.count(entity_id) > 0;
-	}
 
-	template <typename T>
-    void add_data(int64_t entity_id, T value) {
-		if(has_data(entity_id)) {
-			int key = data_array_lookup[entity_id];
-			data_array[key] = value;
-		} else {
-			int index = data_array.insert(value);
-			data_array_lookup[entity_id] = index;
+	/*
+		bool has_data(int64_t entity_id) {
+			return data_array_lookup.count(entity_id) > 0;
 		}
-    }
 
-	void remove_data(int64_t entity_id) {
-		int index = data_array_lookup[entity_id];
-		data_array.remove_key(index);
-	}
-*/
+		template <typename T>
+		void add_data(int64_t entity_id, T value) {
+			if(has_data(entity_id)) {
+				int key = data_array_lookup[entity_id];
+				data_array[key] = value;
+			} else {
+				int index = data_array.insert(value);
+				data_array_lookup[entity_id] = index;
+			}
+		}
+
+		void remove_data(int64_t entity_id) {
+			int index = data_array_lookup[entity_id];
+			data_array.remove_key(index);
+		}
+	*/
+
+	
+	template <typename T>
+	void create_data_array(Attribute *attribute);
+
 	template <typename T>
 	void create_default_entry(int64_t entity_id, Attribute* attribute); //called by create_attribute_data_entry()
 
@@ -626,13 +632,19 @@ public:
 
 	template <typename T>
 	array<T>* get_data() {
-		array<T>* data_ptr = std::any_cast<array<T>>(&data_array);
-		return data_ptr; 
+		array<T>* data = std::any_cast<array<T>>(&data_array);
+		if(data==nullptr) {
+			print("get_data()1 is nullptr");
+		}
+		return data; 
 	}
 
 	template <typename T>
 	T& get_data(int64_t entity_id) {
 		array<T>* data = get_data<T>();
+		if(data==nullptr) {
+			print("get_data()2 is nullptr");
+		}
 		int index = data_array_lookup[entity_id];
 		return data[index];
 	}
@@ -1166,10 +1178,17 @@ public:
 };
 
 template <typename T>
+inline void AttributeData::create_data_array(Attribute* attribute) {
+	array<T> data;
+	data_array = data;
+}
+
+template <typename T>
 inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
 
 	array<T>* data = get_data<T>(); //todo:testing only
-	print("data size 1 ", data->size());//todo:testing only
+	int size = data->size();
+	print("data size 1 ", size);//todo:testing only
 
 	T data_var = attribute->get_data_var();
 	

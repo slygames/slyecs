@@ -282,9 +282,9 @@ public:
 		int new_index = size();
 		value.emplace_back(val);
 
-		godot::Variant var(val);
-		print("var ", var);
+		//godot::Variant var(val);
 		print("val ", val);
+		//print("val ", val);
 
 		/*
 		T newval = std::any_cast<T>(value[new_index]); //todo:remove
