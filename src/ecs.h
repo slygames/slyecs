@@ -712,7 +712,7 @@ public:
 */
 
 	// sets value from variant (does conversion from_var())
-	void set_var(int entity_id, Variant& value) {
+	void set_var(int64_t entity_id, Variant& value) {
 		//todo:need to determine default type from data_var in attribute
 		print("set_var() ", value.get_type(), " value : ", value);
 		var_type = value.get_type();
@@ -728,7 +728,7 @@ public:
 				print("INT 2");
 				break;
 			case Variant::FLOAT:
-				print("FLOAT"); 
+				print("FLOAT ", entity_id); 
 				set_value<float>(entity_id, value);
 				break;
 			case Variant::STRING:
