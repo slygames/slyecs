@@ -419,10 +419,11 @@ GDCLASS(NodeECS, Node);
 	//TypedArray<Archetype> archetypes; //todo: remove or replace with system archetypes
 	//TypedArray<Attribute> attributes; //todo:remove?
 	TypedArray<StringName> tags;
-	
+
+	Object* get_entity();
+
 protected:
 	static void _bind_methods();
-
 	void _notification(int p_what);
 
 public:
@@ -779,6 +780,7 @@ public:
 				break;
 			case Variant::FLOAT:
 				value = Variant(get_value<float>(entity_id));
+				print("value is ", value);
 				break;
 			case Variant::STRING:
 				value = Variant(get_value<String>(entity_id));

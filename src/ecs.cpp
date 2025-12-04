@@ -82,6 +82,13 @@ void NodeECS::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags", "get_tags" );
 }
 
+/**
+ * NodeEcs parent is the actual entity, so it returns the parent node
+ */
+Object* NodeECS::get_entity() {
+	return this->get_parent();
+}
+
 void NodeECS::_notification(int p_what) {
 	//print("what", p_what);
 	
@@ -92,9 +99,9 @@ void NodeECS::_notification(int p_what) {
 			Entity* new_entity = Ecs::get_singleton()->create_entity(this->get_parent());
 			break;
 		*/
-		case NOTIFICATION_READY: {
+		//case NOTIFICATION_READY: {
 
-		//case NOTIFICATION_ENTER_TREE: {
+		case NOTIFICATION_ENTER_TREE: {
 			print("NOTIFICATION_READY");
 
 			print("NodeEcs::_notification is_editor_hint()", godot::Engine::get_singleton()->is_editor_hint());
@@ -104,7 +111,8 @@ void NodeECS::_notification(int p_what) {
 			}
 
 			// create entity
-			Object* entity = this->get_parent();
+			Object* entity = get_entity();
+
 			if(entity==nullptr) {
 				print("entity is null");
 			}
@@ -115,10 +123,15 @@ void NodeECS::_notification(int p_what) {
 			// grant default abilities
 			for(int i=0; i<abilities.size();i++) {
 				Ability* ability = cast_to<Ability>(abilities[i]);
+
+				print("Ecs Abilities Size : ", Ecs::get_singleton()->ability_register.size());
+				Ecs::get_singleton()->grant_abliity(entity, ability);
+				print("path ", ability->get_path(), "ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
+/*
 				// assign entity to ability
 				ability->entities_assigned.insert(entity_id);
 				ability->entities_approved.insert(entity_id);
-
+*/
 				// add to Ecs abilities if not registered yet
 				if(!Ecs::get_singleton()->ability_register.has(ability)) {
 					Ecs::get_singleton()->ability_register.insert(ability);	// all abilities added to the Ecs
@@ -141,13 +154,10 @@ void NodeECS::_notification(int p_what) {
 						attribute->get_attribute_data()->debug_print();
 					}
 				}
-				print("Ecs Abilities Size : ", Ecs::get_singleton()->ability_register.size());
-				Ecs::get_singleton()->grant_abliity(entity, ability);
-				print("path ", ability->get_path(), "ability ", ability->get_ability_name(), " added to entity ", this->get_parent()->get_name(), " total: ", ability->entities_assigned.size());
 			}
 		} break;
-		case NOTIFICATION_WM_CLOSE_REQUEST: {
-		//case NOTIFICATION_EXIT_TREE: {
+		//case NOTIFICATION_WM_CLOSE_REQUEST: {
+		case NOTIFICATION_EXIT_TREE: {
 			print("NOTIFICATION_EXIT_TREE");
 			Object* entity = this->get_parent();
 			// revoke default abilities
@@ -354,8 +364,8 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	}
 	print("setting attribute value");
 	// set value on all entities
-	for(int entity_id : entities_approved) {
-		print("setting attribute value entity ", entity_id);
+	for(int64_t entity_id : entities_approved) {
+		print(">> Setting attribute value entity ", entity_id);
 		Variant val = attribute->get_attribute_data()->get_var(entity_id);
 		print(entity_id, " ", attribute->get_attribute_name(), " : val : ", val);
 		
@@ -880,6 +890,9 @@ void Ability::update_entities_approved() {
 	// set to entities_assigned
 	print(ability_name," update_entities_approved() Assigned1 ", entities_assigned.size());
 	print(ability_name," update_entities_approved() Assigned1 ", this->entities_assigned.size());
+	
+	//todo: make a copy or modify entities_assigned and use this as entities_approved would be better probably but does this affect if entities are assigned by the editor!?! can entities be assigned by the editor?!
+
 	entities_approved = entities_assigned;	// makes a copy of this 'cos need a copy, not a reference as this will be modified
 	print("update_entities_approved() Approved1 ", entities_approved.size());
 	// approve entities based on tags
