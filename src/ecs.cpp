@@ -139,7 +139,7 @@ void NodeECS::_notification(int p_what) {
 					const TypedArray<Attribute>& attributes = ability->get_attributes_required();
 					for(int j=0;j<attributes.size();j++) {
 						Attribute* attribute = cast_to<Attribute>(attributes[i]);
-						attribute->get_attribute_data()->var_type = attribute->data_var.get_type();
+						//attribute->get_attribute_data()->var_type = attribute->data_var.get_type();
 						//todo:BUG how does this prevent duplicates in these registers?! it doesnlt.. bug
 						if(!Ecs::get_singleton()->attribute_register.has(attribute)) {
 							Ecs::get_singleton()->create_attribute(attribute);
@@ -151,7 +151,7 @@ void NodeECS::_notification(int p_what) {
 						// set attribute default value
 						//ability->set_attribute_val(attribute->get_attribute_name(), attribute->data_var);
 
-						attribute->get_attribute_data()->debug_print();
+						//attribute->get_attribute_data()->debug_print();
 					}
 				}
 			}
@@ -358,18 +358,22 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	print("2b");
 	*/
 	Attribute* attribute = get_attribute(attribute_name);
+
+	//todo: enable if necessary
+	/*
 	// if decimals not entered a float value it may be considered an int, so to resolve this
 	if(attribute->get_data_var().get_type()==Variant::FLOAT && value.get_type()!=Variant::FLOAT) {
 		value =  (float)value;	// casting explicitly to float incase an int was passed into a float var
 	}
+	*/
 	print("setting attribute value");
 	// set value on all entities
 	for(int64_t entity_id : entities_approved) {
 		print(">> Setting attribute value entity ", entity_id);
-		Variant val = attribute->get_attribute_data()->get_var(entity_id);
+		Variant val = attribute->get_var(entity_id);
 		print(entity_id, " ", attribute->get_attribute_name(), " : val : ", val);
 		
-		attribute->get_attribute_data()->set_var(entity_id, value);
+		attribute->set_var(entity_id, value);
 		/*
 		print("2bb ", attribute->get_attribute_name());
 		print("ability_id ", get_instance_id(), "ability ", get_ability_name(), "set attribute ", attribute_name, " to ", attribute->get_attribute_data()->get_var(entity_id));

@@ -702,7 +702,7 @@ public:
 		return std::any_cast<array<Variant>>(&data_array);
 	}
 */
-	Variant::Type var_type;
+	//Variant::Type var_type;
 
 /*
 	template <typename T>
@@ -710,39 +710,6 @@ public:
 		return std::get<array<T>>(data_array).at(index);	// using at instead of []
 	}
 */
-
-	// sets value from variant (does conversion from_var())
-	void set_var(int64_t entity_id, Variant& value) {
-		//todo:need to determine default type from data_var in attribute
-		print("set_var() ", value.get_type(), " value : ", value);
-		var_type = value.get_type();
-		switch(var_type) {
-			/*
-			case Variant::BOOL:
-				set_value<char>(entity_id, value);
-				break;
-			*/
-			case Variant::INT:
-				print("INT 1");
-				set_value<int64_t>(entity_id, value);
-				print("INT 2");
-				break;
-			case Variant::FLOAT:
-				print("FLOAT ", entity_id); 
-				set_value<float>(entity_id, value);
-				break;
-			case Variant::STRING:
-				set_value<String>(entity_id, value);
-				break;
-			case Variant::STRING_NAME:
-				set_value<StringName>(entity_id, value);
-				break;
-			default:
-				set_value<Variant>(entity_id, value);
-				var_type = Variant::NIL;	// to use Variant type setting to NIL as there isn't any Variant::Variant, so AttributeData treats Variant::NIL as a regular Variant
-		}
-		print("set_var() done");
-	}
 
 	// get value directly (no conversion)
 	template <typename T>
@@ -764,36 +731,6 @@ public:
 		print("get_value() entity ", entity_id, " getting value for ", value);
 		return value; 
 	}
-
-	//todo:need to put this variant argument as a member variable var_type
-	// get value for an entity and convert it to variant (maybe useful for gdscript)
-	Variant get_var(int64_t entity_id) { 
-		Variant value;
-		switch(var_type) {
-			/*
-			case Variant::BOOL:
-				value = Variant(get_value<char>(entity_id));
-				break;
-			*/
-			case Variant::INT:
-				value = Variant(get_value<int64_t>(entity_id));
-				break;
-			case Variant::FLOAT:
-				value = Variant(get_value<float>(entity_id));
-				print("value is ", value);
-				break;
-			case Variant::STRING:
-				value = Variant(get_value<String>(entity_id));
-				break;
-			case Variant::STRING_NAME:
-				value = Variant(get_value<StringName>(entity_id));
-				break;
-			case Variant::NIL:
-				value = get_value<Variant>(entity_id);
-				break;
-		}		
-		return value; 
-	} // get value (does conversion to_var())
 
 	// sets value directly (no conversion)
 	template <typename T>
@@ -823,25 +760,23 @@ public:
 		}
 		print("4");
 	}
-
+/*
 	//template <typename T>
 	void debug_print() {
-		/*
-		array<Variant>* data = get_data();
-		for(auto pair : data_array_lookup) {
-			print("debug_print ", pair.first, " : ", data[pair.second]);
-		}*/
+		
+		//array<Variant>* data = get_data();
+		//for(auto pair : data_array_lookup) {
+		//	print("debug_print ", pair.first, " : ", data[pair.second]);
+		//}
 		print("printing ", var_type, "data_array_lookup size ", data_array_lookup.size());
-		if(var_type==Variant::FLOAT) {
+		if(var_type==attribute) {
 			print("debug_print getting data");
 			const array<float>& data = std::any_cast<array<float>>(get_data());
 			print("debug_print got data size: ", data.size());
-			/*
-			for(float item : data) {
-				print("inside for loop1");
-				print("debug_print1 ", item);
-			}
-			*/
+			//for(float item : data) {
+			//	print("inside for loop1");
+			//	print("debug_print1 ", item);
+			//}
 			for(auto pair : data_array_lookup) {
 				print("inside for loop2");
 				//print("debug_print ", pair.first, " : ", pair.second);
@@ -852,7 +787,7 @@ public:
 		}
 
 	}
-
+*/
 
 /*
 	void set_value(int64_t entity_id, Variant value) { 
@@ -897,6 +832,74 @@ public:
 
 	void set_data_var(const Variant& p_data_var); // sets value from variant (does conversion from_var())
 	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
+
+
+
+	// sets value from variant (does conversion from_var())
+	void set_var(int64_t entity_id, Variant& value) {
+		//todo:need to determine default type from data_var in attribute
+		print("set_var() ", value.get_type(), " value : ", value);
+		//var_type = value.get_type();
+		switch(data_var.get_type()) {
+			/*
+			case Variant::BOOL:
+				set_value<char>(entity_id, value);
+				break;
+			*/
+			case Variant::INT:
+				print("INT 1");
+				attribute_data->set_value<int64_t>(entity_id, value);
+				print("INT 2");
+				break;
+			case Variant::FLOAT:
+				print("FLOAT ", entity_id); 
+				attribute_data->set_value<float>(entity_id, value);
+				break;
+			case Variant::STRING:
+				attribute_data->set_value<String>(entity_id, value);
+				break;
+			case Variant::STRING_NAME:
+				attribute_data->set_value<StringName>(entity_id, value);
+				break;
+			default:
+				attribute_data->set_value<Variant>(entity_id, value);
+				//var_type = Variant::NIL;	// to use Variant type setting to NIL as there isn't any Variant::Variant, so AttributeData treats Variant::NIL as a regular Variant
+		}
+		print("set_var() done");
+	}
+
+	// get value for an entity and convert it to variant (maybe useful for gdscript)
+	Variant get_var(int64_t entity_id) { 
+		print("get_var(entity_id) ", entity_id);
+		Variant value;
+		switch(data_var.get_type()) {
+			/*
+			case Variant::BOOL:
+				value = Variant(get_value<char>(entity_id));
+				break;
+			*/
+			case Variant::INT:
+				value = Variant(attribute_data->get_value<int64_t>(entity_id));
+				print("value is int ", value);
+				break;
+			case Variant::FLOAT:
+				value = Variant(attribute_data->get_value<float>(entity_id));
+				print("value is float ", value);
+				break;
+			case Variant::STRING:
+				value = Variant(attribute_data->get_value<String>(entity_id));
+				break;
+			case Variant::STRING_NAME:
+				value = Variant(attribute_data->get_value<StringName>(entity_id));
+				break;
+			default:
+				value = attribute_data->get_value<Variant>(entity_id);
+				print("value is variant ", value);
+				break;
+		}		
+		return value; 
+	} // get value (does conversion to_var())
+
 
 	AttributeData* get_attribute_data() {
 		return attribute_data;
