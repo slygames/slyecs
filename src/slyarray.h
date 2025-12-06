@@ -384,6 +384,9 @@ private:
 
 	template <typename U, typename V>
 	friend array<U>& operator+= (array<U>& lhs,  const V& rhs);
+
+	template <typename U, typename V>
+	friend array<U>& operator+ (array<U>& lhs,  const V& rhs);
 };
 
 template <typename U, typename V>
@@ -413,5 +416,11 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	return result;
 } 
+
+template <typename U, typename V>
+array<U>& operator+ (array<U>& lhs, const V& rhs) {
+	lhs += rhs; // Utilize the += operator for efficiency
+	return lhs;
+}
 
 } // namespace sly

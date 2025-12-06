@@ -833,8 +833,6 @@ public:
 	void set_data_var(const Variant& p_data_var); // sets value from variant (does conversion from_var())
 	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
 
-
-
 	// sets value from variant (does conversion from_var())
 	void set_var(int64_t entity_id, Variant& value) {
 		//todo:need to determine default type from data_var in attribute
@@ -900,10 +898,30 @@ public:
 		return value; 
 	} // get value (does conversion to_var())
 
+/*
+	template <typename V>
+	Attribute& operator+=(const V& rhs) {
+		return lhs.get_attribute_data()+rhs;
+	}
 
+	template <typename V>
+	Attribute& operator+(Attribute& lhs, const V& rhs) {
+		return lhs.get_attribute_data()+rhs;
+	}
+*/
 	AttributeData* get_attribute_data() {
 		return attribute_data;
 	}
+
+	Attribute& add(float rhs) {
+		
+	}
+
+	template <typename U, typename V>
+	friend inline Attribute& operator+(const Attribute& lhs, const V& rhs);
+
+	template <typename U, typename V>
+	friend inline Attribute& operator+=(const Attribute& lhs, const V& rhs);
 
 /*
 	void set_data_var(const Array& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
@@ -952,6 +970,29 @@ public:
 	Array create_array_from_variant(const Variant& p_variant);
 */
 };
+
+template <typename U, typename V>
+inline Attribute& operator+(Attribute& lhs, const V& rhs) {
+    return lhs += rhs;
+}
+
+template <typename U, typename V>
+inline Attribute& operator+=(Attribute& lhs, const V& rhs) { 
+    lhs.get_attribute_data()->get_data<U>() += rhs; 
+    return lhs; 
+}
+
+/*
+template <typename U, typename V>
+inline AttributeData operator+(const AttributeData& lhs, const V& rhs) {
+    return get_data lhs.data_array + rhs; // return by value as + doesn't modify operands
+}
+
+template <typename U, typename V>
+Attribute& operator+=(Attribute& lhs, const V& rhs) { 
+    lhs.get_attribute_data()->data_array += rhs; 
+    return lhs; 
+}*/
 
 
 /*

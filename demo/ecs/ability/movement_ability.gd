@@ -2,7 +2,7 @@ extends Ability
 
 func _update():
 	set_attribute_val("velocity", 500.0)
-	
+	get_attribute("velocity").add(200.0)
 	
 	#print("_update for movement system called from gdscript")
 	

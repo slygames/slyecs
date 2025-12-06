@@ -516,6 +516,7 @@ void Ability::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "ability_name"), "set_ability_name", "get_ability_name");
 
 	ClassDB::bind_method(D_METHOD("set_attribute_val", "attribute_name", "value"), &Ability::set_attribute_val);
+	ClassDB::bind_method(D_METHOD("get_attribute"), &Ability::get_attribute);
 }
 
 void Effect::_bind_methods() {
