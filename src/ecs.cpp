@@ -451,6 +451,7 @@ void Attribute::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_attribute_name"), &Attribute::get_attribute_name);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "attribute_name"), "set_attribute_name", "get_attribute_name");
 
+	ClassDB::bind_method(D_METHOD("add", "other"), &Attribute::add);
 
 	/*
 	ClassDB::bind_method(D_METHOD("set_data_var", "p_data_var"), &Attribute::set_data_var);

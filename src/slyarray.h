@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <type_traits> // For std::is_arithmetic_v
+#include <type_traits> // For std::is_arithmetic_v, std::same
 #include "util.h"
 #include <any> //todo:debugging only
 //#include <algorithm> // for vector.find(), not using this anymore, //todo:remove
@@ -396,20 +396,23 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	array<U> result;
 
-	constexpr bool is_array = type_id(&lhs) == type_id(array<U>);
+	//constexpr bool is_array = typeid(&lhs) == typeid(array<U>);
 
-	constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
+	//constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
+
 
 	constexpr bool is_arithmetic = std::is_arithmetic_v<U>;
 	constexpr bool is_arithmetic_other = std::is_arithmetic_v<V>;
 
+	constexpr bool is_array = std::is_same<decltype(lhs), array<U>>::value;
+/*
 	array<U>* lhsptr = dynamic_cast<array<U>*>(&lhs);
 	constexpr bool is_array = lhsptr != nullptr;
-
+*/
 	if (is_arithmetic && is_arithmetic_other) {
-		print("Doing Arithmetic..")
+		print("Doing Arithmetic..");
 		for(int i=0; i<lhs.value.size() ;i++) {
-			if(is_array) result.value[i] = lhs.value[i] + rhs.value[i];
+			if(is_array) result.value[i] = lhs.value[i] + rhs;	//rhs.value[i];
 			else lhs.value[i] += rhs;
 		}
 	} else {
