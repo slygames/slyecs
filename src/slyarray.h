@@ -396,9 +396,9 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	array<U> result;
 
-	//constexpr bool is_array = type_id(&lhs) == type_id(array<U>);
+	constexpr bool is_array = type_id(&lhs) == type_id(array<U>);
 
-	//constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
+	constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
 
 	constexpr bool is_arithmetic = std::is_arithmetic_v<U>;
 	constexpr bool is_arithmetic_other = std::is_arithmetic_v<V>;
