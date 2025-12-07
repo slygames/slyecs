@@ -398,13 +398,16 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	//constexpr bool is_array = type_id(&lhs) == type_id(array<U>);
 
-	constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
-	constexpr bool is_arithmetic_other = std::is_arithmetic_v<U>(rhs.value[0]);
+	//constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
+
+	constexpr bool is_arithmetic = std::is_arithmetic_v<U>;
+	constexpr bool is_arithmetic_other = std::is_arithmetic_v<V>;
 
 	array<U>* lhsptr = dynamic_cast<array<U>*>(&lhs);
 	constexpr bool is_array = lhsptr != nullptr;
 
 	if (is_arithmetic && is_arithmetic_other) {
+		print("Doing Arithmetic..")
 		for(int i=0; i<lhs.value.size() ;i++) {
 			if(is_array) result.value[i] = lhs.value[i] + rhs.value[i];
 			else lhs.value[i] += rhs;

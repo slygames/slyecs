@@ -632,13 +632,25 @@ public:
 	}*/
 
 	template <typename T>
+	array<T>& get_data() {
+		array<T>& data = std::any_cast<array<T>&>(data_array);
+/*
+		if(data==nullptr) {
+			print("get_data()1 is nullptr");
+		}
+*/
+		return data;
+	}
+
+	/*
+	template <typename T>
 	array<T>* get_data() {
 		array<T>* data = std::any_cast<array<T>>(&data_array);
 		if(data==nullptr) {
 			print("get_data()1 is nullptr");
 		}
-		return data; 
-	}
+		return data;
+	}*/
 
 	template <typename T>
 	T& get_data(int64_t entity_id) {
@@ -913,9 +925,13 @@ public:
 		return attribute_data;
 	}
 
-	Attribute& add(float rhs) {
-		
-	}
+	/*
+	Attribute& add(Variant other) {
+		return this+other;		
+	}*/
+
+
+	void add(const Variant& other);
 
 	template <typename U, typename V>
 	friend inline Attribute& operator+(const Attribute& lhs, const V& rhs);
@@ -978,7 +994,7 @@ inline Attribute& operator+(Attribute& lhs, const V& rhs) {
 
 template <typename U, typename V>
 inline Attribute& operator+=(Attribute& lhs, const V& rhs) { 
-    lhs.get_attribute_data()->get_data<U>() += rhs; 
+    (lhs.get_attribute_data()->get_data<U>()) += rhs; 
     return lhs; 
 }
 
@@ -1232,8 +1248,8 @@ inline void AttributeData::create_data_array(Attribute* attribute) {
 template <typename T>
 inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
 
-	array<T>* data = get_data<T>(); //todo:testing only
-	int size = data->size();
+	array<T>& data = get_data<T>(); //todo:testing only
+	int size = data.size();
 	print("data size 1 ", size);//todo:testing only
 
 	T data_var = attribute->get_data_var();
@@ -1243,9 +1259,9 @@ inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* at
 	print("var0 ", var0);
 	*/
 
-	int index = get_data<T>()->insert(data_var);	// cast to T
+	int index = get_data<T>().insert(data_var);	// cast to T
 	
-	print("data size 2 ", data->size()); //todo:testing only
+	print("data size 2 ", data.size()); //todo:testing only
 
 	//if(get_data<T>()->size() > 0) print("Inserted item ", *(get_data<T>())[0]);
 	print("inserted at index ", index, " for entity ", entity_id, " data ", attribute->get_data_var());

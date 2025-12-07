@@ -327,6 +327,16 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 		emit_changed(); // for Resources to notify the editor/users of changes
 }
 
+void Attribute::add(const Variant &other) {
+    if (other.get_type() == Variant::INT) {
+        operator+=<int64_t>(*this, (int64_t)other);
+    } else if (other.get_type() == Variant::FLOAT) {
+        operator+=<float>(*this, (double)other);
+    } else {
+        print("Unsupported variant type for addition.");
+    }
+}
+
 /*
 const Variant &Attribute::get_data_var() const {
 	return data_var; // get value (does conversion to_var())
