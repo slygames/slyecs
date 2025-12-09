@@ -519,7 +519,7 @@ union Union_Array {
 	array<Variant> array_var;	// array which holds <value> all the variants in the same index as the object is stored in object_list
 	array<bool> array_bool;
 	array<int> array_int;
-	array<float> array_float;
+	array<double> array_float;
 };
 */
 
@@ -527,7 +527,7 @@ class AttributeData : public RefCounted {
 GDCLASS(AttributeData, RefCounted);	
 
 	// Variant Array is usually a variant unless using a simple type like int etc. in which case it uses the faster types, this packs the data closer for ints or floats etc. as a Variant is always 20 bytes.
-    //using Variant_Array = std::variant<array<Variant>, array<bool>, array<int64_t>, array<float>, array<String>, array<StringName>>;
+    //using Variant_Array = std::variant<array<Variant>, array<bool>, array<int64_t>, array<double>, array<String>, array<StringName>>;
 	//using Variant_Array = std::any;
 
 	std::any data_array;
@@ -634,11 +634,6 @@ public:
 	template <typename T>
 	array<T>& get_data() {
 		array<T>& data = std::any_cast<array<T>&>(data_array);
-/*
-		if(data==nullptr) {
-			print("get_data()1 is nullptr");
-		}
-*/
 		return data;
 	}
 
@@ -654,10 +649,7 @@ public:
 
 	template <typename T>
 	T& get_data(int64_t entity_id) {
-		array<T>* data = get_data<T>();
-		if(data==nullptr) {
-			print("get_data()2 is nullptr");
-		}
+		array<T>& data = get_data<T>();
 		int index = data_array_lookup[entity_id];
 		return data[index];
 	}
@@ -783,7 +775,7 @@ public:
 		print("printing ", var_type, "data_array_lookup size ", data_array_lookup.size());
 		if(var_type==attribute) {
 			print("debug_print getting data");
-			const array<float>& data = std::any_cast<array<float>>(get_data());
+			const array<double>& data = std::any_cast<array<double>>(get_data());
 			print("debug_print got data size: ", data.size());
 			//for(float item : data) {
 			//	print("inside for loop1");
@@ -845,12 +837,17 @@ public:
 	void set_data_var(const Variant& p_data_var); // sets value from variant (does conversion from_var())
 	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
 
+	Variant::Type get_type() {
+		print("GET_TYPE() ", data_var.get_type(), " : data_var", data_var);
+		return data_var.get_type();
+	}
+
 	// sets value from variant (does conversion from_var())
 	void set_var(int64_t entity_id, Variant& value) {
 		//todo:need to determine default type from data_var in attribute
-		print("set_var() ", value.get_type(), " value : ", value);
+		print(attribute_name, " set_var() type ", get_type()," value type ", value.get_type(), " value : ", value);
 		//var_type = value.get_type();
-		switch(data_var.get_type()) {
+		switch(get_type()) {
 			/*
 			case Variant::BOOL:
 				set_value<char>(entity_id, value);
@@ -863,7 +860,7 @@ public:
 				break;
 			case Variant::FLOAT:
 				print("FLOAT ", entity_id); 
-				attribute_data->set_value<float>(entity_id, value);
+				attribute_data->set_value<double>(entity_id, value);
 				break;
 			case Variant::STRING:
 				attribute_data->set_value<String>(entity_id, value);
@@ -880,9 +877,9 @@ public:
 
 	// get value for an entity and convert it to variant (maybe useful for gdscript)
 	Variant get_var(int64_t entity_id) { 
-		print("get_var(entity_id) ", entity_id);
+		print(attribute_name, "get_var(entity_id) ", entity_id, " type ", get_type());
 		Variant value;
-		switch(data_var.get_type()) {
+		switch(get_type()) {
 			/*
 			case Variant::BOOL:
 				value = Variant(get_value<char>(entity_id));
@@ -893,7 +890,7 @@ public:
 				print("value is int ", value);
 				break;
 			case Variant::FLOAT:
-				value = Variant(attribute_data->get_value<float>(entity_id));
+				value = Variant(attribute_data->get_value<double>(entity_id));
 				print("value is float ", value);
 				break;
 			case Variant::STRING:
@@ -922,6 +919,7 @@ public:
 	}
 */
 	AttributeData* get_attribute_data() {
+		print("getting attrib data");
 		return attribute_data;
 	}
 
@@ -967,7 +965,7 @@ public:
 	/*
 	map<bool> data_bool;
 	map<int> data_int;
-	map<float> data_float;
+	map<double> data_float;
 	map<Vector2*> data_vector2;
 	map<Vector3*> data_vector3;
 	map<Transform2D*> data_transform2d;
@@ -989,12 +987,20 @@ public:
 
 template <typename U, typename V>
 inline Attribute& operator+(Attribute& lhs, const V& rhs) {
+	print("Add 0");
     return lhs += rhs;
 }
 
 template <typename U, typename V>
 inline Attribute& operator+=(Attribute& lhs, const V& rhs) { 
-    (lhs.get_attribute_data()->get_data<U>()) += rhs; 
+	//print("Add 1 ", Variant(lhs.get_attribute_data()->get_data<U>()))
+	print("Adding..");
+
+
+	print("Add 2 ", Variant(rhs));
+
+	(lhs.get_attribute_data()->get_data<U>()) += rhs; 
+	//print("Sum ",Variant(lhs));
     return lhs; 
 }
 
@@ -1210,8 +1216,8 @@ GDCLASS(Effect, Resource);
 	TypedArray<String> commands;
 	TypedArray<StringName> tags_add;
 	TypedArray<StringName> tags_remove;
-	float duration;
-	float cooldown;
+	double duration;
+	double cooldown;
 
 	int64_t target_entity_id;
 
@@ -1232,11 +1238,11 @@ public:
 	void set_tags_remove(TypedArray<StringName> p_tags_remove) { tags_remove = p_tags_remove; }
     TypedArray<StringName> get_tags_remove() const { return tags_remove; }
 
-	void set_duration(float p_duration) { duration = p_duration; }
-	float get_duration() const { return duration; }
+	void set_duration(double p_duration) { duration = p_duration; }
+	double get_duration() const { return duration; }
 
-	void set_cooldown(float p_cooldown) { cooldown = p_cooldown; }
-	float get_cooldown() const { return cooldown; }
+	void set_cooldown(double p_cooldown) { cooldown = p_cooldown; }
+	double get_cooldown() const { return cooldown; }
 };
 
 template <typename T>
@@ -1249,18 +1255,20 @@ template <typename T>
 inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
 
 	array<T>& data = get_data<T>(); //todo:testing only
-	int size = data.size();
-	print("data size 1 ", size);//todo:testing only
 
-	T data_var = attribute->get_data_var();
+	print("data size 1 ", data.size());//todo:testing only
+
+	//T data_var = attribute->get_data_var(); // inserting by value
 	
 	/*
 	godot::Variant var0 = data; // todo:testing only
 	print("var0 ", var0);
 	*/
 
-	int index = get_data<T>().insert(data_var);	// cast to T
+	//int index = get_data<T>().insert(data_var);	// cast to T
 	
+	int index = get_data<T>().insert(attribute->get_data_var());	// cast to T
+
 	print("data size 2 ", data.size()); //todo:testing only
 
 	//if(get_data<T>()->size() > 0) print("Inserted item ", *(get_data<T>())[0]);

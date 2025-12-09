@@ -139,7 +139,7 @@ void NodeECS::_notification(int p_what) {
 					const TypedArray<Attribute>& attributes = ability->get_attributes_required();
 					for(int j=0;j<attributes.size();j++) {
 						Attribute* attribute = cast_to<Attribute>(attributes[i]);
-						//attribute->get_attribute_data()->var_type = attribute->data_var.get_type();
+						//attribute->get_attribute_data()->var_type = attribute->get_type();
 						//todo:BUG how does this prevent duplicates in these registers?! it doesnlt.. bug
 						if(!Ecs::get_singleton()->attribute_register.has(attribute)) {
 							Ecs::get_singleton()->create_attribute(attribute);
@@ -269,12 +269,12 @@ void Ecs::create_attribute(Attribute* attribute) {
 		ecs->attribute_register.insert(attribute);
 		ecs->attribute_name_register.insert(attribute->get_attribute_name());
 		
-		switch(attribute->get_data_var().get_type()) {
+		switch(attribute->get_type()) {
 			case Variant::INT:
 				attribute->get_attribute_data()->create_data_array<int>(attribute);
 				break;
 			case Variant::FLOAT:
-				attribute->get_attribute_data()->create_data_array<float>(attribute);
+				attribute->get_attribute_data()->create_data_array<double>(attribute);
 				break;
 			case Variant::STRING:
 				attribute->get_attribute_data()->create_data_array<String>(attribute);
@@ -299,11 +299,13 @@ void Ecs::remove_attribute(Attribute* attribute) {
 
 
 void Attribute::set_data_var(const Variant &p_data_var) {
+		print("## set_data_var() ", p_data_var);
+
 		if(&p_data_var!=nullptr) { 
 			data_var = p_data_var;
 		}
 /*
-		switch(data_var.get_type()) {
+		switch(get_type()) {
 			case Variant::BOOL:
 				data_array = sly::array<bool>();
 				break;
@@ -311,7 +313,7 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 				data_array = sly::array<int>();
 				break;
 			case Variant::FLOAT:
-				data_array = sly::array<float>();
+				data_array = sly::array<double>();
 				break;
 			case Variant::STRING:
 				data_array = sly::array<String>();
@@ -330,9 +332,14 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 void Attribute::add(const Variant &other) {
     if (other.get_type() == Variant::INT) {
         operator+=<int64_t>(*this, (int64_t)other);
+		print("add() int64_t var ", Variant((int64_t)other));
     } else if (other.get_type() == Variant::FLOAT) {
-        operator+=<float>(*this, (double)other);
-    } else {
+		double dataval = get_attribute_data()->get_data<double>(33671873914);
+		print("add() float var ", Variant((double)other));
+		print("dataval1 ", dataval);
+		operator+=<double>(*this, (double)other);
+		print("dataval2 ", dataval);
+	} else {
         print("Unsupported variant type for addition.");
     }
 }
@@ -376,7 +383,7 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 		value =  (float)value;	// casting explicitly to float incase an int was passed into a float var
 	}
 	*/
-	print("setting attribute value");
+	print("setting attribute value ", attribute_name);
 	// set value on all entities
 	for(int64_t entity_id : entities_approved) {
 		print(">> Setting attribute value entity ", entity_id);
@@ -773,8 +780,8 @@ void Ecs::register_object(Object *object) {
 		*/
 		/*
 		int id;
-		print("data type", attribute->data_var.get_type());
-		switch(attribute->data_var.get_type()) {
+		print("data type", attribute->get_type());
+		switch(attribute->get_type()) {
 			case Variant::BOOL:
 				print("Vbool");
 				attribute->data_array = sly::array<bool>();
@@ -787,10 +794,10 @@ void Ecs::register_object(Object *object) {
 				break;
 			case Variant::FLOAT:
 				print("Vfloat");
-				attribute->data_array = sly::array<float>();
-				id = std::get<array<float>>(attribute->data_array).insert(attribute->data_var);
-				print("inserted ", id, " into float attribute with value ", std::get<array<float>>(attribute->data_array)[id]);
-				//array<float>* float_array = &std::get<array<float>>(attribute->data_array);
+				attribute->data_array = sly::array<double>();
+				id = std::get<array<double>>(attribute->data_array).insert(attribute->data_var);
+				print("inserted ", id, " into float attribute with value ", std::get<array<double>>(attribute->data_array)[id]);
+				//array<double>* float_array = &std::get<array<double>>(attribute->data_array);
 				//float_array->insert(attribute->data_var);
 				break;
 			case Variant::STRING:
@@ -842,7 +849,7 @@ void Attribute::create_attribute_data_entry(int64_t entity_id) {
 	print("create_attribute_data_entry() ", entity_id);
 
 	//int index;
-	switch(data_var.get_type()) {
+	switch(get_type()) {
 		/*
 		case Variant::BOOL:
 			get_attribute_data()->create_default_entry<char>(entity_id, this);
@@ -852,7 +859,7 @@ void Attribute::create_attribute_data_entry(int64_t entity_id) {
 			get_attribute_data()->create_default_entry<int64_t>(entity_id, this);
 			break;
 		case Variant::FLOAT:
-			get_attribute_data()->create_default_entry<float>(entity_id, this);
+			get_attribute_data()->create_default_entry<double>(entity_id, this);
 			break;
 		case Variant::STRING:
 			get_attribute_data()->create_default_entry<String>(entity_id, this);
@@ -938,7 +945,37 @@ void Ability::update() {
 
 	}*/
 
+	//todo:debugging, make this a debug_print funtion in ability maybe
+	for(int64_t entity_id : entities_assigned) {
+		for(int i=0; i<attributes_required.size();i++) {
+			Attribute* attribute = cast_to<Attribute>(attributes_required[i]);
+			attribute->get_var(entity_id);
+			print("Var1 is ", attribute->get_var(entity_id));
+		}
+	}
+
+
+	print("GDVIRTUAL_CALL(_update)1");	//todo:remove
+
 	GDVIRTUAL_CALL(_update);
+
+	print("GDVIRTUAL_CALL(_update)2");	//todo:remove
+
+	//todo:debugging
+	for(int64_t entity_id : entities_assigned) {
+		for(int i=0; i<attributes_required.size();i++) {
+			print("AAA1");
+			Attribute* attribute = cast_to<Attribute>(attributes_required[i]); //todo:remove or make debug function
+			if(attribute == nullptr) {
+				print("attrib null");
+			} else {
+				print("Var2 is ", attribute->get_var(entity_id));
+			}
+			print("AAA2");
+		}
+	}
+
+
 }
 /*
 // loads callables from gdscript

@@ -393,18 +393,22 @@ template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
     //lhs._value += rhs._value;
     //return lhs;
+	print("array<U> operator+=");
+	//array<U> result;
 
-	array<U> result;
-
-	//constexpr bool is_array = typeid(&lhs) == typeid(array<U>);
+	//constexpr bool is_array = typeid(&lhs) == typeid(array<U>.value[0]);
 
 	//constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
 
 
 	constexpr bool is_arithmetic = std::is_arithmetic_v<U>;
+	print("is_arithmetic", is_arithmetic);
 	constexpr bool is_arithmetic_other = std::is_arithmetic_v<V>;
-
+	print("is_arithmetic_other", is_arithmetic_other);
+	/*
 	constexpr bool is_array = std::is_same<decltype(lhs), array<U>>::value;
+	print("is_array", is_array);
+	*/
 /*
 	array<U>* lhsptr = dynamic_cast<array<U>*>(&lhs);
 	constexpr bool is_array = lhsptr != nullptr;
@@ -412,15 +416,24 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	if (is_arithmetic && is_arithmetic_other) {
 		print("Doing Arithmetic..");
 		for(int i=0; i<lhs.value.size() ;i++) {
-			if(is_array) result.value[i] = lhs.value[i] + rhs;	//rhs.value[i];
-			else lhs.value[i] += rhs;
+/*
+			if(is_array) {
+				lhs.value[i] += rhs.value[i];
+			} else {
+				lhs.value[i] += rhs;
+			}
+*/
+			lhs.value[i] += rhs;
 		}
 	} else {
-		if(!is_arithmetic) godot::UtilityFunctions::printerr(typeid(lhs).name(), " Error: Can't multiply with this type.");
-		else if(!is_arithmetic_other) godot::UtilityFunctions::printerr(typeid(rhs).name(), " Error: Can't multiply with this type.");
+		if(!is_arithmetic) {
+			godot::UtilityFunctions::printerr(typeid(lhs).name(), " Error: Can't multiply with this type.");
+		} else if(!is_arithmetic_other) {
+			godot::UtilityFunctions::printerr(typeid(rhs).name(), " Error: Can't multiply with this type.");
+		}
 	}
 
-	return result;
+	return lhs;
 } 
 
 template <typename U, typename V>
