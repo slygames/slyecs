@@ -334,11 +334,12 @@ void Attribute::add(const Variant &other) {
         operator+=<int64_t>(*this, (int64_t)other);
 		print("add() int64_t var ", Variant((int64_t)other));
     } else if (other.get_type() == Variant::FLOAT) {
+		print("ADDING..");
 		double dataval = get_attribute_data()->get_data<double>(33671873914);
 		print("add() float var ", Variant((double)other));
-		print("dataval1 ", dataval);
 		operator+=<double>(*this, (double)other);
-		print("dataval2 ", dataval);
+		double dataval2 = get_attribute_data()->get_data<double>(33671873914);
+		print("dataval2 ", dataval2);
 	} else {
         print("Unsupported variant type for addition.");
     }
@@ -948,7 +949,7 @@ void Ability::update() {
 	//todo:debugging, make this a debug_print funtion in ability maybe
 	for(int64_t entity_id : entities_assigned) {
 		const TypedArray<Attribute>& attributes = get_attributes_required();
-
+		print("ATTR1 size", attributes.size());
 		for(int i=0; i<attributes.size();i++) {
 			Attribute* attribute = cast_to<Attribute>(attributes[i]);
 			attribute->get_var(entity_id);
@@ -967,16 +968,74 @@ void Ability::update() {
 	for(int64_t entity_id : entities_assigned) {
 
 		const TypedArray<Attribute>& attributes = get_attributes_required();
+		/*
+		print("attributes size ", attributes.size());
+		print("middle");
+		Variant first_element = attributes.get(0);
+		
+		print("type", first_element.get_type());
+		print("yo");
+		print("first element", first_element);
+		print("for");
+		*/
 
+		print("ATTR2 size", attributes.size());
 		for(int i=0; i<attributes.size();i++) {
-			print("AAA1", attributes.size(), " ", i);
-			auto att_var = attributes[i];
+			//Variant att_var = attributes[i];
+			//print("AAA3", att_var);
+
+			/*
+			print("AAA1 ", attributes.size(), " : ", i);
+						Variant att_var = attributes[i];
+			print("AAA4");
 			print("AAA3", att_var);
-			if(Attribute* attribute = cast_to<Attribute>(attributes[i])) {
+			*/
+			
+			/*
+			if(attributes[i].get()==nullptr) {
+				print("nullptr");
+				return;
+			}*/
+
+
+			/*
+			if (vari.get_type() == Variant::NIL) {
+				print("Variant is Nil");
+				return;
+			}
+
+			if (vari.get_type() == Variant::OBJECT) {
+				Object* attr_obj = cast_to<Object>(vari);
+			}*/
+			print("A1A");
+			Variant attr = attributes[i];
+			print("Attr Type ", Variant::get_type_name(attr.get_type()));
+			auto obj = attr.get_validated_object();
+			//print("A1a");
+			//auto attr_obj = cast_to<Object>(attr);
+			print("A1B");
+			auto attribute = cast_to<Attribute>(obj);
+			print("A1C");
+			Attribute* attribute2 = cast_to<Attribute>(obj);
+			print("A1d");
+/*
+			print("A1Ba");
+			Attribute* attribute2 = cast_to<Attribute>(attr);
+			print("A1Ca");
+*/
+			if(attribute != nullptr) {
+				print("here");
 				print("Var2 is ", attribute->get_var(entity_id));
 			} else {
 				print("attrib null");
 			}
+			if(attribute2 != nullptr) {
+				print("attrib2 OK");
+			} else {
+				print("attrib2 null");
+			}
+
+
 			print("AAA2");
 		}
 	}

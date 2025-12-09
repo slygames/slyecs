@@ -2,7 +2,17 @@ extends Ability
 
 func _update():
 	
-	get_attribute("velocity").add(200.0)
+	set_attribute_val("velocity", 100.0)
+	print("QQ1")
+	get_attribute("velocity").add(150.55)
+	print("QQ2")
+	set_attribute_val("velocity", 1510.0)
+	print("QQ3")
+	get_attribute("velocity").add(125.33)
+	print("QQ4")
+	get_attribute("velocity").add(3.77)
+	print("QQ5")
+	
 	#set_attribute_val("velocity", 500.0)
 	
 	
