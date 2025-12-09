@@ -335,11 +335,29 @@ void Attribute::add(const Variant &other) {
 		print("add() int64_t var ", Variant((int64_t)other));
     } else if (other.get_type() == Variant::FLOAT) {
 		print("ADDING..");
+
+		print("Data1 Var Type", get_data_var().get_type());
+		print("data1 var ", get_data_var());
+
+		//todo:debugging only
+		Variant var1 = get_attribute_data()->get_data<double>(33671873914);
+		print("dataval variant ", var1);
 		double dataval = get_attribute_data()->get_data<double>(33671873914);
+		print("dataval float ", dataval);
+
 		print("add() float var ", Variant((double)other));
 		operator+=<double>(*this, (double)other);
+
 		double dataval2 = get_attribute_data()->get_data<double>(33671873914);
 		print("dataval2 ", dataval2);
+
+		operator+=<double>(*this, (double)other);//todo:remove, adding again for testing only
+
+		print("Data2 Var Type", get_data_var().get_type());
+		print("data2 var ", get_data_var());
+
+		double dataval3 = get_attribute_data()->get_data<double>(33671873914);
+		print("dataval3 ", dataval2);
 	} else {
         print("Unsupported variant type for addition.");
     }
@@ -947,23 +965,23 @@ void Ability::update() {
 	}*/
 
 	//todo:debugging, make this a debug_print funtion in ability maybe
-	for(int64_t entity_id : entities_assigned) {
-		const TypedArray<Attribute>& attributes = get_attributes_required();
-		print("ATTR1 size", attributes.size());
-		for(int i=0; i<attributes.size();i++) {
-			Attribute* attribute = cast_to<Attribute>(attributes[i]);
-			attribute->get_var(entity_id);
-			print("Var1 is ", attribute->get_var(entity_id));
+
+
+	if(GDVIRTUAL_CALL(_update)) {
+		print("_update() called");	//todo:remove
+
+
+		for(int64_t entity_id : entities_assigned) {
+			const TypedArray<Attribute>& attributes = get_attributes_required();
+			print("ATTR1 size", attributes.size());
+			for(int i=0; i<attributes.size();i++) {
+				Attribute* attribute = cast_to<Attribute>(attributes[i]);
+				attribute->get_var(entity_id);
+				print("Var1 is ", attribute->get_var(entity_id));
+			}
 		}
 	}
-
-
-	print("GDVIRTUAL_CALL(_update)1");	//todo:remove
-
-	GDVIRTUAL_CALL(_update);
-
-	print("GDVIRTUAL_CALL(_update)2");	//todo:remove
-
+#if 0
 	//todo:debugging
 	for(int64_t entity_id : entities_assigned) {
 
@@ -1039,7 +1057,7 @@ void Ability::update() {
 			print("AAA2");
 		}
 	}
-
+#endif
 
 }
 /*
