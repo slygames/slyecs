@@ -168,7 +168,7 @@ void NodeECS::_notification(int p_what) {
 				// remove attributes for this ability
 				const TypedArray<Attribute>& attributes = ability->get_attributes_required();
 				for(int j=0;j<attributes.size();j++) {
-					Attribute* attribute = cast_to<Attribute>(attributes[i]);
+					Attribute* attribute = cast_to<Attribute>(attributes[j]);
 					Ecs::get_singleton()->attribute_register.remove(attribute);
 					Ecs::get_singleton()->attribute_name_register.remove(attribute->get_attribute_name());
 				}
@@ -947,8 +947,10 @@ void Ability::update() {
 
 	//todo:debugging, make this a debug_print funtion in ability maybe
 	for(int64_t entity_id : entities_assigned) {
-		for(int i=0; i<attributes_required.size();i++) {
-			Attribute* attribute = cast_to<Attribute>(attributes_required[i]);
+		const TypedArray<Attribute>& attributes = get_attributes_required();
+
+		for(int i=0; i<attributes.size();i++) {
+			Attribute* attribute = cast_to<Attribute>(attributes[i]);
 			attribute->get_var(entity_id);
 			print("Var1 is ", attribute->get_var(entity_id));
 		}
@@ -963,13 +965,17 @@ void Ability::update() {
 
 	//todo:debugging
 	for(int64_t entity_id : entities_assigned) {
-		for(int i=0; i<attributes_required.size();i++) {
-			print("AAA1");
-			Attribute* attribute = cast_to<Attribute>(attributes_required[i]); //todo:remove or make debug function
-			if(attribute == nullptr) {
-				print("attrib null");
-			} else {
+
+		const TypedArray<Attribute>& attributes = get_attributes_required();
+
+		for(int i=0; i<attributes.size();i++) {
+			print("AAA1", attributes.size(), " ", i);
+			auto att_var = attributes[i];
+			print("AAA3", att_var);
+			if(Attribute* attribute = cast_to<Attribute>(attributes[i])) {
 				print("Var2 is ", attribute->get_var(entity_id));
+			} else {
+				print("attrib null");
 			}
 			print("AAA2");
 		}
