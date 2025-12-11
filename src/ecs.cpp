@@ -432,9 +432,11 @@ Variant Ability::get_attribute_val(StringName attribute_name) {
 }*/
 
 Attribute* Ability::get_attribute(StringName attribute_name) {
+	print("getting attribute ", attribute_name);
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	print("Attr Key : ", attr_key);
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];
+	
 	print("Attribute is null ", attribute==nullptr);
 
 	StringName attr_name = attribute->get_attribute_name();

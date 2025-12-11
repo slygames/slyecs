@@ -2,4 +2,4 @@
 
 [resource]
 gd_data_var = 100.5
-attribute_name = &"velocity_attribute"
+attribute_name = &"velocity"

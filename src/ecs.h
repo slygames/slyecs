@@ -960,8 +960,24 @@ public:
         return data_var;
     }*/
 
-	void set_attribute_name(StringName p_attribute_name) { attribute_name = p_attribute_name; }
-	StringName get_attribute_name() { return attribute_name; }
+	void set_attribute_name(StringName p_attribute_name) { 
+		print("Set attribute name ", p_attribute_name);
+		attribute_name = p_attribute_name; 
+	}
+	StringName get_attribute_name() {
+		if(this!=nullptr) {
+			print("this exists");
+			print("name length ", attribute_name.length());
+			if(attribute_name.length()<1) {
+				print("attribute name is empty");
+			}
+		} else {
+			print("this doesn't exist");
+		}
+
+		print("attr name" , attribute_name);
+		return attribute_name; 
+	}
 
 
 	//todo:overload * operator and maybe = operator in sly::map so that two attributes can be multiplied together which will be useful to multiply all values by scalaras and same index values in other attributes by using queries like (movement_attribute = velocity_attribute * position_attribute * direction_attribute * delta)
