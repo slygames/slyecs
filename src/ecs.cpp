@@ -486,7 +486,7 @@ void Attribute::_bind_methods() {
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "gd_data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 
-	ClassDB::bind_method(D_METHOD("set_attribute_name", "attribute_name"), &Attribute::set_attribute_name);
+	ClassDB::bind_method(D_METHOD("set_attribute_name", "p_name"), &Attribute::set_attribute_name);
 	ClassDB::bind_method(D_METHOD("get_attribute_name"), &Attribute::get_attribute_name);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "attribute_name"), "set_attribute_name", "get_attribute_name");
 

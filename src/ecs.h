@@ -822,7 +822,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	Attribute() {
+	Attribute() : attribute_name("empty") {
 		 attribute_data = memnew(AttributeData);
 	};
 	//~Attribute() override = default;
@@ -960,11 +960,11 @@ public:
         return data_var;
     }*/
 
-	void set_attribute_name(StringName p_attribute_name) { 
+	void set_attribute_name(const StringName& p_attribute_name) { 
 		print("Set attribute name ", p_attribute_name);
 		attribute_name = p_attribute_name; 
 	}
-	StringName get_attribute_name() {
+	StringName get_attribute_name() const {
 		if(this!=nullptr) {
 			print("this exists");
 			print("name length ", attribute_name.length());
