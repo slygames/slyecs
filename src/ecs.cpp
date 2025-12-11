@@ -330,37 +330,42 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 }
 
 void Attribute::add(const Variant &other) {
+	print("Add");
+
+	print("Add other ", other);
     if (other.get_type() == Variant::INT) {
         operator+=<int64_t>(*this, (int64_t)other);
 		print("add() int64_t var ", Variant((int64_t)other));
     } else if (other.get_type() == Variant::FLOAT) {
 		print("ADDING..");
-
+		/*
 		print("Data1 Var Type", get_data_var().get_type());
 		print("data1 var ", get_data_var());
-
-		//todo:debugging only
-		Variant var1 = get_attribute_data()->get_data<double>(33671873914);
-		print("dataval variant ", var1);
+		*/
 		double dataval = get_attribute_data()->get_data<double>(33671873914);
 		print("dataval float ", dataval);
 
 		print("add() float var ", Variant((double)other));
 		operator+=<double>(*this, (double)other);
-
+/*
 		double dataval2 = get_attribute_data()->get_data<double>(33671873914);
 		print("dataval2 ", dataval2);
 
-		operator+=<double>(*this, (double)other);//todo:remove, adding again for testing only
-
-		print("Data2 Var Type", get_data_var().get_type());
-		print("data2 var ", get_data_var());
+		operator+=<double>(*this, 15.5);//todo:remove, adding again for testing only
 
 		double dataval3 = get_attribute_data()->get_data<double>(33671873914);
-		print("dataval3 ", dataval2);
+		print("dataval3 ", dataval3);
+
+		operator+=<double>(*this, 12.3);//todo:remove, adding again for testing only
+*/
+		double dataval4 = get_attribute_data()->get_data<double>(33671873914);
+		print("dataval4 ", dataval4);
+
+
 	} else {
         print("Unsupported variant type for addition.");
     }
+
 }
 
 /*
@@ -428,7 +433,13 @@ Variant Ability::get_attribute_val(StringName attribute_name) {
 
 Attribute* Ability::get_attribute(StringName attribute_name) {
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
+	print("Attr Key : ", attr_key);
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];
+	print("Attribute is null ", attribute==nullptr);
+
+	StringName attr_name = attribute->get_attribute_name();
+	print("Attribute name ", attr_name);
+
 	return attribute;
 }
 
@@ -511,6 +522,9 @@ void Ability::_notification(int p_what) {
 }*/
 
 void Ability::_bind_methods() {
+	//ClassDB::bind_method_virtual(D_METHOD("update"), &Ability::update);
+	//BIND_VIRTUAL_METHOD(Ability, update);
+	//ClassDB::bind_virtual_method("Ability", "update", &Ability::update);
 	ClassDB::bind_method(D_METHOD("update"), &Ability::update);
 	GDVIRTUAL_BIND(_update);
 
@@ -966,11 +980,13 @@ void Ability::update() {
 
 	//todo:debugging, make this a debug_print funtion in ability maybe
 
+	print("GDVIRUAL0");
 
 	if(GDVIRTUAL_CALL(_update)) {
+		print("GDVIRUAL1");
 		print("_update() called");	//todo:remove
 
-
+		/*
 		for(int64_t entity_id : entities_assigned) {
 			const TypedArray<Attribute>& attributes = get_attributes_required();
 			print("ATTR1 size", attributes.size());
@@ -979,7 +995,8 @@ void Ability::update() {
 				attribute->get_var(entity_id);
 				print("Var1 is ", attribute->get_var(entity_id));
 			}
-		}
+		}*/
+
 	}
 #if 0
 	//todo:debugging

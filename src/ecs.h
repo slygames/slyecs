@@ -838,6 +838,10 @@ public:
 	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
 
 	Variant::Type get_type() {
+		if(data_var.get_type()<0) {
+			print("dodgy type ", data_var.get_type());
+			print("dodgy data ", data_var);
+		}
 		print("GET_TYPE() ", data_var.get_type(), " : data_var", data_var);
 		return data_var.get_type();
 	}
@@ -992,16 +996,27 @@ inline Attribute& operator+(Attribute& lhs, const V& rhs) {
 }
 
 template <typename U, typename V>
-inline Attribute& operator+=(Attribute& lhs, const V& rhs) { 
-	//print("Add 1 ", Variant(lhs.get_attribute_data()->get_data<U>()))
-	print("Adding..");
+inline Attribute& operator+=(Attribute& lhs, const V& rhs) {
+	/*
+	if(lhs==nullptr) {
+		print("+= lhs nullptr");
+	}*/
+	
+	print("+=");
+	if(lhs.get_attribute_data()==nullptr) {
+		print("+= attr nullptr");
+	}
 
-
-	print("Add 2 ", Variant(rhs));
-
-	(lhs.get_attribute_data()->get_data<U>()) += rhs; 
-	//print("Sum ",Variant(lhs));
-    return lhs; 
+	/*
+	if((lhs.get_attribute_data()->get_data<U>()) == nullptr) {
+		print("+= attr data nullptr");
+	}*/
+	
+	//auto result1 = Variant(lhs.get_attribute_data()->get_data<U>());
+	//print("before add", result1);
+	(lhs.get_attribute_data()->get_data<U>()) += rhs;
+	//print("after add", lhs.get_attribute_data()->get_data<U>());
+    return lhs;
 }
 
 /*
@@ -1205,6 +1220,7 @@ public:
 	void update_entities_approved();
 
 	virtual void update();
+
 	GDVIRTUAL0(_update);
 };
 
