@@ -4,7 +4,7 @@ func _update():
 	
 	print("gdscript adding..")
 	
-	var attribute = get_attribute("velocity_attribute");
+	var attribute = get_attribute("velocity");
 	print("attribute", attribute)
 	attribute.add(150.55)
 		
