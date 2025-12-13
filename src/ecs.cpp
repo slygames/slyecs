@@ -398,7 +398,7 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];
 	print("2b");
 	*/
-	Attribute* attribute = get_attribute(attribute_name);
+	Attribute* attribute = get_attribute(attribute_name).ptr();
 
 	//todo: enable if necessary
 	/*
@@ -431,10 +431,13 @@ Variant Ability::get_attribute_val(StringName attribute_name) {
 	return val;
 }*/
 
-Attribute* Ability::get_attribute(StringName attribute_name) {
+Ref<Attribute> Ability::get_attribute(StringName attribute_name) {
 	print("getting attribute ", attribute_name);
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	print("Attr Key : ", attr_key);
+	
+	print("grabbing ", Ecs::get_singleton()->attribute_register[attr_key]->get_attribute_name());
+
 	Attribute* attribute = Ecs::get_singleton()->attribute_register[attr_key];
 	
 	print("Attribute is null ", attribute==nullptr);
@@ -486,7 +489,7 @@ void Attribute::_bind_methods() {
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "gd_data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 
-	ClassDB::bind_method(D_METHOD("set_attribute_name", "p_name"), &Attribute::set_attribute_name);
+	ClassDB::bind_method(D_METHOD("set_attribute_name", "attribute_name"), &Attribute::set_attribute_name);
 	ClassDB::bind_method(D_METHOD("get_attribute_name"), &Attribute::get_attribute_name);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "attribute_name"), "set_attribute_name", "get_attribute_name");
 
@@ -965,6 +968,9 @@ void Ability::update_entities_approved() {
 
 void Ability::update() {
 	print("updating ability ", get_ability_name());
+	print("Number of Attributes ", get_attributes_required().size());
+	print("...Velocity attribute null ", get_attribute("velocity")!=nullptr);
+
 	/*
 	print("updating ability : ", Ecs::ability_map.find[this]);
 
@@ -986,6 +992,7 @@ void Ability::update() {
 
 	if(GDVIRTUAL_CALL(_update)) {
 		print("GDVIRUAL1");
+		print("...Velocity1 attribute null ", get_attribute("velocity")!=nullptr);
 		print("_update() called");	//todo:remove
 
 		/*

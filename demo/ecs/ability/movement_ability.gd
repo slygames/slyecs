@@ -2,12 +2,24 @@ extends Ability
 
 func _update():
 	
-	print("gdscript adding..")
+	#print("gdscript adding..")
+	#print(">>> ability id ", get_instance_id())
+	#print(">> attrib reqd", attributes_required[0]);
+	#
+	#var attribute1 : Attribute = get_attribute("velocity")
+	#var attribute2 : Attribute = get_attribute("velocity")
+	#var attribute3 : Attribute = get_attribute("velocity")
+#
+	#print("attribute1 ::: ", attribute1.get_attribute_name())
+	#print("here1")
+	#print("attribute2 ::: ", attribute2.get_attribute_name())
+	#print("here2")
+	#print("attribute3 ::: ", attribute3.get_attribute_name())
+	#
+	#print("here3")
+
+	get_attribute("velocity").add(1)
 	
-	var attribute = get_attribute("velocity");
-	print("attribute ", attribute.get_attribute_name())
-	#attribute.add(150.55)
-		
 	#if attribute:
 	
 	

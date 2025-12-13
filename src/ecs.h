@@ -1194,7 +1194,8 @@ public:
 	
 	//Variant get_attribute_val(StringName attribute_name);
 	
-	Attribute* get_attribute(StringName attribute_name);
+	//todo: this needs to return a ref
+	Ref<Attribute> get_attribute(StringName attribute_name);
 
 	void initialize(); // called by Ecs class so that Ability can post attributes to attribute_register
 
