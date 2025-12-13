@@ -330,13 +330,34 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 }
 
 void Attribute::add(const Variant &other) {
-	print("Add");
+	switch(get_type()) {
+		case Variant::INT:
+			operator+=<int64_t>(*this, (int64_t)other);
+			print("add() int64_t var ", Variant((int64_t)other));
+			break;
+		case Variant::FLOAT:
+			print("ADDING..");
 
-	print("Add other ", other);
-    if (other.get_type() == Variant::INT) {
+			double dataval = get_attribute_data()->get_data<double>(33671873914);
+			print("dataval float ", dataval);
+
+			print("add() float var ", Variant((double)other));
+			operator+=<double>(*this, (double)other);
+
+			double dataval4 = get_attribute_data()->get_data<double>(33671873914);
+			print("dataval4 ", dataval4);
+
+			break;
+		default:
+			//todo: need to support vector and other types, maybe use is_arithmetic here or something like this?! how to cast those types or can we just add the variants?!
+	        print("Unsupported variant type for addition.");
+	}
+
+#if 0 //todo:remove
+    if (var_type == Variant::INT) {
         operator+=<int64_t>(*this, (int64_t)other);
 		print("add() int64_t var ", Variant((int64_t)other));
-    } else if (other.get_type() == Variant::FLOAT) {
+    } else if (var_type == Variant::FLOAT) {
 		print("ADDING..");
 		/*
 		print("Data1 Var Type", get_data_var().get_type());
@@ -365,6 +386,7 @@ void Attribute::add(const Variant &other) {
 	} else {
         print("Unsupported variant type for addition.");
     }
+#endif
 
 }
 
