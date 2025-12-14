@@ -338,14 +338,18 @@ void Attribute::add(const Variant &other) {
 		case Variant::FLOAT:
 			print("ADDING..");
 
+			/*
 			double dataval = get_attribute_data()->get_data<double>(33671873914);
 			print("dataval float ", dataval);
+			*/
 
 			print("add() float var ", Variant((double)other));
 			operator+=<double>(*this, (double)other);
 
+			/*
 			double dataval4 = get_attribute_data()->get_data<double>(33671873914);
 			print("dataval4 ", dataval4);
+			*/
 
 			break;
 		default:
