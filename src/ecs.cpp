@@ -350,7 +350,6 @@ void Attribute::add(const Variant &other) {
 			double dataval4 = get_attribute_data()->get_data<double>(33671873914);
 			print("dataval4 ", dataval4);
 			*/
-
 			break;
 		default:
 			//todo: need to support vector and other types, maybe use is_arithmetic here or something like this?! how to cast those types or can we just add the variants?!

@@ -403,6 +403,7 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	constexpr bool is_arithmetic = std::is_arithmetic_v<U>;
 	print("is_arithmetic", is_arithmetic);
+	
 	constexpr bool is_arithmetic_other = std::is_arithmetic_v<V>;
 	print("is_arithmetic_other", is_arithmetic_other);
 	/*
@@ -438,7 +439,25 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 template <typename U, typename V>
 array<U>& operator+ (array<U>& lhs, const V& rhs) {
-	lhs += rhs; // Utilize the += operator for efficiency
+	lhs += rhs;
+	return lhs;
+}
+
+template <typename U, typename V>
+array<U>& operator- (array<U>& lhs, const V& rhs) {
+	lhs -= rhs;
+	return lhs;
+}
+
+template <typename U, typename V>
+array<U>& operator* (array<U>& lhs, const V& rhs) {
+	lhs *= rhs;
+	return lhs;
+}
+
+template <typename U, typename V>
+array<U>& operator/ (array<U>& lhs, const V& rhs) {
+	lhs /= rhs;
 	return lhs;
 }
 

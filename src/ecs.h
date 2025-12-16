@@ -941,6 +941,34 @@ public:
 	template <typename U, typename V>
 	friend inline Attribute& operator+=(const Attribute& lhs, const V& rhs);
 
+	template <typename U, typename V>
+	friend inline Attribute& operator-(const Attribute& lhs, const V& rhs);
+
+	template <typename U, typename V>
+	friend inline Attribute& operator-=(const Attribute& lhs, const V& rhs);
+
+	template <typename U, typename V>
+	friend inline Attribute& operator*(const Attribute& lhs, const V& rhs);
+
+	template <typename U, typename V>
+	friend inline Attribute& operator*=(const Attribute& lhs, const V& rhs);
+
+	template <typename U, typename V>
+	friend inline Attribute& operator/(const Attribute& lhs, const V& rhs);
+
+	template <typename U, typename V>
+	friend inline Attribute& operator/=(const Attribute& lhs, const V& rhs);
+
+	template <typename U, typename V>
+	friend inline Attribute& operator%(const Attribute& lhs, const V& rhs);
+
+	template <typename U, typename V>
+	friend inline Attribute& operator%=(const Attribute& lhs, const V& rhs);
+
+
+
+	
+
 /*
 	void set_data_var(const Array& p_data_var) { data_var = p_data_var; }; // sets value from variant (does conversion from_var())
 	const Array& get_data_var() const { return data_var; }; // get value (does conversion to_var())
@@ -964,6 +992,7 @@ public:
 		print("Set attribute name ", p_attribute_name);
 		attribute_name = p_attribute_name; 
 	}
+
 	StringName get_attribute_name() const {
 		if(this!=nullptr) {
 			print("this exists");
