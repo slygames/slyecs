@@ -884,6 +884,7 @@ public:
 		print(attribute_name, "get_var(entity_id) ", entity_id, " type ", get_type());
 		Variant value;
 		switch(get_type()) {
+			//todo:fix bool type, was buggy for some raeson so tried using char instead, see if its possible to use godot bool type godot::Bool
 			/*
 			case Variant::BOOL:
 				value = Variant(get_value<char>(entity_id));

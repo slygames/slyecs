@@ -333,6 +333,7 @@ void Attribute::add(const Variant &other) {
 	switch(get_type()) {
 		case Variant::INT:
 			operator+=<int64_t>(*this, (int64_t)other);
+			//operator+=<godot::int>(*this, (int64_t)other);
 			print("add() int64_t var ", Variant((int64_t)other));
 			break;
 		case Variant::FLOAT:
