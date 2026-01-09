@@ -352,6 +352,10 @@ void Attribute::add(const Variant &other) {
 			print("dataval4 ", dataval4);
 			*/
 			break;
+		case Variant::STRING:
+			operator+=<String>(*this, (String)other);
+		case Variant::STRING_NAME:
+			operator+=<StringName>(*this, (StringName)other);
 		default:
 			//todo: need to support vector and other types, maybe use is_arithmetic here or something like this?! how to cast those types or can we just add the variants?!
 	        print("Unsupported variant type for addition.");
