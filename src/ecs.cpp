@@ -330,32 +330,34 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 }
 
 void Attribute::add(const Variant &other) {
+	
+	print("ADDING.."); //todo:remove
+
 	switch(get_type()) {
 		case Variant::INT:
 			operator+=<int64_t>(*this, (int64_t)other);
 			//operator+=<godot::int>(*this, (int64_t)other);
-			print("add() int64_t var ", Variant((int64_t)other));
+			//print("add() int64_t var ", Variant((int64_t)other));
 			break;
 		case Variant::FLOAT:
-			print("ADDING..");
-
 			/*
 			double dataval = get_attribute_data()->get_data<double>(33671873914);
 			print("dataval float ", dataval);
-			*/
-
-			print("add() float var ", Variant((double)other));
-			operator+=<double>(*this, (double)other);
-
-			/*
 			double dataval4 = get_attribute_data()->get_data<double>(33671873914);
 			print("dataval4 ", dataval4);
+			print("add() float var ", Variant((double)other));
 			*/
+			operator+=<double>(*this, (double)other);
 			break;
+		case Variant::STRING_NAME:	// StringName doesn't support += concatenation but this casts it to String
 		case Variant::STRING:
 			operator+=<String>(*this, (String)other);
+			break;
+			/*
 		case Variant::STRING_NAME:
-			operator+=<StringName>(*this, (StringName)other);
+			operator+=<String>(*this, (String)other); // this uses String
+			break;
+			*/
 		default:
 			//todo: need to support vector and other types, maybe use is_arithmetic here or something like this?! how to cast those types or can we just add the variants?!
 	        print("Unsupported variant type for addition.");
