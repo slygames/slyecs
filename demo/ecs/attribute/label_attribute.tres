@@ -1,0 +1,5 @@
+[gd_resource type="Attribute" format=3 uid="uid://fbmkid7yb3tn"]
+
+[resource]
+gd_data_var = "ABC"
+attribute_name = &"label"

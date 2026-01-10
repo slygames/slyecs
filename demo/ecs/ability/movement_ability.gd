@@ -18,8 +18,35 @@ func _update():
 	#
 	#print("here3")
 
-	get_attribute("velocity").add(1)
+	#set_attribute_val("velocity", 7.0)
+	#get_attribute("velocity").set_var(5)
+	#get_attribute("velocity").add(1)
+	#get_attribute("velocity").add(2)
 	
+	#get_attribute("label").set_val("XYZ")
+	get_attribute("label").add("DEF");
+	get_attribute("label").add("GHQ");
+	
+	print("LABEL DICTIONARY")
+	
+	var label_dict : Dictionary = get_attribute_val("label")
+	
+	#var label_dict : Dictionary[int, Variant] = get_attribute_val("label")
+	
+	for entity_id in label_dict:
+		print("ENTITY ", entity_id, " : LABEL ", label_dict[entity_id])
+
+	#print("VELOCITY DICTIONARY")
+	#
+	##print("LABEL IS ", get_attribute_val("label")
+	#var velocity_dict : Dictionary = get_attribute_val("velocity")
+#
+	#for entity_id in velocity_dict:
+		#print("ENTITY ", entity_id, " : VELOCTY ", velocity_dict[entity_id])
+	
+	
+	#print("VELOCITY IS ", vel)
+		
 	#if attribute:
 	
 	

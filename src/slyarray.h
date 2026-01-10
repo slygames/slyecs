@@ -275,12 +275,20 @@ public:
 		print("value size1 ", value.size());
 		print("size 1", size());
 		
+		print("INSERT 2");
+
 		print("value size2 ", value.size());
 		print("size 2", size());
-		print("INSERT 2");
 		
 		int new_index = size();
 		value.emplace_back(val);
+
+		print("value size3 ", value.size());
+
+	/*
+		print("value size3 ", value.size());
+		print("size 3", size());
+*/
 
 		//godot::Variant var(val);
 		print("val ", val);

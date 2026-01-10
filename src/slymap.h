@@ -37,6 +37,7 @@ public:
         // value doesn't exist so insert into map
         int key = array<T>::insert(val);
         find[val] = key;
+        print("...find... ", val ," Inserted key ", key ," value ", find[val]);
         return key;
     }
 

@@ -20,6 +20,7 @@
 #include <variant> // for std::variant
 //#include <godot_cpp/variant/utility_functions.hpp> // for instance_from_id
 #include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/typed_dictionary.hpp>
 #include <godot_cpp/classes/scene_tree.hpp> // for Ecs::connect()
 #include <godot_cpp/classes/window.hpp> // for Ecs::connect()
 #include <godot_cpp/core/gdvirtual.gen.inc>
@@ -602,6 +603,7 @@ public:
 	}
 */
 
+	//todo:are these get_data() ever used or only the get_data<T>()
 	const std::any& get_data() const {
 		return data_array;
 	}
@@ -633,7 +635,23 @@ public:
 
 	template <typename T>
 	array<T>& get_data() {
-		array<T>& data = std::any_cast<array<T>&>(data_array);
+		print("inside get_data&");
+		//const array<T>& data1 = std::any_cast<array<T>>(data_array); //todo:remove
+		//print("got data1");
+		/*
+		array<T> data2 = std::any_cast<array<T>>(data_array); //todo:remove
+		print("got data2");	
+		*/
+
+		print(">>>> data has_value ", data_array.has_value());
+
+		/*
+		if(data_array) {
+			print(">> data is valid");
+		}*/
+
+		array<T>& data = std::any_cast<array<T>&>(get_data());
+		print(" > got data ", data.size());
 		return data;
 	}
 
@@ -647,10 +665,32 @@ public:
 		return data;
 	}*/
 
+
+	//todo:remove if unused, get_value sort of does this already
 	template <typename T>
 	T& get_data(int64_t entity_id) {
-		array<T>& data = get_data<T>();
+		
+		print("&get_data<T>()");
+
+
+
 		int index = data_array_lookup[entity_id];
+		print("> Index ", index);
+
+
+		//const array<T>& data = std::any_cast<array<T>>(data_array);
+
+		array<T>& data = get_data<T>();
+		print("here");
+
+		//todo:remove, debugging only
+		if(data.empty()) {
+			print("Data is Empty");
+		} else {
+			print("Data is NOT Empty");
+		}
+
+
 		return data[index];
 	}
 
@@ -718,6 +758,8 @@ public:
 	// get value directly (no conversion)
 	template <typename T>
 	T get_value(int64_t entity_id) {
+		print("get_value<T>()");
+
 		int index = data_array_lookup.at(entity_id);
 		/*
 		array<T> data = *get_data<T>();
@@ -729,9 +771,18 @@ public:
 		const std::any& data_any = get_data();
 		const array<T>& data = std::any_cast<array<T>>(data_any);
 */
-		const array<T>& data = std::any_cast<array<T>>(get_data());
+		print("Index ", index);
+
+		//const array<T>& data = std::any_cast<array<T>>(get_data());
+
+		const array<T>& data = get_data<T>();
+
+		print("data cast");
+
 		T value = data[index];
+
 		//T value = get_data<T>().at(index);
+		
 		print("get_value() entity ", entity_id, " getting value for ", value);
 		return value; 
 	}
@@ -753,6 +804,8 @@ public:
 			//todo:enable
 			data[new_index] = value;	// assign value at index
 			
+			print("Assigned value ", data[new_index], " at index ", new_index);
+
 			print("2");
 		} else {
 			print("B ", data.size());
@@ -1220,9 +1273,19 @@ public:
 	map<int64_t> entities_assigned; // entities granted this ability
 	map<int64_t> entities_approved;	// entities approved for update(), these are recalculated before each update(), contains filtered entities after checking tags, update operations only run for these
 
+	// sets an attribute to this value for all approved entities
 	void set_attribute_val(StringName attribute_name, Variant value);
 	
-	//Variant get_attribute_val(StringName attribute_name);
+	// gets an attribute value for all approved entities as a dictionary
+	Dictionary get_attribute_val(StringName attribute_name);
+
+	//TypedDictionary<int64_t, Variant> get_attribute_val(StringName attribute_name);
+
+	
+	
+	//todo: this requires entity_id so its not useful for gdscript as those are bulk operations. set_attribute_val() is also redundant 'cos 
+	//Variant get_attribute_val(StringName attribute_name, int64_t entity_id);
+
 	
 	//todo: this needs to return a ref
 	Ref<Attribute> get_attribute(StringName attribute_name);
@@ -1317,7 +1380,7 @@ inline void AttributeData::create_data_array(Attribute* attribute) {
 template <typename T>
 inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* attribute) {
 
-	array<T>& data = get_data<T>(); //todo:testing only
+	array<T>& data = get_data<T>();
 
 	print("data size 1 ", data.size());//todo:testing only
 
@@ -1330,7 +1393,7 @@ inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* at
 
 	//int index = get_data<T>().insert(data_var);	// cast to T
 	
-	int index = get_data<T>().insert(attribute->get_data_var());	// cast to T
+	int index = data.insert(attribute->get_data_var());	// cast to T
 
 	print("data size 2 ", data.size()); //todo:testing only
 

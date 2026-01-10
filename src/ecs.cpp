@@ -446,7 +446,7 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 		Variant val = attribute->get_var(entity_id);
 		print(entity_id, " ", attribute->get_attribute_name(), " : val : ", val);
 		
-		attribute->set_var(entity_id, value);
+ 		attribute->set_var(entity_id, value);
 		/*
 		print("2bb ", attribute->get_attribute_name());
 		print("ability_id ", get_instance_id(), "ability ", get_ability_name(), "set attribute ", attribute_name, " to ", attribute->get_attribute_data()->get_var(entity_id));
@@ -456,15 +456,67 @@ void Ability::set_attribute_val(StringName attribute_name, Variant value) {
 	//print("2d");
 }
 
-/*
-Variant Ability::get_attribute_val(StringName attribute_name) {
-	Attribute* attribute = get_attribute(attribute_name);
+
+//TypedDictionary<int64_t, Variant> Ability::get_attribute_val(StringName attribute_name) {
+
+Dictionary Ability::get_attribute_val(StringName attribute_name) {
+	Attribute* attribute = get_attribute(attribute_name).ptr();
+
+	//TypedDictionary<int64_t, Variant> val;
+
+	Dictionary val;
+
+	for(int64_t entity_id : entities_approved) {
+		val[entity_id] = attribute->get_var(entity_id);
+		print(">> Getting ", attribute_name, " value entity ", entity_id, " value : ", val[entity_id]);
+	}
 
 	return val;
-}*/
+
+
+/*
+	Variant val = attribute->get_var(entity_id);
+	print(entity_id, " ", attribute->get_attribute_name(), " : val : ", val);
+*/
+/*
+	print("Inside get_attribute_val()");
+	AttributeData* data = attribute->get_attribute_data();
+	Variant val;
+	print("ENTITY ", entity_id);
+	switch(attribute->get_type()) {
+		case Variant::INT:
+			val = data->get_value<int64_t>(entity_id);
+			break;
+		case Variant::FLOAT:
+			print("FLOAT");
+			if(data==nullptr) {
+				print("FLOAT AttributeData is null");
+			}
+			val = data->get_data<float>(entity_id);
+			print("get_attribute_val() VAL : ", val);
+			break;
+		case Variant::STRING:
+			val = data->get_value<String>(entity_id);
+			break;
+		case Variant::STRING_NAME:
+			val = data->get_value<StringName>(entity_id);
+			break;
+		default:	//todo:see if this even works. is this necessary or what to do as default?!
+			val = data->get_value<Variant>(entity_id);
+	}
+	
+	return (Variant)val;
+	*/
+}
 
 Ref<Attribute> Ability::get_attribute(StringName attribute_name) {
 	print("getting attribute ", attribute_name);
+
+	for(auto attrib_name_entry : Ecs::get_singleton()->attribute_name_register.find) {
+		print("find key : ", attrib_name_entry.first, " val: ", attrib_name_entry.second);
+	}
+
+
 	int attr_key = Ecs::get_singleton()->attribute_name_register.find[attribute_name];
 	print("Attr Key : ", attr_key);
 	
@@ -603,8 +655,17 @@ void Ability::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_ability_name"), &Ability::get_ability_name);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "ability_name"), "set_ability_name", "get_ability_name");
 
-	ClassDB::bind_method(D_METHOD("set_attribute_val", "attribute_name", "value"), &Ability::set_attribute_val);
 	ClassDB::bind_method(D_METHOD("get_attribute"), &Ability::get_attribute);
+
+	ClassDB::bind_method(D_METHOD("set_attribute_val", "attribute_name", "value"), &Ability::set_attribute_val);
+	ClassDB::bind_method(D_METHOD("get_attribute_val", "attribute_name"), &Ability::get_attribute_val);
+	/*
+	// Manually set the return type hint so GDScript recognizes the typed dictionary
+	MethodInfo mi = MethodInfo(Variant::DICTIONARY, "get_attribute_val", PropertyInfo(Variant::STRING_NAME, "attribute_name"));
+	mi.return_val.hint = PROPERTY_HINT_DICTIONARY_TYPE;
+	mi.return_val.hint_string = "int;Variant"; // Mapping int64_t to int
+	ClassDB::bind_method(mi, &Ability::get_attribute_val);
+	*/
 }
 
 void Effect::_bind_methods() {
