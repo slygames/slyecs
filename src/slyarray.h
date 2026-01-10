@@ -272,18 +272,19 @@ public:
 		//var = (Variant)cast_var;
 		//var = val; //todo: testing only
 		//print("Inserting variant val ", var);
-		print("value size1 ", value.size());
-		print("size 1", size());
+		print("value size1 : ", value.size());
+		print("size 1 : ", size());
 		
-		print("INSERT 2");
+		print("+++++INSERT 2 : ", val, " index ", size());
 
-		print("value size2 ", value.size());
-		print("size 2", size());
+		print("value size2 : ", value.size());
+		print("size 2 : ", size());
 		
 		int new_index = size();
 		value.emplace_back(val);
 
-		print("value size3 ", value.size());
+		print("value size3 : ", value.size());
+		print("size 3 : ", size());
 
 	/*
 		print("value size3 ", value.size());
@@ -291,7 +292,7 @@ public:
 */
 
 		//godot::Variant var(val);
-		print("val ", val);
+		print("val : ", val);
 		//print("val ", val);
 
 		/*
