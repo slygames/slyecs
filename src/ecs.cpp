@@ -134,16 +134,32 @@ void NodeECS::_notification(int p_what) {
 */
 				// add to Ecs abilities if not registered yet
 				if(!Ecs::get_singleton()->ability_register.has(ability)) {
+					print("INSERTING ABILITY ",ability->get_ability_name()," IN REGISTER");
 					Ecs::get_singleton()->ability_register.insert(ability);	// all abilities added to the Ecs
 					// insert attributes for this ability
 					const TypedArray<Attribute>& attributes = ability->get_attributes_required();
+					
+					print("--- Ability ", ability->get_ability_name(), " : attribs num : ", attributes.size());
 					for(int j=0;j<attributes.size();j++) {
-						Attribute* attribute = cast_to<Attribute>(attributes[i]);
+						print("*** Attrib name ", j ," : ", cast_to<Attribute>(attributes[j])->get_attribute_name());
+					}
+
+
+					for(int j=0;j<attributes.size();j++) {
+						print("^^^ j is ", j, " attr size : ", attributes.size());
+						Attribute* attribute = cast_to<Attribute>(attributes[j]);
 						//attribute->get_attribute_data()->var_type = attribute->get_type();
 						//todo:BUG how does this prevent duplicates in these registers?! it doesnlt.. bug
+
+						print("~~~Creating Attribute ", attribute->get_attribute_name() , "for Ability ", ability->get_ability_name(), " Register Size ",  Ecs::get_singleton()->attribute_register.size());
+
 						if(!Ecs::get_singleton()->attribute_register.has(attribute)) {
+							print("~~~ FINAL creating attribute ", attribute->get_attribute_name());
 							Ecs::get_singleton()->create_attribute(attribute);
 						}
+
+						print("~~~Attribute DONE! ", Ecs::get_singleton()->attribute_register.size());
+
 						print("creating attribute data entry for entity id ", entity_id);
 						attribute->create_attribute_data_entry(entity_id);
 
@@ -269,6 +285,8 @@ void Ecs::create_attribute(Attribute* attribute) {
 		ecs->attribute_register.insert(attribute);
 		ecs->attribute_name_register.insert(attribute->get_attribute_name());
 		
+		print("___attribute created name : ", attribute->get_attribute_name()," register size : ", ecs->attribute_name_register[ecs->attribute_name_register.size()-1]);
+
 		switch(attribute->get_type()) {
 			case Variant::INT:
 				attribute->get_attribute_data()->create_data_array<int>(attribute);
@@ -535,6 +553,7 @@ Ref<Attribute> Ability::get_attribute(StringName attribute_name) {
 /**
  * registers attributes with the Ecs
  */
+//todo:remove, this is never used.
 void Ability::initialize() {
 	print("INitializeing ability ", get_path());
 	for(int i=0; i<attributes_required.size(); i++) {
@@ -545,7 +564,9 @@ void Ability::initialize() {
 		print("attr name", attr->get_name());
 		print("attr path", attr->get_path());
 		*/
+		print("/// Adding New Attribute");
 		Ecs::get_singleton()->attribute_name_register.insert(attr->get_attribute_name());
+		print("/// New Attribute DONE!");
 	}
 }
 

@@ -37,7 +37,15 @@ public:
         // value doesn't exist so insert into map
         int key = array<T>::insert(val);
         find[val] = key;
-        print("...find... ", val ," Inserted key ", key ," value ", find[val]);
+        
+        godot::Variant variant_vals = (godot::Variant)val;
+        //godot::Variant variant_val = (Variant)val;
+        //print("==== ...find... ", variant_vals ," : type : ", variant_vals.get_type_name() , " Inserted key ", key ," value ", find[val]);
+        print("==== ...find... StringName ", (godot::StringName)variant_vals ," Inserted key ", key ," value ", find[val]);
+        print("==== ...find... String ", (godot::String)variant_vals ," Inserted key ", key ," value ", find[val]);
+        print("==== ...find... Float ", (double)variant_vals ," Inserted key ", key ," value ", find[val]);
+        print("==== ...find... Int ", (int64_t)variant_vals ," Inserted key ", key ," value ", find[val]);
+
         return key;
     }
 
