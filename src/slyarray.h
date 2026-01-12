@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <type_traits> // For std::is_arithmetic_v, std::same
+#include <type_traits> // For std::is_arithmetic_v, std::same and type trait checking for overloaded operators to see if godot variable types support an operator before doing any operations like + or - on attributes.
 #include "util.h"
 #include <any> //todo:debugging only
 //#include <algorithm> // for vector.find(), not using this anymore, //todo:remove
@@ -452,8 +452,8 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	print("is_arithmetic_other", is_arithmetic_other);
 
 	// supports = operator
-	constexpr bool is_assignable = std::is_assignable<U, V>;
-	print("$ is_assignable", is_assignable)
+	constexpr bool is_assignable = std::is_assignable<U, V>::value;
+	print("$ is_assignable", is_assignable);
 
 	// supports + operator
 	constexpr bool has_addition = supports_addition_uv_v<U, V>;
