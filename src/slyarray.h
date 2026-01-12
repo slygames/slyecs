@@ -398,6 +398,22 @@ private:
 	friend array<U>& operator+ (array<U>& lhs,  const V& rhs);
 };
 
+/* Traits checking to see if a variable supports an operator before doing an Attribute operation like add()*/
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_addition_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_addition_uv<U, V, std::void_t<decltype(std::declval<U>() + std::declval<V>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C++17)
+template <typename U, typename V>
+inline constexpr bool supports_addition_uv_v = supports_addition_uv<U, V>::value;
+
+/* Operators */
+
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
     //lhs._value += rhs._value;
@@ -415,6 +431,10 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	
 	constexpr bool is_arithmetic_other = std::is_arithmetic_v<V>;
 	print("is_arithmetic_other", is_arithmetic_other);
+
+	constexpr bool has_addition = supports_addition_uv_v<U, V>;
+	print("$has addition : ", has_addition);
+
 	/*
 	constexpr bool is_array = std::is_same<decltype(lhs), array<U>>::value;
 	print("is_array", is_array);
