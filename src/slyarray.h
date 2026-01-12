@@ -401,6 +401,30 @@ private:
 
 /* Traits checking to see if a variable supports an operator before doing an Attribute operation like add()*/
 
+#if 0
+// Detector implementation
+namespace detail {
+    template <typename AlwaysVoid, typename, typename... Args>
+    struct detector : std::false_type {};
+
+    template <typename Op, typename... Args>
+    struct detector<std::void_t<Op>, Op, Args...> : std::true_type {};
+}
+
+// Define a general utility for checking an operation (provided in the prompt)
+// The 'Op' template argument needs to be a template itself (like op_has_plus_t)
+template <template <typename...> class Op, typename... Args>
+using is_detected = typename detail::detector<void, Op<Args...>, Args...>::type;
+
+// Macro Definition
+#define DEFINE_OPERATOR_TRAIT(op_symbol, trait_name) \
+    template <typename U, typename V> \
+    using op_##trait_name##_t = decltype(std::declval<U>() op_symbol std::declval<V>()); \
+    \
+    template <typename U, typename V> \
+	constexpr bool trait_name##_v = is_detected<op_##trait_name##_t, U, V>::value;
+#endif
+
 namespace detail {
     // You can use a local implementation if std::experimental is not available
     template <typename AlwaysVoid, typename, typename... Args>
@@ -418,16 +442,39 @@ namespace detail {
     template <typename U, typename V> \
     constexpr bool trait_name##_v = std::experimental::is_detected_v<op_##trait_name##_t, U, V>; // Use std::experimental::is_detected_v or your custom 'detail::detector'
 
+
+
 // Use the macro to define traits for specific operators:
 DEFINE_OPERATOR_TRAIT(+, has_plus)
 DEFINE_OPERATOR_TRAIT(+=, has_plus_equal)
 DEFINE_OPERATOR_TRAIT(-, has_minus)
-DEFINE_OPERATOR_TRAIT(*, has_multiplication)
-DEFINE_OPERATOR_TRAIT(/, has_division)
+DEFINE_OPERATOR_TRAIT(-=, has_minus_equal)
+DEFINE_OPERATOR_TRAIT(*, has_multiply)
+DEFINE_OPERATOR_TRAIT(*=, has_multiply_equal)
+DEFINE_OPERATOR_TRAIT(/, has_divide)
+DEFINE_OPERATOR_TRAIT(/, has_divide_equal)
 DEFINE_OPERATOR_TRAIT(==, has_equality)
 DEFINE_OPERATOR_TRAIT(<, has_less_than)
+DEFINE_OPERATOR_TRAIT(<=, has_less_than_equal)
+DEFINE_OPERATOR_TRAIT(>, has_greater_than)
+DEFINE_OPERATOR_TRAIT(>=, has_greater_than_equal)
 // Add any other binary operators to check for here
 
+/* [] operator trait checking */
+
+// Seperate mechasnism for this 'cos its hard to incorporate into this trait detection
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct has_subscript_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct has_subscript_uv<U, V, std::void_t<decltype(std::declval<U>()[std::declval<V>()])>> : std::true_type {};
+
+// Helper inline constexpr variable (C++17)
+template <typename U, typename V>
+inline constexpr bool has_subscript_v = has_subscript_uv<U, V>::value;
 
 
 #if 0
@@ -628,7 +675,6 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	constexpr bool is_assignable = std::is_assignable<U, V>::value;
 	print("$ is_assignable", is_assignable);
 
-
 	constexpr bool has_plus = has_plus_v<U, V>;
 	print("$ has addition : ", has_plus);
 
@@ -637,6 +683,9 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	constexpr bool has_minus = has_minus_v<U, V>;
 	print("$ has minus : ", has_minus);
+
+	constexpr bool has_subscript = has_subscript_v<U, V>;
+	print("$ has subscript : ", has_subscript);
 
 	/*
 	if constexpr (has_minus_v<U, V>) {
