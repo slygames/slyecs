@@ -400,6 +400,34 @@ private:
 
 /* Traits checking to see if a variable supports an operator before doing an Attribute operation like add()*/
 
+// The detection idiom base templates (standard in C++17 as std::is_detected)
+namespace detail {
+    template <typename AlwaysVoid, typename, typename... Args>
+    struct detector : std::false_type {};
+    template <typename Op, typename... Args>
+    struct detector<std::void_t<Op>, Op, Args...> : std::true_type {};
+}
+
+// Macro to define a specific operator trait (e.g., HAS_OP_PLUS, HAS_OP_MINUS)
+#define DEFINE_OPERATOR_TRAIT(op_symbol, trait_name) \
+    template <typename U, typename V> \
+    using op_##trait_name##_t = decltype(std::declval<U>() op_symbol std::declval<V>()); \
+    template <typename U, typename V> \
+    constexpr bool trait_name##_v = detail::detector<void, op_##trait_name##_t<U, V>, U, V>::value;
+
+// Use the macro to define traits for specific operators:
+DEFINE_OPERATOR_TRAIT(+, has_plus)
+DEFINE_OPERATOR_TRAIT(+=, has_plus_equal)
+DEFINE_OPERATOR_TRAIT(-, has_minus)
+DEFINE_OPERATOR_TRAIT(*, has_multiplication)
+DEFINE_OPERATOR_TRAIT(/, has_division)
+DEFINE_OPERATOR_TRAIT(==, has_equality)
+DEFINE_OPERATOR_TRAIT(<, has_less_than)
+// Add any other binary operators to check for here
+
+
+
+#if 0
 /* + Operator Traits */
 
 // Primary template, defaults to false_type
@@ -539,6 +567,7 @@ struct supports_modulo_equal_uv<U, V, std::void_t<decltype(std::declval<U&>() %=
 // Helper inline constexpr variable (C%%17)
 template <typename U, typename V>
 inline constexpr bool supports_modulo_equal_uv_v = supports_modulo_equal_uv<U, V>::value;
+#endif
 
 
 /* Operators */
@@ -567,6 +596,18 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	constexpr bool is_assignable = std::is_assignable<U, V>::value;
 	print("$ is_assignable", is_assignable);
 
+
+	constexpr bool has_plus = has_plus_v<U, V>;
+	print("$ has addition : ", has_plus);
+
+	constexpr bool has_plus_equal = has_plus_v<U, V>;
+	print("$ has_plus_equal : ", has_plus_equal);
+
+	constexpr bool has_minus = has_minus_v<U, V>;
+	print("$ has minus : ", has_minus);
+
+
+	#if 0
 	// supports + operator (e.g. String is not arithmetic but supports + operator, this checks the actual operator support, so its more useful than is_arithmetic to check if an operation can be performed on an attribute)
 	constexpr bool has_plus = supports_plus_uv_v<U, V>;
 	print("$ has addition : ", has_plus);
@@ -574,7 +615,9 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	// supports += operator
 	constexpr bool has_plus_equal = supports_plus_equal_uv_v<U, V>;
 	print("$ has_plus_assign : ", has_plus_equal);
-	
+	#endif
+
+
 
 	/*
 	constexpr bool is_array = std::is_same<decltype(lhs), array<U>>::value;
