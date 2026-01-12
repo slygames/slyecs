@@ -404,32 +404,141 @@ private:
 
 // Primary template, defaults to false_type
 template <typename U, typename V, typename = void>
-struct supports_addition_uv : std::false_type {};
+struct supports_plus_uv : std::false_type {};
 
 // Specialization enabled by SFINAE if the expression is valid
 template <typename U, typename V>
-struct supports_addition_uv<U, V, std::void_t<decltype(std::declval<U>() + std::declval<V>())>> : std::true_type {};
+struct supports_plus_uv<U, V, std::void_t<decltype(std::declval<U>() + std::declval<V>())>> : std::true_type {};
 
 // Helper inline constexpr variable (C++17)
 template <typename U, typename V>
-inline constexpr bool supports_addition_uv_v = supports_addition_uv<U, V>::value;
+inline constexpr bool supports_plus_uv_v = supports_plus_uv<U, V>::value;
 
 /* += Operator Traits */
 
 // Primary template, defaults to false_type
 template <typename U, typename V, typename = void>
-struct supports_plus_assign_uv : std::false_type {};
+struct supports_plus_equal_uv : std::false_type {};
 
 // Specialization enabled by SFINAE if the expression is valid
 template <typename U, typename V>
-struct supports_plus_assign_uv<U, V,
-    std::void_t<decltype(std::declval<U&>() += std::declval<V const&>())>>
-    : std::true_type {};
+struct supports_plus_equal_uv<U, V, std::void_t<decltype(std::declval<U&>() += std::declval<V const&>())>> : std::true_type {};
 
 // Helper inline constexpr variable (C++17)
 template <typename U, typename V>
-inline constexpr bool supports_plus_assign_uv_v = supports_plus_assign_uv<U, V>::value;
+inline constexpr bool supports_plus_equal_uv_v = supports_plus_equal_uv<U, V>::value;
 
+/* - Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_minus_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_minus_uv<U, V, std::void_t<decltype(std::declval<U>() - std::declval<V>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C--17)
+template <typename U, typename V>
+inline constexpr bool supports_minus_uv_v = supports_minus_uv<U, V>::value;
+
+/* -= Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_minus_equal_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_minus_equal_uv<U, V, std::void_t<decltype(std::declval<U&>() -= std::declval<V const&>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C--17)
+template <typename U, typename V>
+inline constexpr bool supports_minus_equal_uv_v = supports_minus_equal_uv<U, V>::value;
+
+/* * Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_multiply_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_multiply_uv<U, V, std::void_t<decltype(std::declval<U>() * std::declval<V>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C**17)
+template <typename U, typename V>
+inline constexpr bool supports_multiply_uv_v = supports_multiply_uv<U, V>::value;
+
+/* *= Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_multiply_equal_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_multiply_equal_uv<U, V, std::void_t<decltype(std::declval<U&>() *= std::declval<V const&>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C**17)
+template <typename U, typename V>
+inline constexpr bool supports_multiply_equal_uv_v = supports_multiply_equal_uv<U, V>::value;
+
+/* / Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_divide_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_divide_uv<U, V, std::void_t<decltype(std::declval<U>() / std::declval<V>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C//17)
+template <typename U, typename V>
+inline constexpr bool supports_divide_uv_v = supports_divide_uv<U, V>::value;
+
+/* /= Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_divide_equal_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_divide_equal_uv<U, V, std::void_t<decltype(std::declval<U&>() /= std::declval<V const&>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C//17)
+template <typename U, typename V>
+inline constexpr bool supports_divide_equal_uv_v = supports_divide_equal_uv<U, V>::value;
+
+/* % Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_modulo_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_modulo_uv<U, V, std::void_t<decltype(std::declval<U>() % std::declval<V>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C%%17)
+template <typename U, typename V>
+inline constexpr bool supports_modulo_uv_v = supports_modulo_uv<U, V>::value;
+
+/* %= Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_modulo_equal_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_modulo_equal_uv<U, V, std::void_t<decltype(std::declval<U&>() %= std::declval<V const&>())>> : std::true_type {};
+
+// Helper inline constexpr variable (C%%17)
+template <typename U, typename V>
+inline constexpr bool supports_modulo_equal_uv_v = supports_modulo_equal_uv<U, V>::value;
 
 
 /* Operators */
@@ -445,23 +554,26 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	//constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
 
-	constexpr bool is_arithmetic = std::is_arithmetic_v<U>;
-	print("is_arithmetic", is_arithmetic);
+	constexpr bool is_arithmetic_first = std::is_arithmetic_v<U>;
+	print("is_arithmetic", is_arithmetic_first);
 	
 	constexpr bool is_arithmetic_other = std::is_arithmetic_v<V>;
 	print("is_arithmetic_other", is_arithmetic_other);
+
+	// supports + operator, both operands are arithmetic (int or float)
+	constexpr bool  is_arithmetic = is_arithmetic_first && is_arithmetic_other;
 
 	// supports = operator
 	constexpr bool is_assignable = std::is_assignable<U, V>::value;
 	print("$ is_assignable", is_assignable);
 
-	// supports + operator
-	constexpr bool has_addition = supports_addition_uv_v<U, V>;
-	print("$ has addition : ", has_addition);
+	// supports + operator (e.g. String is not arithmetic but supports + operator, this checks the actual operator support, so its more useful than is_arithmetic to check if an operation can be performed on an attribute)
+	constexpr bool has_plus = supports_plus_uv_v<U, V>;
+	print("$ has addition : ", has_plus);
 
 	// supports += operator
-	constexpr bool has_plus_assign = supports_plus_assign_uv_v<U, V>;
-	print("$ has_plus_assign : ", has_plus_assign);
+	constexpr bool has_plus_equal = supports_plus_equal_uv_v<U, V>;
+	print("$ has_plus_assign : ", has_plus_equal);
 	
 
 	/*
@@ -472,7 +584,7 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	array<U>* lhsptr = dynamic_cast<array<U>*>(&lhs);
 	constexpr bool is_array = lhsptr != nullptr;
 */
-	if (is_arithmetic && is_arithmetic_other) {
+	if (is_arithmetic) {
 		print("Doing Arithmetic..");
 		for(int i=0; i<lhs.value.size() ;i++) {
 /*
@@ -485,10 +597,11 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 			lhs.value[i] += rhs;
 		}
 	} else {
+		//todo: fix this error messages do not seem necessary and should be about
 		if(!is_arithmetic) {
-			godot::UtilityFunctions::printerr(typeid(lhs).name(), " Error: Can't multiply with this type.");
+			godot::UtilityFunctions::printerr(typeid(lhs).name(), " Error: First Operand is Not an Arithmetic type.");
 		} else if(!is_arithmetic_other) {
-			godot::UtilityFunctions::printerr(typeid(rhs).name(), " Error: Can't multiply with this type.");
+			godot::UtilityFunctions::printerr(typeid(rhs).name(), " Error: Second Operand is Not an Arithmetic type.");
 		}
 	}
 
