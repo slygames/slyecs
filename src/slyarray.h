@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <type_traits> // For std::is_arithmetic_v, std::same and type trait checking for overloaded operators to see if godot variable types support an operator before doing any operations like + or - on attributes.
+#include <type_traits> // Required for standard type traits. For std::is_arithmetic_v, std::same and type trait checking for overloaded operators to see if godot variable types support an operator before doing any operations like + or - on attributes.
+#include <experimental/type_traits> // Required for std::experimental::is_detected (if C++17 is not fully adopted)
 #include "util.h"
 #include <any> //todo:debugging only
 //#include <algorithm> // for vector.find(), not using this anymore, //todo:remove
@@ -400,6 +401,36 @@ private:
 
 /* Traits checking to see if a variable supports an operator before doing an Attribute operation like add()*/
 
+namespace detail {
+    // You can use a local implementation if std::experimental is not available
+    template <typename AlwaysVoid, typename, typename... Args>
+    struct detector : std::false_type {};
+
+    template <typename Op, typename... Args>
+    struct detector<std::void_t<Op>, Op, Args...> : std::true_type {};
+}
+
+// Macro to define a specific operator trait (e.g., HAS_OP_PLUS, HAS_OP_MINUS)
+#define DEFINE_OPERATOR_TRAIT(op_symbol, trait_name) \
+    template <typename U, typename V> \
+    using op_##trait_name##_t = decltype(std::declval<U>() op_symbol std::declval<V>()); \
+    \
+    template <typename U, typename V> \
+    constexpr bool trait_name##_v = std::experimental::is_detected_v<op_##trait_name##_t, U, V>; // Use std::experimental::is_detected_v or your custom 'detail::detector'
+
+// Use the macro to define traits for specific operators:
+DEFINE_OPERATOR_TRAIT(+, has_plus)
+DEFINE_OPERATOR_TRAIT(+=, has_plus_equal)
+DEFINE_OPERATOR_TRAIT(-, has_minus)
+DEFINE_OPERATOR_TRAIT(*, has_multiplication)
+DEFINE_OPERATOR_TRAIT(/, has_division)
+DEFINE_OPERATOR_TRAIT(==, has_equality)
+DEFINE_OPERATOR_TRAIT(<, has_less_than)
+// Add any other binary operators to check for here
+
+
+
+#if 0
 // The detection idiom base templates (standard in C++17 as std::is_detected)
 namespace detail {
     template <typename AlwaysVoid, typename, typename... Args>
@@ -424,6 +455,7 @@ DEFINE_OPERATOR_TRAIT(/, has_division)
 DEFINE_OPERATOR_TRAIT(==, has_equality)
 DEFINE_OPERATOR_TRAIT(<, has_less_than)
 // Add any other binary operators to check for here
+#endif
 
 
 
@@ -605,6 +637,11 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	constexpr bool has_minus = has_minus_v<U, V>;
 	print("$ has minus : ", has_minus);
+
+	/*
+	if constexpr (has_minus_v<U, V>) {
+		print("$ has minus : ", has_minus_v<U, V>);
+	}*/
 
 
 	#if 0
