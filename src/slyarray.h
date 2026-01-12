@@ -400,6 +400,8 @@ private:
 
 /* Traits checking to see if a variable supports an operator before doing an Attribute operation like add()*/
 
+/* + Operator Traits */
+
 // Primary template, defaults to false_type
 template <typename U, typename V, typename = void>
 struct supports_addition_uv : std::false_type {};
@@ -411,6 +413,24 @@ struct supports_addition_uv<U, V, std::void_t<decltype(std::declval<U>() + std::
 // Helper inline constexpr variable (C++17)
 template <typename U, typename V>
 inline constexpr bool supports_addition_uv_v = supports_addition_uv<U, V>::value;
+
+/* += Operator Traits */
+
+// Primary template, defaults to false_type
+template <typename U, typename V, typename = void>
+struct supports_plus_assign_uv : std::false_type {};
+
+// Specialization enabled by SFINAE if the expression is valid
+template <typename U, typename V>
+struct supports_plus_assign_uv<U, V,
+    std::void_t<decltype(std::declval<U&>() += std::declval<V const&>())>>
+    : std::true_type {};
+
+// Helper inline constexpr variable (C++17)
+template <typename U, typename V>
+inline constexpr bool supports_plus_assign_uv_v = supports_plus_assign_uv<U, V>::value;
+
+
 
 /* Operators */
 
@@ -425,15 +445,24 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 	//constexpr bool is_arithmetic = std::is_arithmetic_v<U>(lhs.value[0]);
 
-
 	constexpr bool is_arithmetic = std::is_arithmetic_v<U>;
 	print("is_arithmetic", is_arithmetic);
 	
 	constexpr bool is_arithmetic_other = std::is_arithmetic_v<V>;
 	print("is_arithmetic_other", is_arithmetic_other);
 
+	// supports = operator
+	constexpr bool is_assignable = std::is_assignable<U, V>;
+	print("$ is_assignable", is_assignable)
+
+	// supports + operator
 	constexpr bool has_addition = supports_addition_uv_v<U, V>;
-	print("$has addition : ", has_addition);
+	print("$ has addition : ", has_addition);
+
+	// supports += operator
+	constexpr bool has_plus_assign = supports_plus_assign_uv_v<U, V>;
+	print("$ has_plus_assign : ", has_plus_assign);
+	
 
 	/*
 	constexpr bool is_array = std::is_same<decltype(lhs), array<U>>::value;
