@@ -425,6 +425,8 @@ using is_detected = typename detail::detector<void, Op<Args...>, Args...>::type;
 	constexpr bool trait_name##_v = is_detected<op_##trait_name##_t, U, V>::value;
 #endif
 
+/* This uses a detector to find the defined operators. Some operators like [] are done seperately using templates because this method doesn't work for those */
+
 namespace detail {
     // You can use a local implementation if std::experimental is not available
     template <typename AlwaysVoid, typename, typename... Args>
@@ -462,7 +464,7 @@ DEFINE_OPERATOR_TRAIT(>=, has_greater_than_equal)
 
 /* [] operator trait checking */
 
-// Seperate mechasnism for this 'cos its hard to incorporate into this trait detection
+// Seperate mechasnism for [] subscript operator 'cos its hard to incorporate into this trait detection
 
 // Primary template, defaults to false_type
 template <typename U, typename V, typename = void>
@@ -503,8 +505,6 @@ DEFINE_OPERATOR_TRAIT(==, has_equality)
 DEFINE_OPERATOR_TRAIT(<, has_less_than)
 // Add any other binary operators to check for here
 #endif
-
-
 
 #if 0
 /* + Operator Traits */
