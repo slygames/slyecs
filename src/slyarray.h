@@ -15,6 +15,18 @@ namespace sly {
 
 //todo: should this use int64_t for keys as godot uid is 64 bit int64_t?
 
+enum OPERATOR : unsigned char {
+	PLUS,
+	PLUS_EQUAL,
+	MINUS,
+	MINUS_EQUAL,
+	MULTIPLY,
+	MULTIPLY_EQUAL,
+	DIVIDE,
+	DIVIDE_EQUAL,
+};
+
+
 template <typename T>
 class array {
 
@@ -35,7 +47,7 @@ public:
 		}
 		return *this;
 	}
-*/
+	*/
 
     array& operator=(const array& other) {
         if (this!=&other) {	// if not assigning to self
@@ -44,8 +56,6 @@ public:
         }
         return *this; // enable chained assignments (e.g., obj1 = obj2 = obj3;).
     }
-
-
 
 	/*
     MyCustomClass(std::string n, int v) : name(std::move(n)), value(v) {
@@ -653,6 +663,9 @@ inline constexpr bool supports_modulo_equal_uv_v = supports_modulo_equal_uv<U, V
 
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
+	return operate("+=", lhs, rhs);
+
+	#if 0
     //lhs._value += rhs._value;
     //return lhs;
 	print("array<U> operator+=");
@@ -733,7 +746,7 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 			godot::UtilityFunctions::printerr(typeid(rhs).name(), " Error: Second Operand is Not an Arithmetic type.");
 		}
 	}
-
+	#endif
 	return lhs;
 } 
 
@@ -758,6 +771,39 @@ array<U>& operator* (array<U>& lhs, const V& rhs) {
 template <typename U, typename V>
 array<U>& operator/ (array<U>& lhs, const V& rhs) {
 	lhs /= rhs;
+	return lhs;
+}
+
+/* checks if a variable type supports an operator, this works for any godot types etc. then the operation is performed by operate() if it's valid*/
+template <typename U, typename V>
+bool can_operate (const OPERATOR operator_name, U &lhs, V &rhs) {
+	constexpr bool has_plus = has_plus_v<U, V>;
+	constexpr bool has_plus_equal = has_plus_equal_v<U, V>;
+
+	bool is_valid = false;
+	switch(operator_name) {
+		case PLUS:
+			is_valid = has_plus;
+		break;
+		case PLUS_EQUAL:
+			is_valid = has_plus_equal;
+		break;
+	}
+	return is_valid;
+}
+
+template <typename U, typename V>
+array<U>& operate (const OPERATOR operator_name, U &lhs, V &rhs) {
+	if(can_operate(operator_name, lhs, rhs)) {
+		switch(operator_name) {
+			case "+":
+				return lhs + rhs;
+			break;
+			case "+=":
+				lhs += rhs;
+			break;
+		}
+	}
 	return lhs;
 }
 
