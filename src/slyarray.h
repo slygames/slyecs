@@ -778,21 +778,42 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 
 /* Performs addition if U and V support this otherwise checks if V can be cast to U and performs casting before calling the same function recursively, which should be able to do the operation. This casting allows for addition of compatible types like int and float with each other. */
+
+template <typename U, typename V>
+array<U>& operate(OPERATOR operator_name, array<U>& lhs, const V& rhs) {
+	for(int i=0; i<lhs.value.size() ;i++) {
+		switch(operator_name) {
+			case PLUS_EQUAL:
+				lhs.value[i] += rhs;
+				break;
+		}
+	}
+	return lhs;
+}
+
+#if 0
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	if constexpr (has_plus_equal_v<U, V>) {
+		print("*has_plus true ", typeid(lhs).name(), " and " , typeid(rhs).name());
+	} else {
+		print("*has_plus false ", typeid(lhs).name(), " and " , typeid(rhs).name());
+	}
+	if constexpr (has_plus_equal_v<U, V>) {
+		printerr("+= operation ", typeid(lhs).name(), " and " , typeid(rhs).name());
+		print("*1");
 		lhs += rhs;
 	} else if constexpr (std::is_constructible_v<U, V>) {
+		print("*2");
+		printerr("Casting += operation ", typeid(lhs).name(), " and " , typeid(rhs).name());
 		lhs += static_cast<U>(rhs);	// cast and call the same operation recursively, as both types are the same so it will work the next time if the type supports the operation. If it fails that's okay too 'cos it will do nothing then just like if the operation wasn't possible to do.
 	} else {
+		print("*3");
 		printerr("Can't perform += operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible");
 	}
 	return lhs;
 }
 
-
-
-#if 0
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	if constexpr (std::is_constructible_v<U, V>) {
@@ -831,31 +852,49 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	#endif
 
 template <typename U, typename V>
+array<U>& operator+= (array<U>& lhs, const V& rhs) {
+	if constexpr (has_plus_v<U, V> && has_plus_equal_v<U, V>) {
+		lhs = operate(PLUS_EQUAL, lhs, rhs);
+	} else if constexpr (std::is_constructible_v<U, V>) {
+		lhs = operate(PLUS_EQUAL, lhs, static_cast<U>(rhs));
+	} else {
+		printerr("Can't perform += operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
+	}
+	return lhs;
+}
+
+template <typename U, typename V>
 array<U>& operator-= (array<U>& lhs, const V& rhs) {
-	if constexpr (has_minus_equal_v<U, V>) {
-		for(int i=0; i<lhs.value.size() ;i++) {
-			lhs.value[i] -= rhs;
-		}
+	if constexpr (has_minus_v<U, V> && has_minus_equal_v<U, V>) {
+		lhs = operate(MINUS_EQUAL, lhs, rhs);
+	} else if constexpr (std::is_constructible_v<U, V>) {
+		lhs = operate(MINUS_EQUAL, lhs, static_cast<U>(rhs));
+	} else {
+		printerr("Can't perform -= operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
 	}
 	return lhs;
 }
 
 template <typename U, typename V>
 array<U>& operator*= (array<U>& lhs, const V& rhs) {
-	if constexpr (has_multiply_equal_v<U, V>) {
-		for(int i=0; i<lhs.value.size() ;i++) {
-			lhs.value[i] *= rhs;
-		}
+	if constexpr (has_multiply_v<U, V> && has_multiply_equal_v<U, V>) {
+		lhs = operate(MULTIPLY_EQUAL, lhs, rhs);
+	} else if constexpr (std::is_constructible_v<U, V>) {
+		lhs = operate(MULTIPLY_EQUAL, lhs, static_cast<U>(rhs));
+	} else {
+		printerr("Can't perform *= operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
 	}
 	return lhs;
 }
 
 template <typename U, typename V>
 array<U>& operator/= (array<U>& lhs, const V& rhs) {
-	if constexpr (has_divide_equal_v<U, V>) {
-		for(int i=0; i<lhs.value.size() ;i++) {
-			lhs.value[i] /= rhs;
-		}
+	if constexpr (has_divide_v<U,V> && has_divide_equal_v<U, V>) {
+		lhs = operate(DIVIDE_EQUAL, lhs, rhs);
+	} else if constexpr (std::is_constructible_v<U, V>) {
+		lhs = operate(DIVIDE_EQUAL, lhs, static_cast<U>(rhs));
+	} else {
+		printerr("Can't perform *= operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
 	}
 	return lhs;
 }
@@ -863,33 +902,25 @@ array<U>& operator/= (array<U>& lhs, const V& rhs) {
 // lhs is passed by value to + so that it can be modified by += as reference, to return the result without modifying the actual lhs
 template <typename U, typename V>
 array<U> operator+ (array<U> lhs, const V& rhs) {
-	if constexpr (has_plus_v<U, V>) {
-		lhs+=rhs;
-	}
+	lhs+=rhs;
 	return lhs;
 }
 
 template <typename U, typename V>
 array<U>& operator- (array<U> lhs, const V& rhs) {
-	if constexpr (has_minus_v<U, V>) {
-		lhs-=rhs;
-	}
+	lhs-=rhs;
 	return lhs;
 }
 
 template <typename U, typename V>
 array<U>& operator* (array<U> lhs, const V& rhs) {
-	if constexpr (has_multiply_v<U, V>) {
-		lhs*=rhs;
-	}
+	lhs*=rhs;
 	return lhs;
 }
 
 template <typename U, typename V>
 array<U>& operator/ (array<U> lhs, const V& rhs) {
-	if constexpr (has_divide_v<U, V>) {
-		lhs/=rhs;
-	}
+	lhs/=rhs;
 	return lhs;
 }
 
