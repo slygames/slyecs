@@ -490,6 +490,21 @@ DEFINE_OPERATOR_TRAIT(>, has_greater_than)
 DEFINE_OPERATOR_TRAIT(>=, has_greater_than_equal)
 // Add any other binary operators to check for here
 
+/* to check if its an array when doing addition etc. */
+
+// Primary template for the type trait, defaults to false
+template <typename T>
+struct is_array_specialization : std::false_type {};
+
+// Partial specialization for any type that IS an array<T>
+template <typename T>
+struct is_array_specialization<array<T>> : std::true_type {};
+
+// Helper variable template for convenience (C++14 onwards)
+template <typename T>
+constexpr bool is_array_specialization_v = is_array_specialization<T>::value;
+
+
 /* [] operator trait checking */
 
 // Seperate mechasnism for [] subscript operator 'cos its hard to incorporate into this trait detection
@@ -853,7 +868,11 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
-	if constexpr (has_plus_v<U, V> && has_plus_equal_v<U, V>) {
+	//todo: make this work for arrays or do another function.. how to achieve this so that attribute + attribute does element wise addition for corresponding entity values.
+	if constexpr (is_array_specialization_v<V>) {
+		print("rhs is array");
+		//lhs = operate(PLUS_EQUAL, lhs, rhs);
+	} else if constexpr (has_plus_v<U, V> && has_plus_equal_v<U, V>) {
 		lhs = operate(PLUS_EQUAL, lhs, rhs);
 	} else if constexpr (std::is_constructible_v<U, V>) {
 		lhs = operate(PLUS_EQUAL, lhs, static_cast<U>(rhs));

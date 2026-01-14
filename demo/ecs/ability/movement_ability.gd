@@ -37,7 +37,7 @@ func _update():
 	#get_attribute("velocity").set_var(5)
 	get_attribute("velocity").add(3.5)
 	get_attribute("velocity").add(1)
-	get_attribute("velocity").add(2)
+	#get_attribute("velocity").add(2)
 
 
 	print("VELOCITY DICTIONARY")

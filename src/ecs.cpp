@@ -349,7 +349,7 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 
 void Attribute::add(const Variant &other) {
 	
-	print("ADDING.."); //todo:remove
+	print("ADD Variant type is : ", get_type());
 
 	switch(get_type()) {
 		case Variant::INT:
@@ -370,6 +370,10 @@ void Attribute::add(const Variant &other) {
 		case Variant::STRING_NAME:	// StringName doesn't support += concatenation but this casts it to String
 		case Variant::STRING:
 			operator+=<String>(*this, (String)other);
+			break;
+		case Variant::OBJECT:
+			//todo: need to handle attribute + attribute here if the Variant::Object type is the same as attribute.
+			print("**Variant is oBject");
 			break;
 			/*
 		case Variant::STRING_NAME:
