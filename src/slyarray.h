@@ -464,7 +464,7 @@ DEFINE_OPERATOR_TRAIT(-=, has_minus_equal)
 DEFINE_OPERATOR_TRAIT(*, has_multiply)
 DEFINE_OPERATOR_TRAIT(*=, has_multiply_equal)
 DEFINE_OPERATOR_TRAIT(/, has_divide)
-DEFINE_OPERATOR_TRAIT(/, has_divide_equal)
+DEFINE_OPERATOR_TRAIT(/=, has_divide_equal)
 DEFINE_OPERATOR_TRAIT(==, has_equality)
 DEFINE_OPERATOR_TRAIT(<, has_less_than)
 DEFINE_OPERATOR_TRAIT(<=, has_less_than_equal)
@@ -663,7 +663,11 @@ inline constexpr bool supports_modulo_equal_uv_v = supports_modulo_equal_uv<U, V
 
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
-	return operate("+=", lhs, rhs);
+	for(int i=0; i<lhs.value.size() ;i++) {
+		operate(PLUS_EQUAL, lhs.value[i], rhs);
+	}
+
+	return lhs;
 
 	#if 0
     //lhs._value += rhs._value;
@@ -751,27 +755,23 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 } 
 
 template <typename U, typename V>
-array<U>& operator+ (array<U>& lhs, const V& rhs) {
-	lhs += rhs;
-	return lhs;
+array<U> operator+ (const array<U>& lhs, const V& rhs) {
+	return operate_val(PLUS, lhs, rhs);
 }
 
 template <typename U, typename V>
 array<U>& operator- (array<U>& lhs, const V& rhs) {
-	lhs -= rhs;
-	return lhs;
+	return operate_val(MINUS, lhs, rhs);
 }
 
 template <typename U, typename V>
 array<U>& operator* (array<U>& lhs, const V& rhs) {
-	lhs *= rhs;
-	return lhs;
+	return operate_val(MULTIPLY, lhs, rhs);
 }
 
 template <typename U, typename V>
 array<U>& operator/ (array<U>& lhs, const V& rhs) {
-	lhs /= rhs;
-	return lhs;
+	return operate_val(DIVIDE, lhs, rhs);
 }
 
 /* checks if a variable type supports an operator, this works for any godot types etc. then the operation is performed by operate() if it's valid*/
@@ -784,25 +784,52 @@ bool can_operate (const OPERATOR operator_name, U &lhs, V &rhs) {
 	switch(operator_name) {
 		case PLUS:
 			is_valid = has_plus;
-		break;
+			break;
 		case PLUS_EQUAL:
 			is_valid = has_plus_equal;
-		break;
+			break;
 	}
 	return is_valid;
 }
 
+/* Operations like += which pass lhs by reference and store the result in this.*/
 template <typename U, typename V>
-array<U>& operate (const OPERATOR operator_name, U &lhs, V &rhs) {
+U& operate (const OPERATOR operator_name, U &lhs, V &rhs) {
 	if(can_operate(operator_name, lhs, rhs)) {
 		switch(operator_name) {
-			case "+":
-				return lhs + rhs;
-			break;
-			case "+=":
+			case PLUS_EQUAL:
 				lhs += rhs;
-			break;
+				break;
+			case MINUS_EQUAL:
+				lhs -= rhs;
+				break;
+			case MULTIPLY_EQUAL:
+				lhs *= rhs;
+				break;
+			case DIVIDE_EQUAL:
+				lhs /= rhs;
+				break;
 		}
+	}
+	return lhs;
+}
+
+/* does operations by reference but passes lhs by value so the original lhs isn't modified */
+template <typename U, typename V>
+U operate_val (const OPERATOR operator_name, U lhs, V &rhs) {
+	switch(operator_name) {
+		case PLUS:
+			operate(PLUS_EQUAL, lhs, rhs);
+			break;
+		case MINUS:
+			operate(MINUS_EQUAL, lhs, rhs);
+			break;
+		case MULTIPLY:
+			operate(MULTIPLY_EQUAL, lhs, rhs);
+			break;
+		case DIVIDE:
+			operate(DIVIDE_EQUAL, lhs, rhs);
+			break;
 	}
 	return lhs;
 }
