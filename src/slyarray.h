@@ -406,7 +406,25 @@ private:
 	friend array<U>& operator+= (array<U>& lhs,  const V& rhs);
 
 	template <typename U, typename V>
-	friend array<U>& operator+ (array<U>& lhs,  const V& rhs);
+	friend array<U>& operator+ (array<U> lhs,  const V& rhs);
+
+	template <typename U, typename V>
+	friend array<U>& operator-= (array<U>& lhs,  const V& rhs);
+
+	template <typename U, typename V>
+	friend array<U>& operator- (array<U> lhs,  const V& rhs);
+
+	template <typename U, typename V>
+	friend array<U>& operator*= (array<U>& lhs,  const V& rhs);
+
+	template <typename U, typename V>
+	friend array<U>& operator* (array<U> lhs,  const V& rhs);
+
+	template <typename U, typename V>
+	friend array<U>& operator/= (array<U>& lhs,  const V& rhs);
+
+	template <typename U, typename V>
+	friend array<U>& operator/ (array<U> lhs,  const V& rhs);
 };
 
 /* Traits checking to see if a variable supports an operator before doing an Attribute operation like add()*/
@@ -661,12 +679,15 @@ inline constexpr bool supports_modulo_equal_uv_v = supports_modulo_equal_uv<U, V
 
 /* Operators */
 
+#if 0
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
-	for(int i=0; i<lhs.value.size() ;i++) {
-		operate(PLUS_EQUAL, lhs.value[i], rhs);
+	if constexpr (has_plus_equal_v<U, V>) {
+		for(int i=0; i<lhs.value.size() ;i++) {
+			lhs.value[i] += rhs;
+			//operate(PLUS_EQUAL, lhs.value[i], rhs);
+		}
 	}
-
 	return lhs;
 
 	#if 0
@@ -752,33 +773,89 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	}
 	#endif
 	return lhs;
-} 
+}
+#endif
+
 
 template <typename U, typename V>
-array<U> operator+ (const array<U>& lhs, const V& rhs) {
-	return operate_val(PLUS, lhs, rhs);
+array<U>& operator+= (array<U>& lhs, const V& rhs) {
+	if constexpr (has_plus_equal_v<U, V>) {
+		for(int i=0; i<lhs.value.size() ;i++) {
+			lhs.value[i] += rhs;
+		}
+	}
+	return lhs;
 }
 
 template <typename U, typename V>
-array<U>& operator- (array<U>& lhs, const V& rhs) {
-	return operate_val(MINUS, lhs, rhs);
+array<U>& operator-= (array<U>& lhs, const V& rhs) {
+	if constexpr (has_minus_equal_v<U, V>) {
+		for(int i=0; i<lhs.value.size() ;i++) {
+			lhs.value[i] -= rhs;
+		}
+	}
+	return lhs;
 }
 
 template <typename U, typename V>
-array<U>& operator* (array<U>& lhs, const V& rhs) {
-	return operate_val(MULTIPLY, lhs, rhs);
+array<U>& operator*= (array<U>& lhs, const V& rhs) {
+	if constexpr (has_multiply_equal_v<U, V>) {
+		for(int i=0; i<lhs.value.size() ;i++) {
+			lhs.value[i] *= rhs;
+		}
+	}
+	return lhs;
 }
 
 template <typename U, typename V>
-array<U>& operator/ (array<U>& lhs, const V& rhs) {
-	return operate_val(DIVIDE, lhs, rhs);
+array<U>& operator/= (array<U>& lhs, const V& rhs) {
+	if constexpr (has_divide_equal_v<U, V>) {
+		for(int i=0; i<lhs.value.size() ;i++) {
+			lhs.value[i] /= rhs;
+		}
+	}
+	return lhs;
 }
 
+// lhs is passed by value to + so that it can be modified by += as reference, to return the result without modifying the actual lhs
+template <typename U, typename V>
+array<U> operator+ (array<U> lhs, const V& rhs) {
+	if constexpr (has_plus_v<U, V>) {
+		lhs+=rhs;
+	}
+	return lhs;
+}
+
+template <typename U, typename V>
+array<U>& operator- (array<U> lhs, const V& rhs) {
+	if constexpr (has_minus_v<U, V>) {
+		lhs-=rhs;
+	}
+	return lhs;
+}
+
+template <typename U, typename V>
+array<U>& operator* (array<U> lhs, const V& rhs) {
+	if constexpr (has_multiply_v<U, V>) {
+		lhs*=rhs;
+	}
+	return lhs;
+}
+
+template <typename U, typename V>
+array<U>& operator/ (array<U> lhs, const V& rhs) {
+	if constexpr (has_divide_v<U, V>) {
+		lhs/=rhs;
+	}
+	return lhs;
+}
+
+#if 0
 /* checks if a variable type supports an operator, this works for any godot types etc. then the operation is performed by operate() if it's valid*/
 template <typename U, typename V>
 bool can_operate (const OPERATOR operator_name, U &lhs, V &rhs) {
-	constexpr bool has_plus = has_plus_v<U, V>;
-	constexpr bool has_plus_equal = has_plus_equal_v<U, V>;
+	constexpr bool has_minus = has_plus_v<U, V>;
+	constexpr bool has_minus_equal = has_plus_equal_v<U, V>;
 
 	bool is_valid = false;
 	switch(operator_name) {
@@ -787,6 +864,12 @@ bool can_operate (const OPERATOR operator_name, U &lhs, V &rhs) {
 			break;
 		case PLUS_EQUAL:
 			is_valid = has_plus_equal;
+			break;
+		case MINUS:
+			is_valid = has_minus;
+			break;
+		case MINUS_EQUAL:
+			is_valid = has_minus_equal;
 			break;
 	}
 	return is_valid;
@@ -833,5 +916,6 @@ U operate_val (const OPERATOR operator_name, U lhs, V &rhs) {
 	}
 	return lhs;
 }
+#endif
 
 } // namespace sly
