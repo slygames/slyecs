@@ -777,15 +777,58 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 #endif
 
 
+/* Performs addition if U and V support this otherwise checks if V can be cast to U and performs casting before calling the same function recursively, which should be able to do the operation. This casting allows for addition of compatible types like int and float with each other. */
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	if constexpr (has_plus_equal_v<U, V>) {
-		for(int i=0; i<lhs.value.size() ;i++) {
-			lhs.value[i] += rhs;
-		}
+		lhs += rhs;
+	} else if constexpr (std::is_constructible_v<U, V>) {
+		lhs += static_cast<U>(rhs);	// cast and call the same operation recursively, as both types are the same so it will work the next time if the type supports the operation. If it fails that's okay too 'cos it will do nothing then just like if the operation wasn't possible to do.
+	} else {
+		printerr("Can't perform += operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible");
 	}
 	return lhs;
 }
+
+
+
+#if 0
+template <typename U, typename V>
+array<U>& operator+= (array<U>& lhs, const V& rhs) {
+	if constexpr (std::is_constructible_v<U, V>) {
+		print("&& is constructible ");
+		U new_rhs = static_cast<U>(rhs);
+		if constexpr (has_plus_equal_v<U, V>) {
+			for(int i=0; i<lhs.value.size() ;i++) {
+				print("Adding ", lhs.value[i], " + ", rhs);
+				lhs.value[i] += new_rhs;
+				print("Result ", lhs.value[i]);
+			}
+			print("&& ADDED");	
+		}
+	} else {
+	    // Handle cases where conversion/addition is not possible (e.g., static_assert or compilation error)
+        static_assert(std::is_constructible_v<U, V> || std::is_convertible_v<V, U>, "Incompatible types for operator+=: V must be convertible to U.");
+	}
+
+	
+	
+	if constexpr (has_plus_equal_v<U, V>) {
+		for(int i=0; i<lhs.value.size() ;i++) {
+			print("Adding ", lhs.value[i], " + ", rhs);
+			lhs.value[i] += rhs;
+			print("Result ", lhs.value[i]);
+		}
+		print("&& ADDED");
+	} else if constexpr (std::is_convertible_v(U,V)) {
+		U new_rhs = (U)rhs;
+	}
+
+	return lhs;
+	
+}
+
+	#endif
 
 template <typename U, typename V>
 array<U>& operator-= (array<U>& lhs, const V& rhs) {
