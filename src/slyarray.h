@@ -869,6 +869,10 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	//todo: make this work for arrays or do another function.. how to achieve this so that attribute + attribute does element wise addition for corresponding entity values.
+	
+	if(rhs.get_type()==Variant::OBJECT) {
+		print("rhs is Variant::OBJECT");
+	}
 	if constexpr (is_array_specialization_v<V>) {
 		print("rhs is array");
 		//lhs = operate(PLUS_EQUAL, lhs, rhs);

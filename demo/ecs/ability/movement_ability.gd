@@ -31,14 +31,17 @@ func _update():
 	#for entity_id in label_dict:
 		#print("ENTITY ", entity_id, " : LABEL ", label_dict[entity_id])
 
-
-
 	#set_attribute_val("velocity", 7.0)
 	#get_attribute("velocity").set_var(5)
 	get_attribute("velocity").add(3.5)
 	get_attribute("velocity").add(1)
 	#get_attribute("velocity").add(2)
 
+	## Add to another velocity attribute so the value must double, for testing attribute + attribute
+	#var velocity_sum_attribute : Attribute
+	#velocity_sum_attribute = velocity_sum_attribute.add(get_attribute("velocity"))
+
+	get_attribute("velocity").add(get_attribute("velocity"))
 
 	print("VELOCITY DICTIONARY")
 	
@@ -48,6 +51,7 @@ func _update():
 	for entity_id in velocity_dict:
 		print("ENTITY ", entity_id, " : VELOCTY ", velocity_dict[entity_id])
 	
+	print("YOYO")
 	
 	#print("VELOCITY IS ", vel)
 		

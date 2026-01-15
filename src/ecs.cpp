@@ -349,7 +349,40 @@ void Attribute::set_data_var(const Variant &p_data_var) {
 
 void Attribute::add(const Variant &other) {
 	
-	print("ADD Variant type is : ", get_type());
+	print("ADD Variant type is : ", get_type(), " other : ", other, " other type : ", other.get_type());
+	//print("ADD2 Variant type is : ", get_type_name(), " other : ", other, " other type : ", other.get_type_name());
+	print("ADD VARIANT IS OBJECT : ", get_type()==Variant::OBJECT);
+
+	switch(get_type()) {
+		case Variant::INT:
+			operator+=<int64_t>(*this, other);
+			break;
+		case Variant::FLOAT:
+			operator+=<double>(*this, other);
+			break;
+		case Variant::STRING_NAME:	// StringName doesn't support += concatenation but this casts it to String
+		case Variant::STRING:
+			operator+=<String>(*this, other);
+			break;
+		case Variant::OBJECT:
+			//todo: need to handle attribute + attribute here if the Variant::Object type is the same as attribute.
+			print("**Variant is OBJECT");
+			break;
+		default:
+			//todo: need to support vector and other types, maybe use is_arithmetic here or something like this?! how to cast those types or can we just add the variants?!
+	        print("Unsupported variant type for addition.");
+	}
+
+}
+
+
+#if 0
+void Attribute::add(const Variant &other) {
+	
+	print("ADD Variant type is : ", get_type(), " other : ", other, " other type : ", other.get_type());
+	//print("ADD2 Variant type is : ", get_type_name(), " other : ", other, " other type : ", other.get_type_name());
+
+	print("ADD VARIANT IS OBJECT : ", get_type()==Variant::OBJECT);
 
 	switch(get_type()) {
 		case Variant::INT:
@@ -421,6 +454,7 @@ void Attribute::add(const Variant &other) {
 #endif
 
 }
+#endif
 
 /*
 const Variant &Attribute::get_data_var() const {
