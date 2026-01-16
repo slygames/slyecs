@@ -910,10 +910,13 @@ public:
 				set_value<char>(entity_id, value);
 				break;
 			*/
+			case Variant::BOOL:
+				print("BOOL ", entity_id); 
+				attribute_data->set_value<bool>(entity_id, value);
+				break;
 			case Variant::INT:
-				print("INT 1");
+				print("INT ", entity_id); 
 				attribute_data->set_value<int64_t>(entity_id, value);
-				print("INT 2");
 				break;
 			case Variant::FLOAT:
 				print("FLOAT ", entity_id); 
@@ -943,6 +946,10 @@ public:
 				value = Variant(get_value<char>(entity_id));
 				break;
 			*/
+			case Variant::BOOL:
+				value = Variant(attribute_data->get_value<bool>(entity_id));
+				print("value is bool ", value);
+				break;
 			case Variant::INT:
 				value = Variant(attribute_data->get_value<int64_t>(entity_id));
 				print("value is int ", value);

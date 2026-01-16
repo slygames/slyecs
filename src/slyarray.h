@@ -193,14 +193,17 @@ public:
 */
 
 	const T& operator[](int key) const & {
-		const T& val = value[lookup[key]];
-		return val;
+		//const T& val = value[lookup[key]];
+		//return val;
+		return value[lookup[key]];
 	}
 
 	T& operator[](int key) & {
-		int index = lookup[key];
-		T& val = value[index];
-		return val;
+		return value[lookup[key]];
+		//int index = lookup[key];
+		//return value[index];
+		//T& val = value[index];
+		//return val;
 	}
 
 	/*
@@ -222,7 +225,7 @@ public:
 */
 	// get the value array
 	std::vector<T> get_data() {
-		return value;
+		return std::vector<T>(value); // need to cast this
 	}
 /*
 	// get a value by key (or use [] operator
@@ -869,20 +872,65 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 template <typename U, typename V>
 array<U>& operator+= (array<U>& lhs, const V& rhs) {
 	//todo: make this work for arrays or do another function.. how to achieve this so that attribute + attribute does element wise addition for corresponding entity values.
+	print("_______");	
 	
-	if(rhs.get_type()==Variant::OBJECT) {
-		print("rhs is Variant::OBJECT");
+	//U first_var = lhs.template get_data<U>()[0]; // Tell the compiler get_data is a template uses the template keyword followed by a space
+
+	U first_var = lhs.get_data()[0];
+
+	print("lhs first_var is", first_var);
+
+	print("lhs first_var type is", (godot::String)typeid(first_var).name());
+
+	//print("lhs first_var godot type is", first_var.get_type());
+
+	//print("lhs first_var class is", first_var.get_class());
+
+	//print("lhs is ", typeid(lhs.get_data<typename U>().front()));
+
+	print("rhs is ", rhs.get_type());
+
+	//print("lhs typeid is ", typeid(U).name(), " rhs typeid is : ", typeid(V).name());
+
+	if(rhs.get_type()==godot::Variant::INT) {
+		print("rhs is INT ", rhs.get_type());
 	}
+
+	if(rhs.get_type()==godot::Variant::FLOAT) {
+		print("rhs is FLOAT ", rhs.get_type());
+	}
+
+	if(rhs.get_type()==godot::Variant::STRING) {
+		print("rhs is STRING ", rhs.get_type());
+	}
+
+	if(rhs.get_type()==godot::Variant::STRING_NAME) {
+		print("rhs is STRING_NAME ", rhs.get_type());
+	}
+
+	if(rhs.get_type()==godot::Variant::OBJECT) {
+
+		godot::Object* obj = rhs.get_validated_object(); // Recommended way to get object safely
+
+        if (obj != nullptr) {
+			print("rhs is Variant::OBJECT of class ", obj->get_class());
+		}
+		
+	}
+
 	if constexpr (is_array_specialization_v<V>) {
-		print("rhs is array");
+		print("rhs is sly::array");
 		//lhs = operate(PLUS_EQUAL, lhs, rhs);
 	} else if constexpr (has_plus_v<U, V> && has_plus_equal_v<U, V>) {
+		print("rhs ", rhs.get_type(), " has_plus");
 		lhs = operate(PLUS_EQUAL, lhs, rhs);
 	} else if constexpr (std::is_constructible_v<U, V>) {
+		print("rhs ", rhs.get_type(), " is_constructible");
 		lhs = operate(PLUS_EQUAL, lhs, static_cast<U>(rhs));
 	} else {
 		printerr("Can't perform += operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
 	}
+	print("_______");
 	return lhs;
 }
 
