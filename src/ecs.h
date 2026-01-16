@@ -6,6 +6,8 @@
 #include <godot_cpp/classes/resource.hpp>
 //#include <godot_cpp/classes/array.hpp> // Includes the definition for TypedArray
 #include <godot_cpp/variant/variant.hpp>
+//#include <godot_cpp/variant/bool.hpp> // for godot::Bool
+#include <godot_cpp/core/defs.hpp> // for godot::Bool
 #include <godot_cpp/classes/resource_loader.hpp> // for load_ability_script
 #include <godot_cpp/classes/script.hpp> // for load_ability_script
 #include <godot_cpp/variant/string_name.hpp>
@@ -912,7 +914,10 @@ public:
 			*/
 			case Variant::BOOL:
 				print("BOOL ", entity_id); 
-				attribute_data->set_value<bool>(entity_id, value);
+				print("BOOL type : ", typeid(value).name()," godot type is : ", value.get_type(), " value is ", value);
+				//print("BOOL true is ", value==true);
+				//todo:enable
+				attribute_data->set_value<char>(entity_id, (bool)value);
 				break;
 			case Variant::INT:
 				print("INT ", entity_id); 
@@ -947,7 +952,7 @@ public:
 				break;
 			*/
 			case Variant::BOOL:
-				value = Variant(attribute_data->get_value<bool>(entity_id));
+				value = Variant(attribute_data->get_value<char>(entity_id));
 				print("value is bool ", value);
 				break;
 			case Variant::INT:

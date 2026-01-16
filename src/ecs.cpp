@@ -1046,7 +1046,9 @@ void Attribute::create_attribute_data_entry(int64_t entity_id) {
 			break;
 		*/
 		case Variant::BOOL:
-			get_attribute_data()->create_default_entry<bool>(entity_id, this);
+			print("BOOOL");
+			//todo:enable
+			get_attribute_data()->create_default_entry<char>(entity_id, this);
 			break;
 		case Variant::INT:
 			get_attribute_data()->create_default_entry<int64_t>(entity_id, this);

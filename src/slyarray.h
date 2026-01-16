@@ -193,17 +193,16 @@ public:
 */
 
 	const T& operator[](int key) const & {
-		//const T& val = value[lookup[key]];
-		//return val;
-		return value[lookup[key]];
+		const T& val = value[lookup[key]];
+		return val;
+		//return value[lookup[key]];
 	}
 
 	T& operator[](int key) & {
-		return value[lookup[key]];
-		//int index = lookup[key];
-		//return value[index];
-		//T& val = value[index];
-		//return val;
+		int index = lookup[key];
+		T& val = value[index];
+		return val;
+		//return value[lookup[key]];
 	}
 
 	/*
