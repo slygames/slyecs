@@ -2,16 +2,18 @@ extends Ability
 
 func _update():
 	
-	set_attribute_val("bool_attr",false)
+	set_attribute_val("bool_attr",true)
 	
 	print("BOOL DICTIONARY")
 	
 	#print("LABEL IS ", get_attribute_val("label")
 	var bool_dict : Dictionary = get_attribute_val("bool_attr")
-
-	for entity_id in bool_dict:
-		print("ENTITY ", entity_id, " : BOOL_ATTR ", bool_dict[entity_id])
+	var bool_val : bool = false
 	
+	for entity_id in bool_dict:
+		bool_val = bool_dict[entity_id]
+		#print("ENTITY ", entity_id, " : BOOL_ATTR ", bool_dict[entity_id])
+		print("ENTITY ", entity_id, " : BOOL_ATTR ", bool_val)
 	pass
 	
 	##print("gdscript adding..")

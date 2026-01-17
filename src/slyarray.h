@@ -15,7 +15,7 @@ namespace sly {
 
 //todo: should this use int64_t for keys as godot uid is 64 bit int64_t?
 
-enum OPERATOR : unsigned char {
+enum class OPERATOR : unsigned char {
 	PLUS,
 	PLUS_EQUAL,
 	MINUS,
@@ -28,7 +28,7 @@ enum OPERATOR : unsigned char {
 
 #if 0
 /* Attributes use this Bool Enum to store booleans in sly::array because the C++ booleans are bitpacked which is a bit dodgy ('cos can't assign bool values in sly::array easily) so using char instead and this Enum provides an easy way to cast from godot bool to this enum char. */
-enum BOOL : unsigned char {
+enum class BOOL : unsigned char {
 	TRUE,
 	FALSE,
 };
@@ -200,19 +200,58 @@ public:
 	}
 */
 
+#if 0
+	const T& operator[](int key) const {
+		return value[lookup[key]];
+	}
+#endif	
+
 	const T& operator[](int key) const & {
 		const T& val = value[lookup[key]];
 		return val;
-		//return value[lookup[key]];
+	}
+
+	/* returns std::vector<T>::reference instead of T& because booleans return by value otherwise so they can't be assigned values using [] but this returns the correct bool proxy object from the vector and still works like T& for regular types. */
+	typename std::vector<T>::reference operator[](int key) & {
+		return value[lookup[key]];
+	}
+
+	#if 0
+	T ref_val;
+
+	T& operator[](int key) {
+		return value.at(lookup[key]);
+		/*
+		T& val = ref_val;
+		if constexpr (std::is_same_v<T, bool>) {
+			ref_val = val;
+			return ref_val;
+		} else {
+			val = value[lookup[key]];
+		}
+		return val;
+		*/
+	}
+	#endif
+
+#if 0
+	const T& operator[](int key) const & {
+		/*
+		const T& val = value[lookup[key]];
+		return val;
+		*/
+		return value[lookup[key]];
 	}
 
 	T& operator[](int key) & {
-		int index = lookup[key];
-		T& val = value[index];
+		return value[lookup[key]];
+		/*
+		T& val = value[lookup[key]];
 		return val;
 		//return value[lookup[key]];
+		*/
 	}
-
+#endif
 	/*
 	std::vector<bool>::reference operator[](int key) & {
 		int index = lookup[key];
@@ -281,7 +320,7 @@ public:
 	}
 
 	virtual int insert(const T& val) {
-		print("INSERT 1 val type ", val->get_type(), " value ", val);
+		//print("INSERT 1 val type ", val.get_type(), " value ", val);
 		print("INSERT 1");
 		/*
 		auto var0 = val;//todo: testing only
@@ -809,7 +848,7 @@ template <typename U, typename V>
 array<U>& operate(OPERATOR operator_name, array<U>& lhs, const V& rhs) {
 	for(int i=0; i<lhs.value.size() ;i++) {
 		switch(operator_name) {
-			case PLUS_EQUAL:
+			case OPERATOR::PLUS_EQUAL:
 				lhs.value[i] += rhs;
 				break;
 		}
@@ -931,10 +970,10 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 		//lhs = operate(PLUS_EQUAL, lhs, rhs);
 	} else if constexpr (has_plus_v<U, V> && has_plus_equal_v<U, V>) {
 		print("rhs ", rhs.get_type(), " has_plus");
-		lhs = operate(PLUS_EQUAL, lhs, rhs);
+		lhs = operate(OPERATOR::PLUS_EQUAL, lhs, rhs);
 	} else if constexpr (std::is_constructible_v<U, V>) {
 		print("rhs ", rhs.get_type(), " is_constructible");
-		lhs = operate(PLUS_EQUAL, lhs, static_cast<U>(rhs));
+		lhs = operate(OPERATOR::PLUS_EQUAL, lhs, static_cast<U>(rhs));
 	} else {
 		printerr("Can't perform += operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
 	}
@@ -945,9 +984,9 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 template <typename U, typename V>
 array<U>& operator-= (array<U>& lhs, const V& rhs) {
 	if constexpr (has_minus_v<U, V> && has_minus_equal_v<U, V>) {
-		lhs = operate(MINUS_EQUAL, lhs, rhs);
+		lhs = operate(OPERATOR::MINUS_EQUAL, lhs, rhs);
 	} else if constexpr (std::is_constructible_v<U, V>) {
-		lhs = operate(MINUS_EQUAL, lhs, static_cast<U>(rhs));
+		lhs = operate(OPERATOR::MINUS_EQUAL, lhs, static_cast<U>(rhs));
 	} else {
 		printerr("Can't perform -= operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
 	}
@@ -957,9 +996,9 @@ array<U>& operator-= (array<U>& lhs, const V& rhs) {
 template <typename U, typename V>
 array<U>& operator*= (array<U>& lhs, const V& rhs) {
 	if constexpr (has_multiply_v<U, V> && has_multiply_equal_v<U, V>) {
-		lhs = operate(MULTIPLY_EQUAL, lhs, rhs);
+		lhs = operate(OPERATOR::MULTIPLY_EQUAL, lhs, rhs);
 	} else if constexpr (std::is_constructible_v<U, V>) {
-		lhs = operate(MULTIPLY_EQUAL, lhs, static_cast<U>(rhs));
+		lhs = operate(OPERATOR::MULTIPLY_EQUAL, lhs, static_cast<U>(rhs));
 	} else {
 		printerr("Can't perform *= operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
 	}
@@ -969,9 +1008,9 @@ array<U>& operator*= (array<U>& lhs, const V& rhs) {
 template <typename U, typename V>
 array<U>& operator/= (array<U>& lhs, const V& rhs) {
 	if constexpr (has_divide_v<U,V> && has_divide_equal_v<U, V>) {
-		lhs = operate(DIVIDE_EQUAL, lhs, rhs);
+		lhs = operate(OPERATOR::DIVIDE_EQUAL, lhs, rhs);
 	} else if constexpr (std::is_constructible_v<U, V>) {
-		lhs = operate(DIVIDE_EQUAL, lhs, static_cast<U>(rhs));
+		lhs = operate(OPERATOR::DIVIDE_EQUAL, lhs, static_cast<U>(rhs));
 	} else {
 		printerr("Can't perform *= operation because ", typeid(lhs).name(), " and " , typeid(rhs).name() ," are incompatible for this operation.");
 	}
