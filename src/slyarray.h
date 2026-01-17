@@ -807,7 +807,9 @@ array<U>& operate(OPERATOR operator_name, array<U>& lhs, const V& rhs) {
 	for(int i=0; i<lhs.value.size() ;i++) {
 		switch(operator_name) {
 			case OPERATOR::PLUS_EQUAL:
-				lhs.value[i] = lhs.value[i] + rhs; // using this format instead of "lhs.value[i] += rhs" because vector<bool> reference doesn't support += like a regular bool does, as it uses bitpacking but can do + then = instead of +=
+				if constexpr(has_plus_v<U,V> && has_plus_equal_v<U,V>) { // checking again here otherwise transform2d + causes compilation error
+					lhs.value[i] = lhs.value[i] + rhs; // using this format instead of "lhs.value[i] += rhs" because vector<bool> reference doesn't support += like a regular bool does, as it uses bitpacking but can do + then = instead of +=
+				}
 				break;
 		}
 	}
@@ -923,10 +925,13 @@ array<U>& operator+= (array<U>& lhs, const V& rhs) {
 		
 	}
 
+	/*
 	if constexpr (is_array_specialization_v<V>) {
 		print("rhs is sly::array");
 		//lhs = operate(PLUS_EQUAL, lhs, rhs);
-	} else if constexpr (has_plus_v<U, V> && has_plus_equal_v<U, V>) {
+	} else */
+	
+	if constexpr (has_plus_v<U, V> && has_plus_equal_v<U, V>) {
 		print("rhs ", rhs.get_type(), " has_plus");
 		lhs = operate(OPERATOR::PLUS_EQUAL, lhs, rhs);
 	} else if constexpr (std::is_constructible_v<U, V>) {
