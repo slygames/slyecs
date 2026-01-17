@@ -1033,7 +1033,7 @@ void Ecs::register_object(Object *object) {
 */
 //}
 
-//todo:remove if unused, seems unnecessary
+
 void Attribute::create_attribute_data_entry(int64_t entity_id) {
 
 	print("create_attribute_data_entry() ", entity_id);
@@ -1048,7 +1048,7 @@ void Attribute::create_attribute_data_entry(int64_t entity_id) {
 		case Variant::BOOL:
 			print("BOOOL");
 			//todo:enable
-			get_attribute_data()->create_default_entry<char>(entity_id, this);
+			get_attribute_data()->create_default_entry<bool>(entity_id, this);
 			break;
 		case Variant::INT:
 			get_attribute_data()->create_default_entry<int64_t>(entity_id, this);

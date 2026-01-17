@@ -26,6 +26,14 @@ enum OPERATOR : unsigned char {
 	DIVIDE_EQUAL,
 };
 
+#if 0
+/* Attributes use this Bool Enum to store booleans in sly::array because the C++ booleans are bitpacked which is a bit dodgy ('cos can't assign bool values in sly::array easily) so using char instead and this Enum provides an easy way to cast from godot bool to this enum char. */
+enum BOOL : unsigned char {
+	TRUE,
+	FALSE,
+};
+#endif
+
 
 template <typename T>
 class array {
@@ -273,6 +281,7 @@ public:
 	}
 
 	virtual int insert(const T& val) {
+		print("INSERT 1 val type ", val->get_type(), " value ", val);
 		print("INSERT 1");
 		/*
 		auto var0 = val;//todo: testing only

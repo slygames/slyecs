@@ -917,7 +917,7 @@ public:
 				print("BOOL type : ", typeid(value).name()," godot type is : ", value.get_type(), " value is ", value);
 				//print("BOOL true is ", value==true);
 				//todo:enable
-				attribute_data->set_value<char>(entity_id, (bool)value);
+				attribute_data->set_value<bool>(entity_id, value);
 				break;
 			case Variant::INT:
 				print("INT ", entity_id); 
@@ -952,7 +952,7 @@ public:
 				break;
 			*/
 			case Variant::BOOL:
-				value = Variant(attribute_data->get_value<char>(entity_id));
+				value = Variant(attribute_data->get_value<bool>(entity_id));
 				print("value is bool ", value);
 				break;
 			case Variant::INT:
@@ -1404,7 +1404,17 @@ inline void AttributeData::create_default_entry(int64_t entity_id, Attribute* at
 	*/
 
 	//int index = get_data<T>().insert(data_var);	// cast to T
-	
+
+	/*
+	Variant data_var = attribute->get_data_var();
+	int index;
+	if(data_var.get_type()==godot::Variant::BOOL) {
+		index = data.insert((bool)data_var); // bool can't cast to char directly so doing this.
+	} else {
+		index = data.insert(data_var) // cast to T
+	}
+	*/
+
 	int index = data.insert(attribute->get_data_var());	// cast to T
 
 	print("data size 2 ", data.size()); //todo:testing only
