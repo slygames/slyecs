@@ -924,7 +924,7 @@ public:
 				attribute_data->set_value<int64_t>(entity_id, value);
 				break;
 			case Variant::FLOAT:
-				print("FLOAT ", entity_id); 
+				print("FLOAT ", entity_id);
 				attribute_data->set_value<double>(entity_id, value);
 				break;
 			case Variant::STRING:
@@ -950,6 +950,87 @@ public:
 				break;
 			case Variant::VECTOR4I:
 				attribute_data->set_value<Vector4i>(entity_id, value);
+				break;
+			case Variant::AABB:
+				attribute_data->set_value<AABB>(entity_id, value);
+				break;
+			case Variant::ARRAY:
+				attribute_data->set_value<Array>(entity_id, value);
+				break;
+			case Variant::BASIS:
+				attribute_data->set_value<Basis>(entity_id, value);
+				break;
+			case Variant::CALLABLE:
+				attribute_data->set_value<Callable>(entity_id, value);
+				break;
+			case Variant::COLOR:
+				attribute_data->set_value<Color>(entity_id, value);
+				break;
+			case Variant::DICTIONARY:
+				attribute_data->set_value<Dictionary>(entity_id, value);
+				break;
+			case Variant::NODE_PATH:
+				attribute_data->set_value<NodePath>(entity_id, value);
+				break;
+			case Variant::PACKED_BYTE_ARRAY:
+				attribute_data->set_value<PackedByteArray>(entity_id, value);
+				break;
+			case Variant::PACKED_COLOR_ARRAY:
+				attribute_data->set_value<PackedColorArray>(entity_id, value);
+				break;
+			case Variant::PACKED_FLOAT32_ARRAY:
+				attribute_data->set_value<PackedFloat32Array>(entity_id, value);
+				break;
+			case Variant::PACKED_FLOAT64_ARRAY:
+				attribute_data->set_value<PackedFloat64Array>(entity_id, value);
+				break;
+			case Variant::PACKED_INT32_ARRAY:
+				attribute_data->set_value<PackedInt32Array>(entity_id, value);
+				break;
+			case Variant::PACKED_INT64_ARRAY:
+				attribute_data->set_value<PackedInt64Array>(entity_id, value);
+				break;
+			case Variant::PACKED_STRING_ARRAY:
+				attribute_data->set_value<PackedStringArray>(entity_id, value);
+				break;
+			case Variant::PACKED_VECTOR2_ARRAY:
+				attribute_data->set_value<PackedVector2Array>(entity_id, value);
+				break;
+			case Variant::PACKED_VECTOR3_ARRAY:
+				attribute_data->set_value<PackedVector3Array>(entity_id, value);
+				break;
+			case Variant::PACKED_VECTOR4_ARRAY:
+				attribute_data->set_value<PackedVector4Array>(entity_id, value);
+				break;
+			case Variant::PLANE:
+				attribute_data->set_value<Plane>(entity_id, value);
+				break;
+			case Variant::PROJECTION:
+				attribute_data->set_value<Projection>(entity_id, value);
+				break;
+			case Variant::QUATERNION:
+				attribute_data->set_value<Quaternion>(entity_id, value);
+				break;
+			case Variant::RECT2:
+				attribute_data->set_value<Rect2>(entity_id, value);
+				break;
+			case Variant::RECT2I:
+				attribute_data->set_value<Rect2i>(entity_id, value);
+				break;
+			case Variant::RID:
+				attribute_data->set_value<RID>(entity_id, value);
+				break;
+			case Variant::SIGNAL:
+				attribute_data->set_value<Signal>(entity_id, value);
+				break;
+			case Variant::TRANSFORM2D:
+				attribute_data->set_value<Transform2D>(entity_id, value);
+				break;
+			case Variant::TRANSFORM3D:
+				attribute_data->set_value<Transform3D>(entity_id, value);
+				break;
+			case Variant::OBJECT:
+				attribute_data->set_value<Object*>(entity_id, value);
 				break;
 			case Variant::NIL:
 			default:

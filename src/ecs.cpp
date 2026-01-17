@@ -287,43 +287,126 @@ void Ecs::create_attribute(Attribute* attribute) {
 		
 		print("___attribute created name : ", attribute->get_attribute_name()," register size : ", ecs->attribute_name_register[ecs->attribute_name_register.size()-1]);
 
+		AttributeData* attribute_data = attribute->get_attribute_data();
+
 		switch(attribute->get_type()) {
 			case Variant::BOOL:
-				attribute->get_attribute_data()->create_data_array<bool>(attribute);
+				attribute_data->create_data_array<bool>(attribute);
 				break;
 			case Variant::INT:
-				attribute->get_attribute_data()->create_data_array<int>(attribute);
+				attribute_data->create_data_array<int>(attribute);
 				break;
 			case Variant::FLOAT:
-				attribute->get_attribute_data()->create_data_array<double>(attribute);
+				attribute_data->create_data_array<double>(attribute);
 				break;
 			case Variant::STRING:
-				attribute->get_attribute_data()->create_data_array<String>(attribute);
+				attribute_data->create_data_array<String>(attribute);
 				break;
 			case Variant::STRING_NAME:
-				attribute->get_attribute_data()->create_data_array<StringName>(attribute);
+				attribute_data->create_data_array<StringName>(attribute);
 				break;
 			case Variant::VECTOR2:
-				attribute->get_attribute_data()->create_data_array<Vector2>(attribute);
+				attribute_data->create_data_array<Vector2>(attribute);
 				break;
 			case Variant::VECTOR2I:
-				attribute->get_attribute_data()->create_data_array<Vector2i>(attribute);
+				attribute_data->create_data_array<Vector2i>(attribute);
 				break;
 			case Variant::VECTOR3:
-				attribute->get_attribute_data()->create_data_array<Vector3>(attribute);
+				attribute_data->create_data_array<Vector3>(attribute);
 				break;
 			case Variant::VECTOR3I:
-				attribute->get_attribute_data()->create_data_array<Vector3i>(attribute);
+				attribute_data->create_data_array<Vector3i>(attribute);
 				break;
 			case Variant::VECTOR4:
-				attribute->get_attribute_data()->create_data_array<Vector4>(attribute);
+				attribute_data->create_data_array<Vector4>(attribute);
 				break;
 			case Variant::VECTOR4I:
-				attribute->get_attribute_data()->create_data_array<Vector4i>(attribute);
+				attribute_data->create_data_array<Vector4i>(attribute);
 				break;
-				//todo: add other cases for primitive types
+			case Variant::AABB:
+				attribute_data->create_data_array<AABB>(attribute);
+				break;
+			case Variant::ARRAY:
+				attribute_data->create_data_array<Array>(attribute);
+				break;
+			case Variant::BASIS:
+				attribute_data->create_data_array<Basis>(attribute);
+				break;
+			case Variant::CALLABLE:
+				attribute_data->create_data_array<Callable>(attribute);
+				break;
+			case Variant::COLOR:
+				attribute_data->create_data_array<Color>(attribute);
+				break;
+			case Variant::DICTIONARY:
+				attribute_data->create_data_array<Dictionary>(attribute);
+				break;
+			case Variant::NODE_PATH:
+				attribute_data->create_data_array<NodePath>(attribute);
+				break;
+			case Variant::PACKED_BYTE_ARRAY:
+				attribute_data->create_data_array<PackedByteArray>(attribute);
+				break;
+			case Variant::PACKED_COLOR_ARRAY:
+				attribute_data->create_data_array<PackedColorArray>(attribute);
+				break;
+			case Variant::PACKED_FLOAT32_ARRAY:
+				attribute_data->create_data_array<PackedFloat32Array>(attribute);
+				break;
+			case Variant::PACKED_FLOAT64_ARRAY:
+				attribute_data->create_data_array<PackedFloat64Array>(attribute);
+				break;
+			case Variant::PACKED_INT32_ARRAY:
+				attribute_data->create_data_array<PackedInt32Array>(attribute);
+				break;
+			case Variant::PACKED_INT64_ARRAY:
+				attribute_data->create_data_array<PackedInt64Array>(attribute);
+				break;
+			case Variant::PACKED_STRING_ARRAY:
+				attribute_data->create_data_array<PackedStringArray>(attribute);
+				break;
+			case Variant::PACKED_VECTOR2_ARRAY:
+				attribute_data->create_data_array<PackedVector2Array>(attribute);
+				break;
+			case Variant::PACKED_VECTOR3_ARRAY:
+				attribute_data->create_data_array<PackedVector3Array>(attribute);
+				break;
+			case Variant::PACKED_VECTOR4_ARRAY:
+				attribute_data->create_data_array<PackedVector4Array>(attribute);
+				break;
+			case Variant::PLANE:
+				attribute_data->create_data_array<Plane>(attribute);
+				break;
+			case Variant::PROJECTION:
+				attribute_data->create_data_array<Projection>(attribute);
+				break;
+			case Variant::QUATERNION:
+				attribute_data->create_data_array<Quaternion>(attribute);
+				break;
+			case Variant::RECT2:
+				attribute_data->create_data_array<Rect2>(attribute);
+				break;
+			case Variant::RECT2I:
+				attribute_data->create_data_array<Rect2i>(attribute);
+				break;
+			case Variant::RID:
+				attribute_data->create_data_array<RID>(attribute);
+				break;
+			case Variant::SIGNAL:
+				attribute_data->create_data_array<Signal>(attribute);
+				break;
+			case Variant::TRANSFORM2D:
+				attribute_data->create_data_array<Transform2D>(attribute);
+				break;
+			case Variant::TRANSFORM3D:
+				attribute_data->create_data_array<Transform3D>(attribute);
+				break;
+			case Variant::OBJECT:
+				attribute_data->create_data_array<Object*>(attribute);
+				break;
+			case Variant::NIL:
 			default:
-				attribute->get_attribute_data()->create_data_array<Variant>(attribute);
+				attribute_data->create_data_array<Variant>(attribute);
 		}
 	}
 }
@@ -406,13 +489,91 @@ void Attribute::add(const Variant &other) {
 		case Variant::VECTOR4I:
 			operator+=<Vector4i>(*this, other);
 			break;
-		case Variant::OBJECT:
-			//todo: need to handle attribute + attribute here if the Variant::Object type is the same as attribute.
-			print("**Variant is OBJECT");
+		case Variant::AABB:
+			operator+=<AABB>(*this, other);
 			break;
+		case Variant::ARRAY:
+			operator+=<Array>(*this, other);
+			break;
+		case Variant::BASIS:
+			operator+=<Basis>(*this, other);
+			break;
+		case Variant::CALLABLE:
+			operator+=<Callable>(*this, other);
+			break;
+		case Variant::COLOR:
+			operator+=<Color>(*this, other);
+			break;
+		case Variant::DICTIONARY:
+			operator+=<Dictionary>(*this, other);
+			break;
+		case Variant::NODE_PATH:
+			operator+=<NodePath>(*this, other);
+			break;
+		case Variant::PACKED_BYTE_ARRAY:
+			operator+=<PackedByteArray>(*this, other);
+			break;
+		case Variant::PACKED_COLOR_ARRAY:
+			operator+=<PackedColorArray>(*this, other);
+			break;
+		case Variant::PACKED_FLOAT32_ARRAY:
+			operator+=<PackedFloat32Array>(*this, other);
+			break;
+		case Variant::PACKED_FLOAT64_ARRAY:
+			operator+=<PackedFloat64Array>(*this, other);
+			break;
+		case Variant::PACKED_INT32_ARRAY:
+			operator+=<PackedInt32Array>(*this, other);
+			break;
+		case Variant::PACKED_INT64_ARRAY:
+			operator+=<PackedInt64Array>(*this, other);
+			break;
+		case Variant::PACKED_STRING_ARRAY:
+			operator+=<PackedStringArray>(*this, other);
+			break;
+		case Variant::PACKED_VECTOR2_ARRAY:
+			operator+=<PackedVector2Array>(*this, other);
+			break;
+		case Variant::PACKED_VECTOR3_ARRAY:
+			operator+=<PackedVector3Array>(*this, other);
+			break;
+		case Variant::PACKED_VECTOR4_ARRAY:
+			operator+=<PackedVector4Array>(*this, other);
+			break;
+		case Variant::PLANE:
+			operator+=<Plane>(*this, other);
+			break;
+		case Variant::PROJECTION:
+			operator+=<Projection>(*this, other);
+			break;
+		case Variant::QUATERNION:
+			operator+=<Quaternion>(*this, other);
+			break;
+		case Variant::RECT2:
+			operator+=<Rect2>(*this, other);
+			break;
+		case Variant::RECT2I:
+			operator+=<Rect2i>(*this, other);
+			break;
+		case Variant::RID:
+			operator+=<RID>(*this, other);
+			break;
+		case Variant::SIGNAL:
+			operator+=<Signal>(*this, other);
+			break;
+		case Variant::TRANSFORM2D:
+			operator+=<Transform2D>(*this, other);
+			break;
+		case Variant::TRANSFORM3D:
+			operator+=<Transform3D>(*this, other);
+			break;
+		case Variant::OBJECT:
+			operator+=<Object*>(*this, other);
+			break;
+		case Variant::NIL:
 		default:
-			//todo: need to support vector and other types, maybe use is_arithmetic here or something like this?! how to cast those types or can we just add the variants?!
-	        print("Unsupported variant type for addition.");
+			operator+=<Variant>(*this, other);
+			break;
 	}
 
 }
@@ -1080,44 +1241,126 @@ void Attribute::create_attribute_data_entry(int64_t entity_id) {
 
 	print("create_attribute_data_entry() ", entity_id);
 
+	AttributeData* attribute_data = get_attribute_data();
+
 	switch(get_type()) {
 		case Variant::BOOL:
-			get_attribute_data()->create_default_entry<bool>(entity_id, this);
+			attribute_data->create_default_entry<bool>(entity_id, this);
 			break;
 		case Variant::INT:
-			get_attribute_data()->create_default_entry<int64_t>(entity_id, this);
+			attribute_data->create_default_entry<int64_t>(entity_id, this);
 			break;
 		case Variant::FLOAT:
-			get_attribute_data()->create_default_entry<double>(entity_id, this);
+			attribute_data->create_default_entry<double>(entity_id, this);
 			break;
 		case Variant::STRING:
-			get_attribute_data()->create_default_entry<String>(entity_id, this);
+			attribute_data->create_default_entry<String>(entity_id, this);
 			break;
 		case Variant::STRING_NAME:
-			get_attribute_data()->create_default_entry<StringName>(entity_id, this);
+			attribute_data->create_default_entry<StringName>(entity_id, this);
 			break;
 		case Variant::VECTOR2:
-			get_attribute_data()->create_default_entry<Vector2>(entity_id, this);
+			attribute_data->create_default_entry<Vector2>(entity_id, this);
 			break;
 		case Variant::VECTOR2I:
-			get_attribute_data()->create_default_entry<Vector2i>(entity_id, this);
+			attribute_data->create_default_entry<Vector2i>(entity_id, this);
 			break;
 		case Variant::VECTOR3:
-			get_attribute_data()->create_default_entry<Vector3>(entity_id, this);
+			attribute_data->create_default_entry<Vector3>(entity_id, this);
 			break;
 		case Variant::VECTOR3I:
-			get_attribute_data()->create_default_entry<Vector3i>(entity_id, this);
+			attribute_data->create_default_entry<Vector3i>(entity_id, this);
 			break;
 		case Variant::VECTOR4:
-			get_attribute_data()->create_default_entry<Vector4>(entity_id, this);
+			attribute_data->create_default_entry<Vector4>(entity_id, this);
 			break;
 		case Variant::VECTOR4I:
-			get_attribute_data()->create_default_entry<Vector4i>(entity_id, this);
+			attribute_data->create_default_entry<Vector4i>(entity_id, this);
 			break;
-			
-		//todo: add other cases for primitive types
+		case Variant::AABB:
+			attribute_data->create_default_entry<AABB>(entity_id, this);
+			break;
+		case Variant::ARRAY:
+			attribute_data->create_default_entry<Array>(entity_id, this);
+			break;
+		case Variant::BASIS:
+			attribute_data->create_default_entry<Basis>(entity_id, this);
+			break;
+		case Variant::CALLABLE:
+			attribute_data->create_default_entry<Callable>(entity_id, this);
+			break;
+		case Variant::COLOR:
+			attribute_data->create_default_entry<Color>(entity_id, this);
+			break;
+		case Variant::DICTIONARY:
+			attribute_data->create_default_entry<Dictionary>(entity_id, this);
+			break;
+		case Variant::NODE_PATH:
+			attribute_data->create_default_entry<NodePath>(entity_id, this);
+			break;
+		case Variant::PACKED_BYTE_ARRAY:
+			attribute_data->create_default_entry<PackedByteArray>(entity_id, this);
+			break;
+		case Variant::PACKED_COLOR_ARRAY:
+			attribute_data->create_default_entry<PackedColorArray>(entity_id, this);
+			break;
+		case Variant::PACKED_FLOAT32_ARRAY:
+			attribute_data->create_default_entry<PackedFloat32Array>(entity_id, this);
+			break;
+		case Variant::PACKED_FLOAT64_ARRAY:
+			attribute_data->create_default_entry<PackedFloat64Array>(entity_id, this);
+			break;
+		case Variant::PACKED_INT32_ARRAY:
+			attribute_data->create_default_entry<PackedInt32Array>(entity_id, this);
+			break;
+		case Variant::PACKED_INT64_ARRAY:
+			attribute_data->create_default_entry<PackedInt64Array>(entity_id, this);
+			break;
+		case Variant::PACKED_STRING_ARRAY:
+			attribute_data->create_default_entry<PackedStringArray>(entity_id, this);
+			break;
+		case Variant::PACKED_VECTOR2_ARRAY:
+			attribute_data->create_default_entry<PackedVector2Array>(entity_id, this);
+			break;
+		case Variant::PACKED_VECTOR3_ARRAY:
+			attribute_data->create_default_entry<PackedVector3Array>(entity_id, this);
+			break;
+		case Variant::PACKED_VECTOR4_ARRAY:
+			attribute_data->create_default_entry<PackedVector4Array>(entity_id, this);
+			break;
+		case Variant::PLANE:
+			attribute_data->create_default_entry<Plane>(entity_id, this);
+			break;
+		case Variant::PROJECTION:
+			attribute_data->create_default_entry<Projection>(entity_id, this);
+			break;
+		case Variant::QUATERNION:
+			attribute_data->create_default_entry<Quaternion>(entity_id, this);
+			break;
+		case Variant::RECT2:
+			attribute_data->create_default_entry<Rect2>(entity_id, this);
+			break;
+		case Variant::RECT2I:
+			attribute_data->create_default_entry<Rect2i>(entity_id, this);
+			break;
+		case Variant::RID:
+			attribute_data->create_default_entry<RID>(entity_id, this);
+			break;
+		case Variant::SIGNAL:
+			attribute_data->create_default_entry<Signal>(entity_id, this);
+			break;
+		case Variant::TRANSFORM2D:
+			attribute_data->create_default_entry<Transform2D>(entity_id, this);
+			break;
+		case Variant::TRANSFORM3D:
+			attribute_data->create_default_entry<Transform3D>(entity_id, this);
+			break;
+		case Variant::OBJECT:
+			attribute_data->create_default_entry<Object*>(entity_id, this);
+			break;
+		case Variant::NIL:
 		default:
-			get_attribute_data()->create_default_entry<Variant>(entity_id, this);
+			attribute_data->create_default_entry<Variant>(entity_id, this);
 	}
 }
 
