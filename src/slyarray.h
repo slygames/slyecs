@@ -807,7 +807,7 @@ array<U>& operate(OPERATOR operator_name, array<U>& lhs, const V& rhs) {
 	for(int i=0; i<lhs.value.size() ;i++) {
 		switch(operator_name) {
 			case OPERATOR::PLUS_EQUAL:
-				lhs.value[i] += rhs;
+				lhs.value[i] = lhs.value[i] + rhs; // using this format instead of "lhs.value[i] += rhs" because vector<bool> reference doesn't support += like a regular bool does, as it uses bitpacking but can do + then = instead of +=
 				break;
 		}
 	}

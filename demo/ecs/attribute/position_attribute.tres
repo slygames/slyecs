@@ -1,5 +1,5 @@
 [gd_resource type="Attribute" format=3 uid="uid://bgw7ltkxsg524"]
 
 [resource]
-gd_data_var = Vector3(0, 0, 100)
-attribute_name = &"position_attribute"
+gd_data_var = Vector2(0, 0)
+attribute_name = &"position"

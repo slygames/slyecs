@@ -1,20 +1,33 @@
 extends Ability
 
 func _update():
+
+	set_attribute_val("position",Vector2(100,255.5))
+	get_attribute("position").add(Vector2(40.5, 3.3))
 	
-	set_attribute_val("bool_attr",true)
-	
-	print("BOOL DICTIONARY")
+	print("POSITION DICTIONARY")
 	
 	#print("LABEL IS ", get_attribute_val("label")
-	var bool_dict : Dictionary = get_attribute_val("bool_attr")
-	var bool_val : bool = false
+	var position_dict : Dictionary = get_attribute_val("position")
 	
-	for entity_id in bool_dict:
-		bool_val = bool_dict[entity_id]
-		#print("ENTITY ", entity_id, " : BOOL_ATTR ", bool_dict[entity_id])
-		print("ENTITY ", entity_id, " : BOOL_ATTR ", bool_val)
+	for entity_id in position_dict:
+		print("ENTITY ", entity_id, " : POSITION_ATTR ", position_dict[entity_id])
 	pass
+
+	
+	#set_attribute_val("bool_attr",true)
+	#
+	#print("BOOL DICTIONARY")
+	#
+	##print("LABEL IS ", get_attribute_val("label")
+	#var bool_dict : Dictionary = get_attribute_val("bool_attr")
+	#var bool_val : bool = false
+	#
+	#for entity_id in bool_dict:
+		#bool_val = bool_dict[entity_id]
+		##print("ENTITY ", entity_id, " : BOOL_ATTR ", bool_dict[entity_id])
+		#print("ENTITY ", entity_id, " : BOOL_ATTR ", bool_val)
+	#pass
 	
 	##print("gdscript adding..")
 	##print(">>> ability id ", get_instance_id())
