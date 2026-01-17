@@ -951,9 +951,9 @@ public:
 			case Variant::VECTOR4I:
 				attribute_data->set_value<Vector4i>(entity_id, value);
 				break;
+			case Variant::NIL:
 			default:
 				attribute_data->set_value<Variant>(entity_id, value);
-				//var_type = Variant::NIL;	// to use Variant type setting to NIL as there isn't any Variant::Variant, so AttributeData treats Variant::NIL as a regular Variant
 		}
 		print("set_var() done");
 	}
@@ -963,12 +963,6 @@ public:
 		print(attribute_name, "get_var(entity_id) ", entity_id, " type ", get_type());
 		Variant value;
 		switch(get_type()) {
-			//todo:fix bool type, was buggy for some raeson so tried using char instead, see if its possible to use godot bool type godot::Bool
-			/*
-			case Variant::BOOL:
-				value = Variant(get_value<char>(entity_id));
-				break;
-			*/
 			case Variant::BOOL:
 				value = Variant(attribute_data->get_value<bool>(entity_id));
 				print("value is bool ", value);
@@ -1005,6 +999,88 @@ public:
 			case Variant::VECTOR4I:
 				value = Variant(attribute_data->get_value<Vector4i>(entity_id));
 				break;
+			case Variant::AABB:
+				value = Variant(attribute_data->get_value<AABB>(entity_id));
+				break;
+			case Variant::ARRAY:
+				value = Variant(attribute_data->get_value<Array>(entity_id));
+				break;
+			case Variant::BASIS:
+				value = Variant(attribute_data->get_value<Basis>(entity_id));
+				break;
+			case Variant::CALLABLE:
+				value = Variant(attribute_data->get_value<Callable>(entity_id));
+				break;
+			case Variant::COLOR:
+				value = Variant(attribute_data->get_value<Color>(entity_id));
+				break;
+			case Variant::DICTIONARY:
+				value = Variant(attribute_data->get_value<Dictionary>(entity_id));
+				break;
+			case Variant::NODE_PATH:
+				value = Variant(attribute_data->get_value<NodePath>(entity_id));
+				break;
+			case Variant::PACKED_BYTE_ARRAY:
+				value = Variant(attribute_data->get_value<PackedByteArray>(entity_id));
+				break;
+			case Variant::PACKED_COLOR_ARRAY:
+				value = Variant(attribute_data->get_value<PackedColorArray>(entity_id));
+				break;
+			case Variant::PACKED_FLOAT32_ARRAY:
+				value = Variant(attribute_data->get_value<PackedFloat32Array>(entity_id));
+				break;
+			case Variant::PACKED_FLOAT64_ARRAY:
+				value = Variant(attribute_data->get_value<PackedFloat64Array>(entity_id));
+				break;
+			case Variant::PACKED_INT32_ARRAY:
+				value = Variant(attribute_data->get_value<PackedInt32Array>(entity_id));
+				break;
+			case Variant::PACKED_INT64_ARRAY:
+				value = Variant(attribute_data->get_value<PackedInt64Array>(entity_id));
+				break;
+			case Variant::PACKED_STRING_ARRAY:
+				value = Variant(attribute_data->get_value<PackedStringArray>(entity_id));
+				break;
+			case Variant::PACKED_VECTOR2_ARRAY:
+				value = Variant(attribute_data->get_value<PackedVector2Array>(entity_id));
+				break;
+			case Variant::PACKED_VECTOR3_ARRAY:
+				value = Variant(attribute_data->get_value<PackedVector3Array>(entity_id));
+				break;
+			case Variant::PACKED_VECTOR4_ARRAY:
+				value = Variant(attribute_data->get_value<PackedVector4Array>(entity_id));
+				break;
+			case Variant::PLANE:
+				value = Variant(attribute_data->get_value<Plane>(entity_id));
+				break;
+			case Variant::PROJECTION:
+				value = Variant(attribute_data->get_value<Projection>(entity_id));
+				break;
+			case Variant::QUATERNION:
+				value = Variant(attribute_data->get_value<Quaternion>(entity_id));
+				break;
+			case Variant::RECT2:
+				value = Variant(attribute_data->get_value<Rect2>(entity_id));
+				break;
+			case Variant::RECT2I:
+				value = Variant(attribute_data->get_value<Rect2i>(entity_id));
+				break;
+			case Variant::RID:
+				value = Variant(attribute_data->get_value<RID>(entity_id));
+				break;
+			case Variant::SIGNAL:
+				value = Variant(attribute_data->get_value<Signal>(entity_id));
+				break;
+			case Variant::TRANSFORM2D:
+				value = Variant(attribute_data->get_value<Transform2D>(entity_id));
+				break;
+			case Variant::TRANSFORM3D:
+				value = Variant(attribute_data->get_value<Transform3D>(entity_id));
+				break;
+			case Variant::OBJECT:
+				value = Variant(attribute_data->get_value<Object*>(entity_id));
+				break;
+			case Variant::NIL: //Nil is same as default Variant type
 			default:
 				value = attribute_data->get_value<Variant>(entity_id);
 				print("value is variant ", value);
