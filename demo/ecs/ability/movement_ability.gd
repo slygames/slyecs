@@ -1,9 +1,18 @@
 extends Ability
 
 func _update():
+	
+	var speed : float = 100.0
+	var direction = Vector2(randf(), randf())
+	var velocity : Vector2 = speed * direction
 
-	set_attribute_val("position",Vector2(100,255.5))
-	get_attribute("position").add(Vector2(40.5, 3.3))
+	get_attribute("position").add(velocity)
+
+	#get_attribute("position").add(Vector2(40.5, 3.3))
+
+	#set_attribute_val("position",Vector2(100,255.5))
+	#get_attribute("position").add(Vector2(40.5, 3.3))
+
 	
 	print("POSITION DICTIONARY")
 	

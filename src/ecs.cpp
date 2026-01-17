@@ -1069,6 +1069,12 @@ void Ecs::remove_entity(Object *object) {
 	entity_register.remove(object->get_instance_id());
 }
 
+Object* Ecs::get_entity(int64_t entity_id) {
+	int64_t instance_id = entity_register[entity_id];
+	Object* obj = godot::UtilityFunctions::instance_from_id(instance_id)
+	return obj;
+}
+
 void Ecs::grant_abliity(Object *object, Ability *ability) {
 	ability->entities_assigned.insert(object->get_instance_id());
 }

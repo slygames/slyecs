@@ -105,6 +105,9 @@ public:
 	int64_t create_entity(Object* object);
 	void remove_entity(Object* object);
 
+	// get the actual godot object instance associated with a registered entity_id, this can be used to update the actual game object
+	Object* get_entity(int64_t entity_id);
+
 	void grant_abliity(Object* object, Ability* ability);
 	void revoke_ability(Object* object, Ability* ability);
 
