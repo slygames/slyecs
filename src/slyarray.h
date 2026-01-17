@@ -200,12 +200,6 @@ public:
 	}
 */
 
-#if 0
-	const T& operator[](int key) const {
-		return value[lookup[key]];
-	}
-#endif	
-
 	const T& operator[](int key) const & {
 		const T& val = value[lookup[key]];
 		return val;
@@ -216,42 +210,6 @@ public:
 		return value[lookup[key]];
 	}
 
-	#if 0
-	T ref_val;
-
-	T& operator[](int key) {
-		return value.at(lookup[key]);
-		/*
-		T& val = ref_val;
-		if constexpr (std::is_same_v<T, bool>) {
-			ref_val = val;
-			return ref_val;
-		} else {
-			val = value[lookup[key]];
-		}
-		return val;
-		*/
-	}
-	#endif
-
-#if 0
-	const T& operator[](int key) const & {
-		/*
-		const T& val = value[lookup[key]];
-		return val;
-		*/
-		return value[lookup[key]];
-	}
-
-	T& operator[](int key) & {
-		return value[lookup[key]];
-		/*
-		T& val = value[lookup[key]];
-		return val;
-		//return value[lookup[key]];
-		*/
-	}
-#endif
 	/*
 	std::vector<bool>::reference operator[](int key) & {
 		int index = lookup[key];

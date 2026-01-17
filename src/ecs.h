@@ -933,6 +933,24 @@ public:
 			case Variant::STRING_NAME:
 				attribute_data->set_value<StringName>(entity_id, value);
 				break;
+			case Variant::VECTOR2:
+				attribute_data->set_value<Vector2>(entity_id, value);
+				break;
+			case Variant::VECTOR2I:
+				attribute_data->set_value<Vector2i>(entity_id, value);
+				break;
+			case Variant::VECTOR3:
+				attribute_data->set_value<Vector3>(entity_id, value);
+				break;
+			case Variant::VECTOR3I:
+				attribute_data->set_value<Vector3i>(entity_id, value);
+				break;
+			case Variant::VECTOR4:
+				attribute_data->set_value<Vector4>(entity_id, value);
+				break;
+			case Variant::VECTOR4I:
+				attribute_data->set_value<Vector4i>(entity_id, value);
+				break;
 			default:
 				attribute_data->set_value<Variant>(entity_id, value);
 				//var_type = Variant::NIL;	// to use Variant type setting to NIL as there isn't any Variant::Variant, so AttributeData treats Variant::NIL as a regular Variant
@@ -968,6 +986,24 @@ public:
 				break;
 			case Variant::STRING_NAME:
 				value = Variant(attribute_data->get_value<StringName>(entity_id));
+				break;
+			case Variant::VECTOR2:
+				value = Variant(attribute_data->get_value<Vector2>(entity_id));
+				break;
+			case Variant::VECTOR2I:
+				value = Variant(attribute_data->get_value<Vector2i>(entity_id));
+				break;
+			case Variant::VECTOR3:
+				value = Variant(attribute_data->get_value<Vector3>(entity_id));
+				break;
+			case Variant::VECTOR3I:
+				value = Variant(attribute_data->get_value<Vector3i>(entity_id));
+				break;
+			case Variant::VECTOR4:
+				value = Variant(attribute_data->get_value<Vector4>(entity_id));
+				break;
+			case Variant::VECTOR4I:
+				value = Variant(attribute_data->get_value<Vector4i>(entity_id));
 				break;
 			default:
 				value = attribute_data->get_value<Variant>(entity_id);

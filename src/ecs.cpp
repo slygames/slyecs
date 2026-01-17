@@ -288,6 +288,9 @@ void Ecs::create_attribute(Attribute* attribute) {
 		print("___attribute created name : ", attribute->get_attribute_name()," register size : ", ecs->attribute_name_register[ecs->attribute_name_register.size()-1]);
 
 		switch(attribute->get_type()) {
+			case Variant::BOOL:
+				attribute->get_attribute_data()->create_data_array<bool>(attribute);
+				break;
 			case Variant::INT:
 				attribute->get_attribute_data()->create_data_array<int>(attribute);
 				break;
@@ -299,6 +302,24 @@ void Ecs::create_attribute(Attribute* attribute) {
 				break;
 			case Variant::STRING_NAME:
 				attribute->get_attribute_data()->create_data_array<StringName>(attribute);
+				break;
+			case Variant::VECTOR2:
+				attribute->get_attribute_data()->create_data_array<Vector2>(attribute);
+				break;
+			case Variant::VECTOR2I:
+				attribute->get_attribute_data()->create_data_array<Vector2i>(attribute);
+				break;
+			case Variant::VECTOR3:
+				attribute->get_attribute_data()->create_data_array<Vector3>(attribute);
+				break;
+			case Variant::VECTOR3I:
+				attribute->get_attribute_data()->create_data_array<Vector3i>(attribute);
+				break;
+			case Variant::VECTOR4:
+				attribute->get_attribute_data()->create_data_array<Vector4>(attribute);
+				break;
+			case Variant::VECTOR4I:
+				attribute->get_attribute_data()->create_data_array<Vector4i>(attribute);
 				break;
 				//todo: add other cases for primitive types
 			default:
@@ -354,6 +375,9 @@ void Attribute::add(const Variant &other) {
 	print("ADD VARIANT IS OBJECT : ", get_type()==Variant::OBJECT);
 
 	switch(get_type()) {
+		case Variant::BOOL:
+			operator+=<bool>(*this, other);
+			break;
 		case Variant::INT:
 			operator+=<int64_t>(*this, other);
 			break;
@@ -363,6 +387,24 @@ void Attribute::add(const Variant &other) {
 		case Variant::STRING_NAME:	// StringName doesn't support += concatenation but this casts it to String
 		case Variant::STRING:
 			operator+=<String>(*this, other);
+			break;
+		case Variant::VECTOR2:
+			operator+=<Vector2>(*this, other);
+			break;
+		case Variant::VECTOR2I:
+			operator+=<Vector2i>(*this, other);
+			break;
+		case Variant::VECTOR3:
+			operator+=<Vector3>(*this, other);
+			break;
+		case Variant::VECTOR3I:
+			operator+=<Vector3i>(*this, other);
+			break;
+		case Variant::VECTOR4:
+			operator+=<Vector4>(*this, other);
+			break;
+		case Variant::VECTOR4I:
+			operator+=<Vector4i>(*this, other);
 			break;
 		case Variant::OBJECT:
 			//todo: need to handle attribute + attribute here if the Variant::Object type is the same as attribute.
@@ -1038,16 +1080,8 @@ void Attribute::create_attribute_data_entry(int64_t entity_id) {
 
 	print("create_attribute_data_entry() ", entity_id);
 
-	//int index;
 	switch(get_type()) {
-		/*
 		case Variant::BOOL:
-			get_attribute_data()->create_default_entry<char>(entity_id, this);
-			break;
-		*/
-		case Variant::BOOL:
-			print("BOOOL");
-			//todo:enable
 			get_attribute_data()->create_default_entry<bool>(entity_id, this);
 			break;
 		case Variant::INT:
@@ -1062,6 +1096,25 @@ void Attribute::create_attribute_data_entry(int64_t entity_id) {
 		case Variant::STRING_NAME:
 			get_attribute_data()->create_default_entry<StringName>(entity_id, this);
 			break;
+		case Variant::VECTOR2:
+			get_attribute_data()->create_default_entry<Vector2>(entity_id, this);
+			break;
+		case Variant::VECTOR2I:
+			get_attribute_data()->create_default_entry<Vector2i>(entity_id, this);
+			break;
+		case Variant::VECTOR3:
+			get_attribute_data()->create_default_entry<Vector3>(entity_id, this);
+			break;
+		case Variant::VECTOR3I:
+			get_attribute_data()->create_default_entry<Vector3i>(entity_id, this);
+			break;
+		case Variant::VECTOR4:
+			get_attribute_data()->create_default_entry<Vector4>(entity_id, this);
+			break;
+		case Variant::VECTOR4I:
+			get_attribute_data()->create_default_entry<Vector4i>(entity_id, this);
+			break;
+			
 		//todo: add other cases for primitive types
 		default:
 			get_attribute_data()->create_default_entry<Variant>(entity_id, this);
