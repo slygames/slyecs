@@ -875,7 +875,7 @@ GDCLASS(Attribute, Resource);
 
 	StringName attribute_name;
 	AttributeData* attribute_data;
-
+	
 protected:
 	static void _bind_methods();
 
@@ -892,8 +892,18 @@ public:
 
 	Variant data_var;	// default value
 
+	//todo: Do this functionality, these load the data into the attribute on ready and update the node data from the attribute every update function.
+	NodePath node_path;
+	StringName data_property;	// default value (if tied to a variable on the node parent object)
+
 	void set_data_var(const Variant& p_data_var); // sets value from variant (does conversion from_var())
-	const Variant& get_data_var() const { return data_var; }; // get value (does conversion to_var())
+	const Variant& get_data_var() const { return data_var; } // get value (does conversion to_var())
+
+	void set_node_path(const NodePath& p_node_path) { node_path = p_node_path; } // sets value from variant (does conversion from_var())
+	const NodePath& get_node_path() const { return node_path; } // get value (does conversion to_var())
+
+	void set_data_property(const StringName& p_data_property) { data_property = p_data_property; } // sets value from variant (does conversion from_var())
+	const StringName& get_data_property() const { return data_property; } // get value (does conversion to_var())
 
 	Variant::Type get_type() {
 		if(data_var.get_type()<0) {
@@ -1194,7 +1204,6 @@ public:
 		return this+other;		
 	}*/
 
-
 	void add(const Variant& other);
 
 	template <typename U, typename V>
@@ -1270,6 +1279,8 @@ public:
 		return attribute_name; 
 	}
 
+	/* Set a property value on the actual Object associated with an entity. This updates game objects with the Ecs values from the attribute arrays */
+	void set_property_value(int64_t entity_id, StringName attribute_name, Variant new_value);
 
 	//todo:overload * operator and maybe = operator in sly::map so that two attributes can be multiplied together which will be useful to multiply all values by scalaras and same index values in other attributes by using queries like (movement_attribute = velocity_attribute * position_attribute * direction_attribute * delta)
 
@@ -1537,9 +1548,14 @@ public:
 	// updated list of entities which qualify to run update() based on if entity has required and forbidden tags
 	void update_entities_approved();
 
-	virtual void update();
+	// set values in approved entities to component values
+	void refresh_entities_approved();
 
-	GDVIRTUAL0(_update);
+	virtual void ready(); // calls _ready gdvirtual
+	virtual void update(); // calls _update gdvirtual
+
+	GDVIRTUAL0(_ready);		// this gdscript function runs once when ability is ready
+	GDVIRTUAL0(_update);	// this gdscript function runs each frame for each ability
 };
 
 

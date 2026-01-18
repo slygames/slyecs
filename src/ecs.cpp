@@ -827,17 +827,25 @@ Ability::_notification(int p_what) {
 }
 */
 
-void Attribute::_bind_methods() {
+void Attribute::set_property_value(int64_t entity_id, StringName attribute_name, Variant new_value) {
+	// set actual property value here
+	
+}
 
-	ClassDB::bind_method(D_METHOD("set_data_var", "data_var"), &Attribute::set_data_var);
+void Attribute::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_data_var", "p_data_var"), &Attribute::set_data_var);
 	ClassDB::bind_method(D_METHOD("get_data_var"), &Attribute::get_data_var);
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT), "set_data_var", "get_data_var");
 	//ADD_PROPERTY(PropertyInfo(Variant::NIL, "data_var", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "gd_data_var", PROPERTY_HINT_NONE, "Variant", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_NIL_IS_VARIANT ), "set_data_var", "get_data_var");
 
-	ClassDB::bind_method(D_METHOD("set_attribute_name", "attribute_name"), &Attribute::set_attribute_name);
-	ClassDB::bind_method(D_METHOD("get_attribute_name"), &Attribute::get_attribute_name);
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "attribute_name"), "set_attribute_name", "get_attribute_name");
+	ClassDB::bind_method(D_METHOD("set_node_path", "p_node_path"), &Attribute::set_node_path);
+	ClassDB::bind_method(D_METHOD("get_node_path"), &Attribute::get_node_path);
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "node_path", PROPERTY_HINT_NONE, "NodePath"), "set_node_path", "get_node_path");
+
+	ClassDB::bind_method(D_METHOD("set_data_property", "p_data_property"), &Attribute::set_data_property);
+	ClassDB::bind_method(D_METHOD("get_data_property"), &Attribute::get_data_property);
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "p_data_property"), "set_data_property", "get_data_property");
 
 	ClassDB::bind_method(D_METHOD("add", "other"), &Attribute::add);
 
@@ -903,24 +911,24 @@ void Ability::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "attributes_remove", PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Attribute"), "set_attributes_remove", "get_attributes_remove");
 	*/
 
-	ClassDB::bind_method(D_METHOD("set_tags_required", "tags_required"), &Ability::set_tags_required);
+	ClassDB::bind_method(D_METHOD("set_tags_required", "p_tags_required"), &Ability::set_tags_required);
 	ClassDB::bind_method(D_METHOD("get_tags_required"), &Ability::get_tags_required);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_required", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_required", "get_tags_required" );
 
-	ClassDB::bind_method(D_METHOD("set_tags_forbidden", "tags_forbidden"), &Ability::set_tags_forbidden);
+	ClassDB::bind_method(D_METHOD("set_tags_forbidden", "p_tags_forbidden"), &Ability::set_tags_forbidden);
 	ClassDB::bind_method(D_METHOD("get_tags_forbidden"), &Ability::get_tags_forbidden);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "tags_forbidden", PROPERTY_HINT_ARRAY_TYPE, "StringName"), "set_tags_forbidden", "get_tags_forbidden" );
 
 	//PROPERTY_HINT_TYPE_STRING, String::num(Variant::OBJECT) + "/" + String::num(PROPERTY_HINT_RESOURCE_TYPE) + ":Image")
 
-	ClassDB::bind_method(D_METHOD("set_ability_name", "ability_name"), &Ability::set_ability_name);
+	ClassDB::bind_method(D_METHOD("set_ability_name", "p_ability_name"), &Ability::set_ability_name);
 	ClassDB::bind_method(D_METHOD("get_ability_name"), &Ability::get_ability_name);
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "ability_name"), "set_ability_name", "get_ability_name");
 
 	ClassDB::bind_method(D_METHOD("get_attribute"), &Ability::get_attribute);
 
-	ClassDB::bind_method(D_METHOD("set_attribute_val", "attribute_name", "value"), &Ability::set_attribute_val);
-	ClassDB::bind_method(D_METHOD("get_attribute_val", "attribute_name"), &Ability::get_attribute_val);
+	ClassDB::bind_method(D_METHOD("set_attribute_val", "p_attribute_name", "p_value"), &Ability::set_attribute_val);
+	ClassDB::bind_method(D_METHOD("get_attribute_val", "p_attribute_name"), &Ability::get_attribute_val);
 	/*
 	// Manually set the return type hint so GDScript recognizes the typed dictionary
 	MethodInfo mi = MethodInfo(Variant::DICTIONARY, "get_attribute_val", PropertyInfo(Variant::STRING_NAME, "attribute_name"));
@@ -1071,8 +1079,7 @@ void Ecs::remove_entity(Object *object) {
 
 Object* Ecs::get_entity(int64_t entity_id) {
 	int64_t instance_id = entity_register[entity_id];
-	Object* obj = godot::UtilityFunctions::instance_from_id(instance_id)
-	return obj;
+	return godot::UtilityFunctions::is_instance_id_valid(instance_id) ? godot::UtilityFunctions::instance_from_id(instance_id) : nullptr;
 }
 
 void Ecs::grant_abliity(Object *object, Ability *ability) {
@@ -1425,6 +1432,26 @@ void Ability::update_entities_approved() {
 	print("update_entities_approved() Approved2 ", entities_approved.size());
 }
 
+void Ability::refresh_entities_approved() {
+	const TypedArray<Attribute>& attributes = get_attributes_required();
+	for(int i=0; i<attributes.size();i++) {
+		Attribute* attribute = cast_to<Attribute>(attributes[i]);
+		for(int64_t entity_id : entities_approved) {
+			attribute->set_property_value(entity_id, attribute->get_node_path(), attribute->get_data_property(), attribute->get_attribute_name(), attribute->get_var(entity_id));
+		}
+	}
+}
+
+void Ability::ready() {
+	print("ready() : ability ", get_ability_name());
+	print("GDVIRUAL1");
+
+	if(GDVIRTUAL_CALL(_ready)) {
+		print("_ready gdvirtual called");
+	}
+
+}
+
 void Ability::update() {
 	print("updating ability ", get_ability_name());
 	print("Number of Attributes ", get_attributes_required().size());
@@ -1450,9 +1477,7 @@ void Ability::update() {
 	print("GDVIRUAL0");
 
 	if(GDVIRTUAL_CALL(_update)) {
-		print("GDVIRUAL1");
-		print("...Velocity1 attribute null ", get_attribute("velocity")!=nullptr);
-		print("_update() called");	//todo:remove
+		print("_update gdvirtual called");
 
 		/*
 		for(int64_t entity_id : entities_assigned) {
@@ -1464,7 +1489,8 @@ void Ability::update() {
 				print("Var1 is ", attribute->get_var(entity_id));
 			}
 		}*/
-
+		print("Virtual Function called. Updating Entities");
+		refresh_entities_approved();
 	}
 #if 0
 	//todo:debugging
@@ -1543,7 +1569,6 @@ void Ability::update() {
 		}
 	}
 #endif
-
 }
 /*
 // loads callables from gdscript

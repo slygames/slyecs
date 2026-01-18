@@ -2,4 +2,4 @@
 
 [resource]
 gd_data_var = 54.5
-attribute_name = &"velocity"
+node_path = 54.5

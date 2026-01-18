@@ -9,13 +9,14 @@ script = ExtResource("1_qleqb")
 
 [node name="player" type="Node2D" parent="."]
 
-[node name="Sprite2D" type="Sprite2D" parent="player"]
-texture = ExtResource("2_fighv")
-
 [node name="sword" type="Node2D" parent="player"]
 
 [node name="NodeECS" type="NodeECS" parent="player"]
 abilities = Array[Ability]([ExtResource("3_sngt6")])
+
+[node name="Label" type="Label" parent="player"]
+offset_right = 40.0
+offset_bottom = 23.0
 
 [node name="monster_01" type="Node2D" parent="."]
 
