@@ -1,12 +1,13 @@
-[gd_resource type="Ability" load_steps=5 format=3 uid="uid://blgahpsvsrbgk"]
+[gd_resource type="Ability" load_steps=6 format=3 uid="uid://blgahpsvsrbgk"]
 
 [ext_resource type="Attribute" uid="uid://ciio3eq8qj8jg" path="res://ecs/attribute/velocity_attribute.tres" id="1_y1lx0"]
 [ext_resource type="Attribute" uid="uid://fbmkid7yb3tn" path="res://ecs/attribute/label_attribute.tres" id="2_3ydc6"]
 [ext_resource type="Script" uid="uid://crtrx1572l2yi" path="res://ecs/ability/movement_ability.gd" id="2_votyo"]
 [ext_resource type="Attribute" uid="uid://bgw7ltkxsg524" path="res://ecs/attribute/position_attribute.tres" id="3_tpd21"]
+[ext_resource type="Attribute" uid="uid://5k4u0p7uf588" path="res://ecs/attribute/direction_attribute.tres" id="4_1s1ia"]
 
 [resource]
-attributes_required = Array[Attribute]([ExtResource("1_y1lx0"), ExtResource("2_3ydc6"), ExtResource("3_tpd21")])
+attributes_required = Array[Attribute]([ExtResource("1_y1lx0"), ExtResource("2_3ydc6"), ExtResource("3_tpd21"), ExtResource("4_1s1ia")])
 ability_name = &"movement_ability"
 resource_local_to_scene = true
 script = ExtResource("2_votyo")

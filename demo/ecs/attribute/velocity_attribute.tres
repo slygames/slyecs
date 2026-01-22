@@ -1,5 +1,5 @@
 [gd_resource type="Attribute" format=3 uid="uid://ciio3eq8qj8jg"]
 
 [resource]
-gd_data_var = 54.5
-node_path = 54.5
+gd_data_var = Vector2(0, 0)
+p_data_property = &"velocity"

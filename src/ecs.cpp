@@ -828,10 +828,13 @@ Ability::_notification(int p_what) {
 */
 
 void Attribute::set_property_value(int64_t entity_id, Variant new_value) {
-	if(UtilityFunctions::is_instance_id_valid(entity_id)) {
+	if(get_data_property().length() > 0 && UtilityFunctions::is_instance_id_valid(entity_id)) {
 		Node* parent_node = cast_to<Node>(UtilityFunctions::instance_from_id(entity_id));
 		Node* node = parent_node != nullptr && node_path.length() > 0 ? parent_node->get_node<Node>(NodePath(node_path)) : parent_node;
-		if(node) node->set(data_property, new_value);
+		if(node) {
+			node->set(data_property, new_value);
+			print("set data on ", node->get_name(), " property : ", data_property, " value : ", new_value);
+		}
 	}
 }
 
