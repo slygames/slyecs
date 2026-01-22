@@ -19,6 +19,8 @@
 //#include <cstdint>
 #include "slymap.h"
 #include "util.h"
+//#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/variant/node_path.hpp> //get_node()
 #include <variant> // for std::variant
 //#include <godot_cpp/variant/utility_functions.hpp> // for instance_from_id
 #include <godot_cpp/variant/dictionary.hpp>
@@ -892,25 +894,29 @@ public:
 
 	Variant data_var;	// default value
 
-	//todo: Do this functionality, these load the data into the attribute on ready and update the node data from the attribute every update function.
-	NodePath node_path;
-	StringName data_property;	// default value (if tied to a variable on the node parent object)
+	// data property to modify on object pointed to in node_path, if empty then refresh_data_attributes() does nothing on those nodes
+	StringName data_property;
+
+	// node path is a string relative to the parent node if property not on parent e.g. "child_node" or "child_node/grand_child_node". If empty then property is assumed to be on the parent
+	String node_path;
 
 	void set_data_var(const Variant& p_data_var); // sets value from variant (does conversion from_var())
 	const Variant& get_data_var() const { return data_var; } // get value (does conversion to_var())
 
-	void set_node_path(const NodePath& p_node_path) { node_path = p_node_path; } // sets value from variant (does conversion from_var())
-	const NodePath& get_node_path() const { return node_path; } // get value (does conversion to_var())
+	void set_node_path(const String& p_node_path) { node_path = p_node_path; } // sets value from variant (does conversion from_var())
+	const String& get_node_path() const { return node_path; } // get value (does conversion to_var())
 
 	void set_data_property(const StringName& p_data_property) { data_property = p_data_property; } // sets value from variant (does conversion from_var())
 	const StringName& get_data_property() const { return data_property; } // get value (does conversion to_var())
 
 	Variant::Type get_type() {
+		/*
 		if(data_var.get_type()<0) {
 			print("dodgy type ", data_var.get_type());
 			print("dodgy data ", data_var);
 		}
 		print("GET_TYPE() ", data_var.get_type(), " : data_var", data_var);
+		*/
 		return data_var.get_type();
 	}
 
@@ -1280,7 +1286,9 @@ public:
 	}
 
 	/* Set a property value on the actual Object associated with an entity. This updates game objects with the Ecs values from the attribute arrays */
-	void set_property_value(int64_t entity_id, StringName attribute_name, Variant new_value);
+	void set_property_value(int64_t entity_id, Variant new_value);
+
+	//void set_property_value(int64_t entity_id, StringName attribute_name, Variant new_value, NodePath node_path, StringName property_name);
 
 	//todo:overload * operator and maybe = operator in sly::map so that two attributes can be multiplied together which will be useful to multiply all values by scalaras and same index values in other attributes by using queries like (movement_attribute = velocity_attribute * position_attribute * direction_attribute * delta)
 

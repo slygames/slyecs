@@ -21,6 +21,7 @@ func _update():
 	
 	for entity_id in position_dict:
 		print("ENTITY ", entity_id, " : POSITION_ATTR ", position_dict[entity_id])
+
 	pass
 
 	

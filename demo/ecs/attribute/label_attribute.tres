@@ -2,5 +2,5 @@
 
 [resource]
 gd_data_var = "YUI"
-node_path = NodePath("../Label")
+node_path = "Label"
 p_data_property = &"text"

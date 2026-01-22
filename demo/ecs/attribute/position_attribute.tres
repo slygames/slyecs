@@ -2,5 +2,4 @@
 
 [resource]
 gd_data_var = Vector2(0, 0)
-node_path = NodePath("player")
 p_data_property = &"position"

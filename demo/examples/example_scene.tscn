@@ -8,6 +8,11 @@
 script = ExtResource("1_qleqb")
 
 [node name="player" type="Node2D" parent="."]
+position = Vector2(557, 300)
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="player"]
+texture = ExtResource("2_fighv")
 
 [node name="sword" type="Node2D" parent="player"]
 
@@ -19,6 +24,7 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="monster_01" type="Node2D" parent="."]
+visible = false
 
 [node name="Sprite2D" type="Sprite2D" parent="monster_01"]
 texture = ExtResource("2_fighv")
@@ -26,21 +32,27 @@ texture = ExtResource("2_fighv")
 [node name="sword" type="Node2D" parent="monster_01"]
 
 [node name="monster_02" type="Node2D" parent="."]
+visible = false
 
 [node name="Sprite2D" type="Sprite2D" parent="monster_02"]
+position = Vector2(343, 483)
 texture = ExtResource("2_fighv")
 
 [node name="sword" type="Node2D" parent="monster_02"]
 
 [node name="building_01" type="Node2D" parent="."]
+visible = false
 
 [node name="Sprite2D" type="Sprite2D" parent="building_01"]
+position = Vector2(596, 305)
 texture = ExtResource("2_fighv")
 
 [node name="building_02" type="Node2D" parent="."]
+visible = false
 
 [node name="Sprite2D" type="Sprite2D" parent="building_02"]
 
 [node name="tree_01" type="Node2D" parent="."]
+visible = false
 
 [node name="Sprite2D" type="Sprite2D" parent="tree_01"]

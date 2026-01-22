@@ -827,9 +827,12 @@ Ability::_notification(int p_what) {
 }
 */
 
-void Attribute::set_property_value(int64_t entity_id, StringName attribute_name, Variant new_value) {
-	// set actual property value here
-	
+void Attribute::set_property_value(int64_t entity_id, Variant new_value) {
+	if(UtilityFunctions::is_instance_id_valid(entity_id)) {
+		Node* parent_node = cast_to<Node>(UtilityFunctions::instance_from_id(entity_id));
+		Node* node = parent_node != nullptr && node_path.length() > 0 ? parent_node->get_node<Node>(NodePath(node_path)) : parent_node;
+		if(node) node->set(data_property, new_value);
+	}
 }
 
 void Attribute::_bind_methods() {
@@ -841,7 +844,7 @@ void Attribute::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_node_path", "p_node_path"), &Attribute::set_node_path);
 	ClassDB::bind_method(D_METHOD("get_node_path"), &Attribute::get_node_path);
-	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "node_path", PROPERTY_HINT_NONE, "NodePath"), "set_node_path", "get_node_path");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "node_path", PROPERTY_HINT_NONE, "String"), "set_node_path", "get_node_path");
 
 	ClassDB::bind_method(D_METHOD("set_data_property", "p_data_property"), &Attribute::set_data_property);
 	ClassDB::bind_method(D_METHOD("get_data_property"), &Attribute::get_data_property);
@@ -1437,7 +1440,8 @@ void Ability::refresh_entities_approved() {
 	for(int i=0; i<attributes.size();i++) {
 		Attribute* attribute = cast_to<Attribute>(attributes[i]);
 		for(int64_t entity_id : entities_approved) {
-			attribute->set_property_value(entity_id, attribute->get_node_path(), attribute->get_data_property(), attribute->get_attribute_name(), attribute->get_var(entity_id));
+			//todo: how will this work for spawned entities etc.?!
+			attribute->set_property_value(entity_id, attribute->get_var(entity_id));
 		}
 	}
 }
