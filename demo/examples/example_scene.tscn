@@ -10,7 +10,6 @@
 script = ExtResource("1_qleqb")
 
 [node name="player" type="CharacterBody2D" parent="."]
-position = Vector2(598, 302)
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="player"]
@@ -29,12 +28,16 @@ offset_bottom = 23.0
 shape = SubResource("CircleShape2D_qqekj")
 
 [node name="monster_01" type="Node2D" parent="."]
-visible = false
+position = Vector2(179, 97)
+metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="monster_01"]
 texture = ExtResource("2_fighv")
 
 [node name="sword" type="Node2D" parent="monster_01"]
+
+[node name="NodeECS2" type="NodeECS" parent="monster_01"]
+abilities = Array[Ability]([ExtResource("3_sngt6")])
 
 [node name="monster_02" type="Node2D" parent="."]
 visible = false

@@ -2,11 +2,12 @@ extends Ability
 
 func _update():
 	
-	var speed : float = 100.0
+	var speed : float = 1.0
 	var direction = Vector2(randf(), randf())
 	var velocity : Vector2 = speed * direction
 
 	get_attribute("position").add(velocity)
+	#print("position add ", velocity)
 
 	#get_attribute("position").add(Vector2(40.5, 3.3))
 
@@ -14,15 +15,15 @@ func _update():
 	#get_attribute("position").add(Vector2(40.5, 3.3))
 
 	
-	print("POSITION DICTIONARY")
-	
-	#print("LABEL IS ", get_attribute_val("label")
-	var position_dict : Dictionary = get_attribute_val("position")
-	
-	for entity_id in position_dict:
-		print("ENTITY ", entity_id, " : POSITION_ATTR ", position_dict[entity_id])
-
-	pass
+	#print("POSITION DICTIONARY")
+	#
+	##print("LABEL IS ", get_attribute_val("label")
+	#var position_dict : Dictionary = get_attribute_val("position")
+	#
+	#for entity_id in position_dict:
+		#print("ENTITY ", entity_id, " : POSITION_ATTR ", position_dict[entity_id])
+#
+	#pass
 
 	
 	#set_attribute_val("bool_attr",true)

@@ -1438,6 +1438,7 @@ void Ability::update_entities_approved() {
 	print("update_entities_approved() Approved2 ", entities_approved.size());
 }
 
+//todo: this should be done by workerthreadpool
 void Ability::refresh_entities_approved() {
 	const TypedArray<Attribute>& attributes = get_attributes_required();
 	for(int i=0; i<attributes.size();i++) {
